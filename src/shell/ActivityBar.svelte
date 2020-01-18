@@ -1,0 +1,13 @@
+<style>
+  aside {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 100%;
+    width: 48px;
+    background-color: var(--activity-bar-background-color);
+  }
+</style>
+
+<aside />

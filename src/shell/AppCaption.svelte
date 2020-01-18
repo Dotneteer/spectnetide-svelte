@@ -1,0 +1,13 @@
+<style>
+  div {
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 1;
+    justify-content: center;
+    font-size: 0.8em;
+  }
+</style>
+
+<div>
+  <span>Zx Spectrum IDE</span>
+</div>
