@@ -1,5 +1,5 @@
 <script>
-    import { ThemeService} from "../tslib/themes/ThemeService"
+    import { ThemeService} from "../tslib/ui/themes/ThemeService"
 
     export let xclass = "";
     export let iconName;

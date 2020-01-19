@@ -10,16 +10,17 @@
     "dev": "rollup -c -w",
     "start": "sirv public",
     "electron": "npm run build && npm run pure-electron",
-    "electron:dev": "concurrently \"npm run ts:w\" \"npm run dev\" \"npm run pure-electron\"",
+    "electron:dev": "npm run ts && concurrently \"npm run ts:w\" \"npm run dev\" \"npm run pure-electron\"",
     "pure-electron": "electron ."
   },
   "engines": {
     "node": ">= 8"
   },
   "devDependencies": {
-    "@pyoner/svelte-types": "^3.4.4-2",
     "@rollup/plugin-commonjs": "^11.0.0",
     "@rollup/plugin-node-resolve": "^6.0.0",
+    "@types/keymirror": "^0.1.1",
+    "@types/node": "^12.12.21",
     "concurrently": "^5.0.2",
     "electron": "^7.1.9",
     "electron-prebuilt-win": "^3.1.3",
@@ -28,12 +29,13 @@
     "rollup-plugin-livereload": "^1.0.0",
     "rollup-plugin-svelte": "^5.0.3",
     "rollup-plugin-terser": "^5.1.2",
-    "run-s": "0.0.0",
     "sirv-cli": "^0.4.5",
     "svelte": "^3.0.0",
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "chokidar": "^3.3.1"
+    "chokidar": "^3.3.1",
+    "electron-window-state": "^5.0.3",
+    "keymirror": "^0.1.1"
   }
 }
