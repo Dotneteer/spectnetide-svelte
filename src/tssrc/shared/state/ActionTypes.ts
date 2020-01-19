@@ -1,9 +1,14 @@
-import KeyMirror = require("keymirror");
-
 /**
  * Available action types
  */
-export const ActionTypes = KeyMirror({
+export interface ActionTypes {
+  // --- Aliased action
+  ALIASED: null;
+
+  // --- App focus actions
+  APP_GOT_FOCUS: null,
+  APP_LOST_FOCUS: null,
+
   // --- Modal dialog state actions
   MODAL_SHOW: null,
   MODAL_HIDE: null,
@@ -40,4 +45,4 @@ export const ActionTypes = KeyMirror({
   VM_PAUSED: null,
   VM_STOPPING: null,
   VM_STOPPED: null
-});
+};

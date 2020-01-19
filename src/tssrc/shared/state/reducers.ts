@@ -1,6 +1,5 @@
-import { SpectNetAction } from "./actions";
-import { ActionTypes } from "./ActionTypes";
 import { WindowState } from "./WindowState";
+import { SpectNetAction } from "./redux-core";
 
 /**
  * This reducer manages modal window visibility state
@@ -11,9 +10,9 @@ function modalReducer(
   state: boolean = false,
   { type }: SpectNetAction
 ): boolean {
-  if (type === ActionTypes.MODAL_HIDE) {
+  if (type === "MODAL_HIDE") {
     return false;
-  } else if (type === ActionTypes.MODAL_SHOW) {
+  } else if (type === "MODAL_SHOW") {
     return true;
   }
   return state;
@@ -29,21 +28,12 @@ function windowStateReducer(
   { type }: SpectNetAction
 ): WindowState {
   switch (type) {
-    case ActionTypes.MAXIMIZE_APP_WINDOW:
+    case "MAXIMIZE_APP_WINDOW":
       return "maximized";
-    case ActionTypes.MINIMIZE_APP_WINDOW:
+    case "MINIMIZE_APP_WINDOW":
       return "minimized";
-    case ActionTypes.RESTORE_APP_WINDOW:
+    case "RESTORE_APP_WINDOW":
       return "normal";
   }
   return state;
 }
-
-
-/**
- * The set of reducers we use within this application
- */
-export const appReducers = {
-  isModalDisplayed: modalReducer,
-  windowState: windowStateReducer
-};

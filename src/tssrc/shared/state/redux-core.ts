@@ -1,11 +1,6 @@
-import { ActionCreator, SpectNetAction } from "./actions";
-//import { webContents, ipcMain, remote, ipcRenderer } from "electron";
+import { webContents, ipcMain, remote, ipcRenderer } from "electron";
 import { Payload } from "./Payload";
-
-/**
- * This is the type of aliased actions that run only within the main process.
- */
-const ALIASED = "$aliased$";
+import { ActionTypes } from "./ActionTypes";
 
 /**
  * This type represents the name of the IPC channel we use when forward main process
@@ -26,19 +21,44 @@ export const aliasRegistry = new Map<string, ActionCreator>();
 /**
  * Creates an aliased action that is executed only in the main process, and the result
  * is broadcasted to the renderer process.
- * @param name Aliased action name
+ * @param type Aliased action type
  * @param actionCreator Aliased action creator
  */
-export function createAliasedAction(name, actionCreator): ActionCreator {
-  aliasRegistry.set(name, actionCreator);
+export function createAliasedAction(
+  type: keyof ActionTypes,
+  actionCreator?: ActionCreator
+): ActionCreator {
+  if (!actionCreator) {
+    actionCreator = () => {
+      return { type };
+    };
+  }
+  aliasRegistry.set(type, actionCreator);
 
   return (...args) => ({
-    type: ALIASED,
-    payload: args as any as Payload,
+    type: "ALIASED",
+    payload: (args as any) as Payload,
     meta: {
-      trigger: name
+      trigger: type
     }
   });
+}
+
+/**
+ * Creates a local action
+ * @param type Action type
+ */
+export function createLocalAction(
+  type: keyof ActionTypes,
+  payload?: Payload
+): SpectNetAction {
+  return {
+    type,
+    payload,
+    meta: {
+      scope: "local"
+    }
+  };
 }
 
 /**
@@ -59,7 +79,7 @@ export function createAliasedAction(name, actionCreator): ActionCreator {
  * ```
  */
 export const triggerAlias = store => next => (action: SpectNetAction) => {
-  if (action.type === ALIASED && action.meta && action.meta.trigger) {
+  if (action.type === "ALIASED" && action.meta && action.meta.trigger) {
     const alias = aliasRegistry.get(action.meta.trigger);
     const args = action && action.payload ? [action.payload] : [];
     action = alias(...args);
@@ -86,10 +106,10 @@ export const forwardToRenderer = () => next => (action: SpectNetAction) => {
   };
 
   // --- Broadcast the action to all renderer processes
-  // const allWebContents = webContents.getAllWebContents();
-  // allWebContents.forEach(contents => {
-  //   contents.send(REDUX_ACTION_CHANNEL, rendererAction);
-  // });
+  const allWebContents = webContents.getAllWebContents();
+  allWebContents.forEach(contents => {
+    contents.send(REDUX_ACTION_CHANNEL, rendererAction);
+  });
 
   // --- Next middleware element
   return next(action);
@@ -105,9 +125,9 @@ export const forwardToRenderer = () => next => (action: SpectNetAction) => {
 export function replayActionMain(store) {
   global[GET_REDUX_STATE_FUNC] = () => JSON.stringify(store.getState());
 
-  // ipcMain.on(REDUX_ACTION_CHANNEL, (event, payload) => {
-  //   store.dispatch(payload);
-  // });
+  ipcMain.on(REDUX_ACTION_CHANNEL, (event, payload) => {
+    store.dispatch(payload);
+  });
 }
 
 /**
@@ -115,24 +135,26 @@ export function replayActionMain(store) {
  * renderer side.
  */
 export function getInitialStateRenderer() {
-  // const getReduxState = remote.getGlobal(GET_REDUX_STATE_FUNC);
-  // if (!getReduxState) {
-  //   throw new Error(
-  //     "Could not find reduxState global in main process, did you forget to call replayActionMain?"
-  //   );
-  // }
-  // return JSON.parse(getReduxState());
+  const getReduxState = remote.getGlobal(GET_REDUX_STATE_FUNC);
+  if (!getReduxState) {
+    throw new Error(
+      "Could not find reduxState global in main process, did you forget to call replayActionMain?"
+    );
+  }
+  return JSON.parse(getReduxState());
 }
 
 /**
  * This middleware function forwards actions to the main process, provided they
  * are not local-scoped.
  */
-export const forwardToMain = store => next => action => {
-  // if (!action.meta || !action.meta.scope || action.meta.scope !== "local") {
-  //   ipcRenderer.send(REDUX_ACTION_CHANNEL, action);
-  //   return;
-  // }
+export const forwardToMain = (store: any) => (
+  next: (arg0: any) => any
+) => (action: { meta: { scope: string } }) => {
+  if (!action.meta || !action.meta.scope || action.meta.scope !== "local") {
+    ipcRenderer.send(REDUX_ACTION_CHANNEL, action);
+    return;
+  }
   return next(action);
 };
 
@@ -140,7 +162,29 @@ export const forwardToMain = store => next => action => {
  * Replays the action at the renderer side.
  */
 export function replayActionRenderer(store) {
-  // ipcRenderer.on(REDUX_ACTION_CHANNEL, (event, payload) => {
-  //   store.dispatch(payload);
-  // });
+  ipcRenderer.on(REDUX_ACTION_CHANNEL, (event, payload) => {
+    store.dispatch(payload);
+  });
 }
+
+/**
+ * This type definition describes the available metadata types.
+ */
+interface MetaTypes {
+  scope?: "local";
+  trigger?: string;
+}
+
+/**
+ * This interface represents an action that can be used within this project.
+ */
+export interface SpectNetAction {
+  type: keyof ActionTypes;
+  payload?: Payload;
+  meta?: MetaTypes;
+}
+
+/**
+ * The signature of an action creator function.
+ */
+export type ActionCreator = (...args: any) => SpectNetAction;

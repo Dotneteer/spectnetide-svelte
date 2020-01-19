@@ -7,6 +7,11 @@ import {
 } from "./utils/electron-utils";
 import { BrowserWindow, app, ipcMain } from "electron";
 import { setHostBrowserWindow } from "../shared/state/actions";
+import { mainProcessStore } from "./mainProcessStore";
+import {
+  appGotFocusAction,
+  appLostFocusAction
+} from "../shared/state/app-focus-redux";
 
 /**
  * Stores a reference to the lazily loaded `electron-window-state` package.
@@ -86,8 +91,17 @@ export class AppWindow {
     }
 
     this._window = new BrowserWindow(windowOptions);
-    console.log("BrowserWindow created.");
     setHostBrowserWindow(this._window);
+
+    // --- Set up main window events
+    this._window.on("focus", () => {
+      console.log("got focus");
+      mainProcessStore.dispatch(appGotFocusAction());
+    });
+    this._window.on("blur", () => {
+      console.log("lost focus");
+      mainProcessStore.dispatch(appLostFocusAction());
+    });
 
     // --- Allow the `electron-windows-state` package to follow and save the
     // --- app window's state
@@ -108,7 +122,10 @@ export class AppWindow {
     let watcher: any;
     if (__DEV__) {
       // --- Indev mode, setup hot reload
-      const fileToWatch = path.join(__dirname, "../../../public/build/bundle.js");
+      const fileToWatch = path.join(
+        __dirname,
+        "../../../public/build/bundle.js"
+      );
       watcher = require("chokidar").watch(fileToWatch, { ignoreInitial: true });
       watcher.on("change", () => this._window.reload());
     }
@@ -122,7 +139,10 @@ export class AppWindow {
     });
 
     // --- Load the main file
-    const fileToLoad = `file://${path.join(__dirname, "../../../public/index.html")}`;
+    const fileToLoad = `file://${path.join(
+      __dirname,
+      "../../../public/index.html"
+    )}`;
     this._window.loadURL(fileToLoad);
   }
 }
