@@ -7,7 +7,7 @@
   
   import { ThemeService } from "./tslib/ui/themes/ThemeService";
   import { lightTheme } from "./tslib/ui/themes/light-theme";
-  import { darkTheme } from "./tslib/ui/themes/dark-theme";
+  import { darkTheme } from "./tslib/ui/themes/dark-theme";  
 
   let themeStyle = "";
   let themeClass = "";
