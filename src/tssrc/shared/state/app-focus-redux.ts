@@ -1,13 +1,6 @@
 import { createAliasedAction, SpectNetAction } from "./redux-core";
 
-/**
- * Creates an action for signing that this application got the focus
- */
 export const appGotFocusAction = createAliasedAction("APP_GOT_FOCUS");
-
-/**
- * Creates an action for signing that this application lost the focus
- */
 export const appLostFocusAction = createAliasedAction("APP_LOST_FOCUS");
 
 /**

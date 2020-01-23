@@ -24,10 +24,6 @@
   ThemeService.registerTheme(lightTheme);
   ThemeService.registerTheme(darkTheme);
   ThemeService.setTheme("dark");
-
-  // var stateAware = createRendererProcessStateAware("appHasFocus");
-  // stateAware.onStateChanged.on((state) => console.log(`state: ${state}`));
-
 </script>
 
 <style>

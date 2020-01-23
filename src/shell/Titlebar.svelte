@@ -1,9 +1,49 @@
 <script>
+  import { onDestroy } from "svelte";
+
   import SvgIcon from "../controls/SvgIcon.svelte";
   import MenuBar from "./MenuBar.svelte";
   import AppCaption from "./AppCaption.svelte";
 
-let state = "normal";
+  import { ThemeService } from "../tslib/ui/themes/ThemeService";
+  import {
+    minimizeAppWindowAction,
+    restoreAppWindowAction,
+    maximizeAppWindowAction
+  } from "../tslib/shared/state/window-state-redux";
+  import {
+    createRendererProcessStateAware,
+    rendererProcessStore
+  } from "../tslib/ui/rendererProcessStore";
+
+  // --- We change Titlebar colors as the app focus changes
+  let titleColor;
+  let backgroundColor;
+  calculateColors(true); // --- Default: the app has the focus
+
+  // --- Default window state is normal
+  let windowState = "normal";
+
+  // --- Respond to the event when app focus changes
+  var stateAware = createRendererProcessStateAware();
+  stateAware.onStateChanged.on(state => {
+    windowState = state.windowState;
+    console.log(windowState);
+    calculateColors(state.appHasFocus);
+  });
+  onDestroy(() => stateAware.onStateChanged.release());
+
+  // --- Calculate colors according to focus state
+  function calculateColors(focused) {
+    let propName = focused
+      ? "--titlebar-focused-background-color"
+      : "--titlebar-background-color";
+    backgroundColor = ThemeService.getProperty(propName);
+    propName = focused
+      ? "--titlebar-focused-text-color"
+      : "--titlebar-text-color";
+    titleColor = ThemeService.getProperty(propName);
+  }
 </script>
 
 <style>
@@ -16,7 +56,6 @@ let state = "normal";
     align-items: center;
     justify-content: start;
     font-size: 0.9em;
-    background-color: var(--menu-bar-background-color);
     -webkit-app-region: drag;
   }
 
@@ -53,22 +92,30 @@ let state = "normal";
   }
 </style>
 
-<div class="component">
+<div
+  class="component"
+  style="color:{titleColor};background-color:{backgroundColor}">
   <div class="logo">
     <img alt="logo" src="./assets/spectnet-logo.png" />
   </div>
-  <MenuBar />
+  <MenuBar {titleColor} />
   <AppCaption />
   <div class="title-buttons">
-    <div class="window-control">
+    <div
+      class="window-control"
+      on:click={() => rendererProcessStore.dispatch(minimizeAppWindowAction())}>
       <SvgIcon iconName="minimize" fill="white" width="10" height="10" />
     </div>
-    {#if state === 'normal'}
-      <div class="window-control">
+    {#if windowState !== 'normal'}
+      <div
+        class="window-control"
+        on:click={() => rendererProcessStore.dispatch(restoreAppWindowAction())}>
         <SvgIcon iconName="restore" fill="white" width="10" height="10" />
       </div>
     {:else}
-      <div class="window-control">
+      <div
+        class="window-control"
+        on:click={() => rendererProcessStore.dispatch(maximizeAppWindowAction())}>
         <SvgIcon iconName="maximize" fill="white" width="10" height="10" />
       </div>
     {/if}

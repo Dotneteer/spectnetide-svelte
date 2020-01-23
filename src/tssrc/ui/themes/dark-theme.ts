@@ -15,6 +15,10 @@ export const darkTheme: ITheme = {
     "--menu-bar-background-color": "#3c3c3c",
     "--menu-active-background-color": "#505050",
 
+    "--titlebar-background-color": "#333333",
+    "--titlebar-focused-background-color": "#3c3c3c",
+    "--titlebar-text-color": "#cccccc",
+    "--titlebar-focused-text-color": "#ffffff",
 
     // "--window-frame-border-color": "transparent",
     // "--window-frame-border-width": "0px",
@@ -126,11 +130,6 @@ export const darkTheme: ITheme = {
     // "--input-invalid-border": "red",
     // "--input-focus-border": "1px solid #009aee",
     // "--input-focus-background-color": "#282828",
-
-    // "--titlebar-background-color": "#333333",
-    // "--titlebar-focused-background-color": "#3c3c3c",
-    // "--titlebar-text-color": "#cccccc",
-    // "--titlebar-focused-text-color": "#ffffff",
 
     // "--menu-text-color": "#ffffff",
     // "--menu-disabled-text-color": "#AAAAAA",

@@ -1,4 +1,4 @@
-import { WindowState } from "./WindowState";
+import { WindowState } from "./window-state-redux";
 
 /**
  * Represents the stateof the application

@@ -15,6 +15,11 @@ export const lightTheme: ITheme = {
     "--menu-bar-background-color": "c8c8c8",
     "--menu-active-background-color": "#505050",
 
+    "--titlebar-background-color": "#3e3e3e",
+    "--titlebar-focused-background-color": "#3c3c3c",
+    "--titlebar-text-color": "#dddddd",
+    "--titlebar-focused-text-color": "#ffffff"
+
     // "--window-frame-border-color": "transparent",
     // "--window-frame-border-width": "0px",
     // "--window-pane-border-color": "#dcdcdc",
@@ -124,11 +129,6 @@ export const lightTheme: ITheme = {
     // "--input-focus-border": "1px solid #009aee",
     // "--input-focus-background-color": "#cccccc",
 
-    // "--titlebar-background-color": "#3e3e3e",
-    // "--titlebar-focused-background-color": "#3c3c3c",
-    // "--titlebar-text-color": "#dddddd",
-    // "--titlebar-focused-text-color": "#ffffff",
-
     // "--menu-text-color": "#ffffff",
     // "--menu-disabled-text-color": "#AAAAAA",
     // "--menu-active-background-color": "#505050",
@@ -141,6 +141,5 @@ export const lightTheme: ITheme = {
     // "--color-green": "#51c351",
     // "--color-orange": "#f89406",
     // "--color-blue": "#00afff"
-
   }
 };

@@ -5,13 +5,18 @@ import {
   __LINUX__,
   __DEV__
 } from "./utils/electron-utils";
-import { BrowserWindow, app, ipcMain } from "electron";
-import { setHostBrowserWindow } from "../shared/state/actions";
+import { BrowserWindow } from "electron";
 import { mainProcessStore } from "./mainProcessStore";
 import {
   appGotFocusAction,
   appLostFocusAction
 } from "../shared/state/app-focus-redux";
+import {
+  setHostBrowserWindow,
+  restoreAppWindowAction,
+  maximizeAppWindowAction,
+  minimizeAppWindowAction
+} from "../shared/state/window-state-redux";
 
 /**
  * Stores a reference to the lazily loaded `electron-window-state` package.
@@ -95,12 +100,40 @@ export class AppWindow {
 
     // --- Set up main window events
     this._window.on("focus", () => {
-      console.log("got focus");
       mainProcessStore.dispatch(appGotFocusAction());
     });
     this._window.on("blur", () => {
-      console.log("lost focus");
       mainProcessStore.dispatch(appLostFocusAction());
+    });
+    this.window.on("enter-full-screen", () => {
+      // TODO: Implement this
+    });
+
+    // So this is a bit of a hack. If we call window.isFullScreen directly after
+    // receiving the leave-full-screen event it'll return true which isn't what
+    // we're after. So we'll say that we're transitioning to 'normal' even though
+    // we might be maximized. This works because electron will emit a 'maximized'
+    // event after 'leave-full-screen' if the state prior to full-screen was maximized.
+    this.window.on("leave-full-screen", () => {
+      mainProcessStore.dispatch(restoreAppWindowAction());
+    });
+    this.window.on("maximize", () => {
+      mainProcessStore.dispatch(maximizeAppWindowAction());
+    });
+    this.window.on("minimize", () => {
+      mainProcessStore.dispatch(minimizeAppWindowAction());
+    });
+    this.window.on("unmaximize", () => {
+      mainProcessStore.dispatch(restoreAppWindowAction());
+    });
+    this.window.on("restore", () => {
+      mainProcessStore.dispatch(restoreAppWindowAction());
+    });
+    this.window.on("hide", () => {
+      // TODO: Implement this
+    });
+    this.window.on("show", () => {
+      mainProcessStore.dispatch(restoreAppWindowAction());
     });
 
     // --- Allow the `electron-windows-state` package to follow and save the

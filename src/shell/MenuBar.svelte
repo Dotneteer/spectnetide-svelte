@@ -1,5 +1,7 @@
 <script>
  import MenuButton from "./MenuButton.svelte"
+
+ export let titleColor;
 </script>
 
 <style>
@@ -15,7 +17,7 @@
 </style>
 
 <div tabindex="0">
-  <MenuButton text="&File" highlight="true" titleColor="yellow" on:pointed={() => console.log('pointed.')} />
-  <MenuButton text="&View" highlight="true"/>
-  <MenuButton text="H&elp" highlight="true"/>
+  <MenuButton text="&File" highlight="true" {titleColor} on:pointed={() => console.log('pointed.')} />
+  <MenuButton text="&View" highlight="true" {titleColor} />
+  <MenuButton text="H&elp" highlight="true" {titleColor} />
 </div>

@@ -14,4 +14,9 @@ export interface IThemeProperties {
 
     "--menu-bar-background-color": string;
     "--menu-active-background-color": string;
+
+    "--titlebar-focused-background-color": string;
+    "--titlebar-background-color": string;
+    "--titlebar-focused-text-color": string;
+    "--titlebar-text-color": string;
 }  

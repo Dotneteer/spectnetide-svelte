@@ -8,7 +8,7 @@
   //export let index = 0;
   export let highlight = false;
   export let pointed = false;
-  export let titleColor = "white";
+  export let titleColor = "red";
 </script>
 
 <style>
