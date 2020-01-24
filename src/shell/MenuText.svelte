@@ -8,23 +8,22 @@
     let preText = "";
     let accessKeyText = "";
     let postText = "";
-
+    console.log(title);
     if (title) {
       const m = title.match(/^(.*?)?(?:&([^&]))(.*)?$/);
       // --- We have a menu text without accelerator key
       if (!m) {
         preText = title;
-        return;
-      }
+      } else {
+        if (m[1]) {
+          preText = unescape(m[1]);
+        }
 
-      if (m[1]) {
-        preText = unescape(m[1]);
-      }
+        accessKeyText = m[2];
 
-      accessKeyText = m[2];
-
-      if (m[3]) {
-        postText = unescape(m[3]);
+        if (m[3]) {
+          postText = unescape(m[3]);
+        }
       }
     }
     return { preText, accessKeyText, postText };
@@ -49,19 +48,21 @@
 </style>
 
 <div>
-  {#if menuText.preText !== ''}
-    <span style="margin:0px">{menuText.preText}</span>
-  {/if}
-  {#if menuText.accessKeyText !== ''}
-    <span
-      style="margin:0px"
-      aria-hidden="true"
-      class="access-key"
-      class:highlight>
-      {menuText.accessKeyText}
-    </span>
-  {/if}
-  {#if menuText.postText !== ''}
-    <span style="margin:0px" aria-hidden="true">{menuText.postText}</span>
+  {#if menuText}
+    {#if menuText.preText !== ''}
+      <span style="margin:0px">{menuText.preText}</span>
+    {/if}
+    {#if menuText.accessKeyText !== '' && menuText.accessKeyText != null}
+      <span
+        style="margin:0px"
+        aria-hidden="true"
+        class="access-key"
+        class:highlight>
+        {menuText.accessKeyText}
+      </span>
+    {/if}
+    {#if menuText.postText !== ''}
+      <span style="margin:0px" aria-hidden="true">{menuText.postText}</span>
+    {/if}
   {/if}
 </div>

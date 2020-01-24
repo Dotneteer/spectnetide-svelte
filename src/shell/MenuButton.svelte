@@ -1,14 +1,25 @@
 <script>
+  import { onMount } from "svelte";
+
   import MenuText from "./MenuText.svelte";
   import { createEventDispatcher } from "svelte";
 
-  const dispatch = createEventDispatcher();
-
   export let text;
-  //export let index = 0;
   export let highlight = false;
   export let pointed = false;
-  export let titleColor = "red";
+  export let titleColor;
+  export let topPos;
+  export let leftPos;
+
+  const dispatch = createEventDispatcher();
+
+  let hostElement;
+
+  onMount(() => {
+    topPos = hostElement.offsetTop;
+    leftPos = hostElement.offsetLeft;
+    console.log(`(${leftPos},${topPos})`);
+  });
 </script>
 
 <style>
@@ -26,6 +37,7 @@
 </style>
 
 <div
+  bind:this={hostElement}
   style="color:{titleColor}"
   class:pointed
   on:mouseenter={() => dispatch('pointed')}

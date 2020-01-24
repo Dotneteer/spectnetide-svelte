@@ -14,6 +14,13 @@ export const darkTheme: ITheme = {
 
     "--menu-bar-background-color": "#3c3c3c",
     "--menu-active-background-color": "#505050",
+    "--menu-text-color": "#ffffff",
+    "--menu-disabled-text-color": "#AAAAAA",
+    "--menu-selected-background-color": "#094771",
+    "--menu-pane-background-color": "#252526",
+    "--menu-pane-shadow": "rgb(0, 0, 0) 0px 2px 4px",
+    "--menu-selected-background": "#094771",
+    "--menu-selected-text-color": "#ffffff",
 
     "--titlebar-background-color": "#333333",
     "--titlebar-focused-background-color": "#3c3c3c",

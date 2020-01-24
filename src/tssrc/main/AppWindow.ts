@@ -298,6 +298,7 @@ export class AppWindow {
     this._appMenu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(this._appMenu);
     mainProcessStore.dispatch(setAppMenuAction(this._appCommands));
+    this.window.webContents.toggleDevTools();
   }
 
   /**
@@ -345,18 +346,18 @@ export class AppWindow {
 
       // --- Provide separator between groups
       if (
-        (i > 0 && subitem.hasSubitems !== lastItemWasGroup) ||
+        (i > 0 && subitem.items.length > 0 !== lastItemWasGroup) ||
         groupJustEnded
       ) {
         pane.push(separator);
       }
-      lastItemWasGroup = subitem.hasSubitems;
+      lastItemWasGroup = subitem.items.length > 0;
       groupJustEnded = false;
-      if (subitem.hasSubitems) {
+      if (subitem.items.length > 0) {
         // --- We are about to process a command group
         for (const item of subitem.items) {
           let newItem: MenuItemConstructorOptions | null = null;
-          if (item.hasSubitems) {
+          if (item.items.length > 0) {
             // --- This is a submenu to render
             const submenu = this.buildMenuPaneFromCommands(item);
             pane.push(submenu);

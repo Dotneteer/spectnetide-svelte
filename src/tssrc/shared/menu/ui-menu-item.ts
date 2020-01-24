@@ -30,8 +30,6 @@ export interface MenuItemState {
  * Represents an executable menu item with its UI-state information
  */
 export class UiMenuItem implements MenuItemState {
-  private _label: string;
-  private _accessKey: string | null;
   private _statusUpdated = new LiteEvent<UiMenuItem>();
 
   // --- Automatic sequential ID
@@ -49,13 +47,25 @@ export class UiMenuItem implements MenuItemState {
     public readonly role?: MenuRole
   ) {
     if (!id) id = `menu-item-${UiMenuItem._nextId++}`;
-    this._label = label;
+    this.label = label || "";
+    const m = this.label.match(/&([^&])/);
+    this.accessKey = m ? m[1] : null;
   }
 
   /**
    * Optional menu item in the shell
    */
   shellMenuItem: MenuItemConstructorOptions | undefined;
+
+  /**
+   * Indicates if this item is displayed as a separator.
+   */
+  separator: boolean = false;
+
+  /**
+   * The menu item's label
+   */
+  label: string;
 
   /**
    * Is the item enabled?
@@ -73,23 +83,9 @@ export class UiMenuItem implements MenuItemState {
   checked: boolean;
 
   /**
-   * The menu item's label
-   */
-  get label(): string {
-    return this._label;
-  }
-  set label(value: string) {
-    this._label = value;
-    const m = value.match(/&([^&])/);
-    this._accessKey = m ? m[1] : null;
-  }
-
-  /**
    * The access key of the menu item
    */
-  get accessKey(): string | null {
-    return this._accessKey;
-  }
+  accessKey: string | null;
 
   /**
    * The accelerator key combination
@@ -143,13 +139,6 @@ export class UiMenuItem implements MenuItemState {
   readonly items: UiMenuItem[] = [];
 
   /**
-   * Indicates that this item has subitems
-   */
-  get hasSubitems(): boolean {
-    return this.items.length > 0;
-  }
-
-  /**
    * Updates the status of the item in the specified browser window
    * @param window Browser window
    */
@@ -180,6 +169,16 @@ export class UiMenuItem implements MenuItemState {
 }
 
 /**
+ * Defines a separator menu item.
+ */
+export class SeparatorMenuItem extends UiMenuItem {
+  constructor() {
+    super();
+    this.separator = true;
+  }
+}
+
+/**
  * Defines a menu item with predefined Electron Shell role
  */
 export class ElectronShellMenuItem extends UiMenuItem {
@@ -196,7 +195,7 @@ export class ElectronShellMenuItem extends UiMenuItem {
 export function flattenMenuPanel(items: UiMenuItem[]): UiMenuItem[] {
   const result: UiMenuItem[] = [];
   items.forEach(i => {
-    if (i.hasSubitems) {
+    if (i.items.length > 0) {
       result.push(...i.items);
     } else {
       result.push(i);
