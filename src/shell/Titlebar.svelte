@@ -10,11 +10,8 @@
     minimizeAppWindowAction,
     restoreAppWindowAction,
     maximizeAppWindowAction
-  } from "../tslib/shared/state/window-state-redux";
-  import {
-    createRendererProcessStateAware,
-    rendererProcessStore
-  } from "../tslib/front/rendererProcessStore";
+  } from "../tslib/shared/state/redux-window-state";
+  import { createRendererProcessStateAware } from "../tslib/front/rendererProcessStore";
 
   // --- We change Titlebar colors as the app focus changes
   let titleColor;
@@ -28,7 +25,6 @@
   var stateAware = createRendererProcessStateAware();
   stateAware.onStateChanged.on(state => {
     windowState = state.windowState;
-    console.log(windowState);
     calculateColors(state.appHasFocus);
   });
   onDestroy(() => stateAware.onStateChanged.release());
@@ -103,19 +99,19 @@
   <div class="title-buttons">
     <div
       class="window-control"
-      on:click={() => rendererProcessStore.dispatch(minimizeAppWindowAction())}>
+      on:click={() => stateAware.dispatch(minimizeAppWindowAction())}>
       <SvgIcon iconName="minimize" fill="white" width="10" height="10" />
     </div>
     {#if windowState !== 'normal'}
       <div
         class="window-control"
-        on:click={() => rendererProcessStore.dispatch(restoreAppWindowAction())}>
+        on:click={() => stateAware.dispatch(restoreAppWindowAction())}>
         <SvgIcon iconName="restore" fill="white" width="10" height="10" />
       </div>
     {:else}
       <div
         class="window-control"
-        on:click={() => rendererProcessStore.dispatch(maximizeAppWindowAction())}>
+        on:click={() => stateAware.dispatch(maximizeAppWindowAction())}>
         <SvgIcon iconName="maximize" fill="white" width="10" height="10" />
       </div>
     {/if}

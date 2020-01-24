@@ -20,6 +20,8 @@ export interface ActionTypes {
 
   // --- Menu actions
   SET_MENU: null,
+  REFRESH_MENU: null,
+  TOGGLE_DEV_TOOLS: null,
   MENU_ALT_PRESSED: null,
   MENU_ALT_RELEASED: null,
   MENU_BUTTON_SET: null,

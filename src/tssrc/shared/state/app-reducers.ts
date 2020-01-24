@@ -1,9 +1,12 @@
-import { focusStateReducer } from "./app-focus-redux";
-import { windowStateReducer } from "./window-state-redux";
+import { focusStateReducer } from "./redux-app-focus";
+import { windowStateReducer } from "./redux-window-state";
+import { appMenuStateReducer } from "./redux-menu-state";
+
 /**
  * The set of reducers we use within this application
  */
 export const appReducers = {
     appHasFocus: focusStateReducer,
-    windowState: windowStateReducer
+    windowState: windowStateReducer,
+    appMenu: appMenuStateReducer
 };

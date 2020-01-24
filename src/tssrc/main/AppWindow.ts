@@ -5,18 +5,33 @@ import {
   __LINUX__,
   __DEV__
 } from "./utils/electron-utils";
-import { BrowserWindow } from "electron";
+import { BrowserWindow, MenuItem, MenuItemConstructorOptions, Menu, app } from "electron";
 import { mainProcessStore } from "./mainProcessStore";
 import {
   appGotFocusAction,
   appLostFocusAction
-} from "../shared/state/app-focus-redux";
+} from "../shared/state/redux-app-focus";
 import {
-  setHostBrowserWindow,
+  setAppWindow,
   restoreAppWindowAction,
   maximizeAppWindowAction,
   minimizeAppWindowAction
-} from "../shared/state/window-state-redux";
+} from "../shared/state/redux-window-state";
+import { UiMenuItem, ElectronShellMenuItem } from "../shared/menu/ui-menu-item";
+import {
+  AboutCommand,
+  OptionsCommand,
+  NewProjectCommand,
+  OpenProjectCommand,
+  CloseProjectCommand,
+  ShowExplorerCommand,
+  ShowSpectrumEmulatorCommand,
+  ShowRegistersCommand,
+  ShowDisassemblyCommand,
+  ShowMemoryCommand,
+  ToggleDevToolsCommand
+} from "../shared/menu/menu-commands";
+import { setAppMenuAction } from "../shared/state/redux-menu-state";
 
 /**
  * Stores a reference to the lazily loaded `electron-window-state` package.
@@ -41,6 +56,12 @@ export class AppWindow {
 
   // --- The associated BrowserWindow instance
   private _window: BrowserWindow | null;
+
+  // --- The associated menu command hierarchy
+  private _appCommands: UiMenuItem | null;
+
+  // --- The associated Electron Shell application menu
+  private _appMenu: Menu;
 
   // ==========================================================================
   // Lifecycle methods
@@ -96,7 +117,7 @@ export class AppWindow {
     }
 
     this._window = new BrowserWindow(windowOptions);
-    setHostBrowserWindow(this._window);
+    setAppWindow(this);
 
     // --- Set up main window events
     this._window.on("focus", () => {
@@ -149,6 +170,20 @@ export class AppWindow {
   }
 
   /**
+   * Gets the application menu's command structure
+   */
+  get appCommands(): UiMenuItem | null {
+    return this.appCommands;
+  }
+
+  /**
+   * Gets the Electron Shell's application menu
+   */
+  get appMenu(): Menu | null {
+    return this._appMenu;
+  }
+
+  /**
    * Loads the contenst of the main window
    */
   load(): void {
@@ -177,5 +212,192 @@ export class AppWindow {
       "../../../public/index.html"
     )}`;
     this._window.loadURL(fileToLoad);
+  }
+
+  /**
+   * Sets up the initial application menu
+   */
+  setupMenu(): void {
+    const aboutGroup = new UiMenuItem().append(new AboutCommand());
+    const prefsGroup = new UiMenuItem().append(new OptionsCommand());
+    const servicesGroup = new UiMenuItem().append(
+      new ElectronShellMenuItem("services")
+    );
+    const appWindowGroup = new UiMenuItem()
+      .append(new ElectronShellMenuItem("hide"))
+      .append(new ElectronShellMenuItem("hideOthers"))
+      .append(new ElectronShellMenuItem("unhide"));
+    const quitGroup = new UiMenuItem().append(
+      new ElectronShellMenuItem("quit", __DARWIN__ ? undefined : "E&xit")
+    );
+
+    const darwinMenu = new UiMenuItem("darwin", "ZX Spectrum IDE")
+      .append(aboutGroup)
+      .append(prefsGroup)
+      .append(servicesGroup)
+      .append(appWindowGroup)
+      .append(quitGroup);
+
+    const createGroup = new UiMenuItem()
+      .append(new NewProjectCommand())
+      .append(new OpenProjectCommand());
+    const closeGroup = new UiMenuItem().append(new CloseProjectCommand());
+    const fileMenu = new UiMenuItem("file", __DARWIN__ ? "File" : "&File")
+      .append(createGroup)
+      .append(closeGroup);
+    if (!__DARWIN__) {
+      fileMenu.append(prefsGroup);
+    }
+    fileMenu.append(quitGroup);
+
+    const explorerGroup = new UiMenuItem()
+      .append(new ShowExplorerCommand())
+      .append(new ShowSpectrumEmulatorCommand());
+    const spectrumWindowsGroup = new UiMenuItem()
+      .append(new ShowRegistersCommand())
+      .append(new ShowDisassemblyCommand())
+      .append(new ShowMemoryCommand());
+    const devToolGroup = new UiMenuItem().append(new ToggleDevToolsCommand());
+
+    const viewMenu = new UiMenuItem("view", __DARWIN__ ? "View" : "&View")
+      .append(explorerGroup)
+      .append(spectrumWindowsGroup)
+      .append(devToolGroup);
+
+    const help1Group = new UiMenuItem()
+      .append(new UiMenuItem("help-topic-1", "Help topic #1"))
+      .append(new UiMenuItem("help-topic-2", "Help topic #2"))
+      .enable(false);
+    const help3SubGroup = new UiMenuItem("help-topic-3", "Help topic #&3")
+      .append(new UiMenuItem("help-topic-31", "Help topic #31"))
+      .append(new UiMenuItem("help-topic-32", "Help topic #32"))
+      .append(new UiMenuItem("help-topic-33", "Help topic #33"));
+    const help4SubGroup = new UiMenuItem("help-topic-4", "Help topic #&4")
+      .enable(false)
+      .append(new UiMenuItem("help-topic-41", "Help topic #41"))
+      .append(new UiMenuItem("help-topic-42", "Help topic #42"))
+      .append(new UiMenuItem("help-topic-43", "Help topic #43"));
+    const help2Group = new UiMenuItem()
+      .append(help3SubGroup)
+      .append(help4SubGroup);
+
+    const helpMenu = new UiMenuItem("help", __DARWIN__ ? "Help" : "H&elp")
+      .append(help1Group)
+      .append(help2Group);
+
+    const menuCommands = new UiMenuItem();
+    if (__DARWIN__) {
+      menuCommands.append(darwinMenu);
+    }
+    menuCommands.append(fileMenu)
+      .append(viewMenu)
+      .append(helpMenu);
+
+    this._appCommands = menuCommands;
+    const template = this.buildDefaultMenuFromCommands(this._appCommands);
+    this._appMenu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(this._appMenu);
+    mainProcessStore.dispatch(setAppMenuAction(this._appCommands));
+  }
+
+  /**
+   * Refreshes the state with the current app menu.
+   */
+  refreshMenu(): void {
+    mainProcessStore.dispatch(setAppMenuAction(this._appCommands));
+  }
+
+  /**
+   * Create the Electron Shell menu hierarchy from command structure
+   * @param command Root command
+   */
+  private buildDefaultMenuFromCommands(
+    commands: UiMenuItem
+  ): MenuItemConstructorOptions[] {
+    const topItems: MenuItemConstructorOptions[] = [];
+    commands.items.forEach(item => {
+      if (!item.label) {
+        throw new Error("Top level command item must have a label.");
+      }
+      if (item.items.length === 0) {
+        throw new Error(
+          "Top level command item must have at least one subcommand."
+        );
+      }
+      topItems.push(this.buildMenuPaneFromCommands(item));
+    });
+    return topItems;
+  }
+
+  /**
+   * Creates an Electron Shell menu pane from the specified command group
+   * @param menuGroup
+   */
+  private buildMenuPaneFromCommands(
+    menuGroup: UiMenuItem
+  ): MenuItemConstructorOptions {
+    const separator: MenuItemConstructorOptions = { type: "separator" };
+    const pane: MenuItemConstructorOptions[] = [];
+    let lastItemWasGroup = false;
+    let groupJustEnded = false;
+    for (let i = 0; i < menuGroup.items.length; i++) {
+      const subitem = menuGroup.items[i];
+
+      // --- Provide separator between groups
+      if (
+        (i > 0 && subitem.hasSubitems !== lastItemWasGroup) ||
+        groupJustEnded
+      ) {
+        pane.push(separator);
+      }
+      lastItemWasGroup = subitem.hasSubitems;
+      groupJustEnded = false;
+      if (subitem.hasSubitems) {
+        // --- We are about to process a command group
+        for (const item of subitem.items) {
+          let newItem: MenuItemConstructorOptions | null = null;
+          if (item.hasSubitems) {
+            // --- This is a submenu to render
+            const submenu = this.buildMenuPaneFromCommands(item);
+            pane.push(submenu);
+          } else if (item.role) {
+            // --- An Electron Shell predefined role
+            newItem = {
+              type: "normal",
+              role: item.role
+            };
+          } else {
+            // --- Normal menu item
+            newItem = {
+              label: item.label,
+              accelerator: item.accelerator,
+              click: () => item.onExecute(this._window)
+            };
+          }
+
+          if (newItem == null) continue;
+
+          // --- Ad a new item to the pane
+          item.shellMenuItem = newItem;
+          pane.push(newItem);
+        }
+        groupJustEnded = true;
+      } else {
+        // --- Normal menu item
+        pane.push({
+          label: subitem.label,
+          accelerator: subitem.accelerator,
+          click: () => subitem.onExecute(this._window)
+        });
+      }
+    }
+
+    // --- Done
+    var newMenuItem: MenuItemConstructorOptions = {
+      label: menuGroup.label,
+      submenu: pane
+    };
+    menuGroup.shellMenuItem = newMenuItem;
+    return newMenuItem;
   }
 }

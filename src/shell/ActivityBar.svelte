@@ -1,3 +1,9 @@
+<script>
+  import { rendererProcessStore } from "../tslib/front/rendererProcessStore";
+  import { showDevToolsAction } from "../tslib/shared/state/redux-menu-state";
+
+</script>
+
 <style>
   aside {
     display: flex;
@@ -10,4 +16,4 @@
   }
 </style>
 
-<aside />
+<aside on:click={() => rendererProcessStore.dispatch(showDevToolsAction()) }/>

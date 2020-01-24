@@ -1,7 +1,26 @@
 <script>
- import MenuButton from "./MenuButton.svelte"
+  import { onMount, onDestroy } from "svelte";
+  import MenuButton from "./MenuButton.svelte";
 
- export let titleColor;
+  import {
+    createRendererProcessStateAware,
+    rendererProcessStore
+  } from "../tslib/front/rendererProcessStore";
+  import { refreshMenuAction } from "../tslib/shared/state/redux-menu-state";
+
+  export let titleColor;
+
+  let menuState;
+
+  // --- Respond to the event when manu state changes
+  var stateAware = createRendererProcessStateAware("appMenu");
+  stateAware.onStateChanged.on(state => {
+    menuState = state;
+  });
+  onDestroy(() => stateAware.onStateChanged.release());
+  onMount(() => {
+    stateAware.dispatch(refreshMenuAction());
+  });
 </script>
 
 <style>
@@ -17,7 +36,11 @@
 </style>
 
 <div tabindex="0">
-  <MenuButton text="&File" highlight="true" {titleColor} on:pointed={() => console.log('pointed.')} />
+  <MenuButton
+    text="&File"
+    highlight="true"
+    {titleColor}
+    on:pointed={() => console.log('pointed.')} />
   <MenuButton text="&View" highlight="true" {titleColor} />
   <MenuButton text="H&elp" highlight="true" {titleColor} />
 </div>

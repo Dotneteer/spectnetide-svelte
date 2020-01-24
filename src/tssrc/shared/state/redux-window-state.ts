@@ -1,5 +1,5 @@
 import { createAliasedAction, SpectNetAction } from "./redux-core";
-import { BrowserWindow } from "electron";
+import { AppWindow } from "../../main/AppWindow";
 
 /**
  * Represents the available values of window states.
@@ -14,14 +14,14 @@ export type WindowState =
 /**
  * Stores the reference to the host browser window
  */
-export let hostBrowserWindow: BrowserWindow;
+export let appWindow: AppWindow;
 
 /**
  * Sets the referencve to the host browser window
  * @param window Host browser window
  */
-export function setHostBrowserWindow(window: BrowserWindow) {
-  hostBrowserWindow = window;
+export function setAppWindow(window: AppWindow) {
+  appWindow = window;
 }
 
 /**
@@ -30,8 +30,8 @@ export function setHostBrowserWindow(window: BrowserWindow) {
 export const maximizeAppWindowAction = createAliasedAction(
   "MAXIMIZE_APP_WINDOW",
   () => {
-    if (hostBrowserWindow) {
-      hostBrowserWindow.maximize();
+    if (appWindow) {
+      appWindow.window.maximize();
     }
     return {
       type: "MAXIMIZE_APP_WINDOW"
@@ -45,8 +45,8 @@ export const maximizeAppWindowAction = createAliasedAction(
 export const minimizeAppWindowAction = createAliasedAction(
   "MINIMIZE_APP_WINDOW",
   () => {
-    if (hostBrowserWindow) {
-      hostBrowserWindow.minimize();
+    if (appWindow) {
+      appWindow.window.minimize();
     }
     return {
       type: "MINIMIZE_APP_WINDOW"
@@ -60,8 +60,8 @@ export const minimizeAppWindowAction = createAliasedAction(
 export const restoreAppWindowAction = createAliasedAction(
   "RESTORE_APP_WINDOW",
   () => {
-    if (hostBrowserWindow) {
-      hostBrowserWindow.unmaximize();
+    if (appWindow) {
+      appWindow.window.unmaximize();
     }
     return {
       type: "RESTORE_APP_WINDOW"

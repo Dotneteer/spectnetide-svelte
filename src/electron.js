@@ -9,6 +9,7 @@ let mainWindow;
  */
 function setupAppWindow() {
   mainWindow = new AppWindow();
+  mainWindow.setupMenu();
   mainWindow.load();
 }
 

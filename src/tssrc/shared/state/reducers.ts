@@ -1,5 +1,5 @@
 import { SpectNetAction } from "./redux-core";
-import { WindowState } from "./window-state-redux";
+import { WindowState } from "./redux-window-state";
 
 /**
  * This reducer manages modal window visibility state
