@@ -1,11 +1,11 @@
 <script>
   import { onDestroy } from "svelte";
 
-  import SvgIcon from "../controls/SvgIcon.svelte";
+  import SvgIcon from "./controls/SvgIcon.svelte";
   import MenuBar from "./MenuBar.svelte";
   import AppCaption from "./AppCaption.svelte";
 
-  import { ThemeService } from "../tslib/ui/themes/ThemeService";
+  import { ThemeService } from "../tslib/front/themes/ThemeService";
   import {
     minimizeAppWindowAction,
     restoreAppWindowAction,
@@ -14,7 +14,7 @@
   import {
     createRendererProcessStateAware,
     rendererProcessStore
-  } from "../tslib/ui/rendererProcessStore";
+  } from "../tslib/front/rendererProcessStore";
 
   // --- We change Titlebar colors as the app focus changes
   let titleColor;

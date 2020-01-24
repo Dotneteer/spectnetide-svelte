@@ -1,5 +1,5 @@
 const { app } = require("electron");
-const { AppWindow } = require("./tslib/main-process/AppWindow");
+const { AppWindow } = require("./tslib/main/AppWindow");
 
 // --- Global reference to the mainwindow
 let mainWindow;

@@ -5,9 +5,9 @@
   import MainCanvas from "./shell/MainCanvas.svelte";
   import Statusbar from "./shell/Statusbar.svelte";
   
-  import { ThemeService } from "./tslib/ui/themes/ThemeService";
-  import { lightTheme } from "./tslib/ui/themes/light-theme";
-  import { darkTheme } from "./tslib/ui/themes/dark-theme";  
+  import { ThemeService } from "./tslib/front/themes/ThemeService";
+  import { lightTheme } from "./tslib/front/themes/light-theme";
+  import { darkTheme } from "./tslib/front/themes/dark-theme";  
 
   let themeStyle = "";
   let themeClass = "";
