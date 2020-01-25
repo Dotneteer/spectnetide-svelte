@@ -5,7 +5,13 @@ import {
   __LINUX__,
   __DEV__
 } from "./utils/electron-utils";
-import { BrowserWindow, MenuItem, MenuItemConstructorOptions, Menu, app } from "electron";
+import {
+  BrowserWindow,
+  MenuItem,
+  MenuItemConstructorOptions,
+  Menu,
+  app
+} from "electron";
 import { mainProcessStore } from "./mainProcessStore";
 import {
   appGotFocusAction,
@@ -265,15 +271,14 @@ export class AppWindow {
       .append(devToolGroup);
 
     const help1Group = new UiMenuItem()
+      .enable(false)
       .append(new UiMenuItem("help-topic-1", "Help topic #1"))
-      .append(new UiMenuItem("help-topic-2", "Help topic #2"))
-      .enable(false);
+      .append(new UiMenuItem("help-topic-2", "Help topic #2"));
     const help3SubGroup = new UiMenuItem("help-topic-3", "Help topic #&3")
       .append(new UiMenuItem("help-topic-31", "Help topic #31"))
       .append(new UiMenuItem("help-topic-32", "Help topic #32"))
       .append(new UiMenuItem("help-topic-33", "Help topic #33"));
     const help4SubGroup = new UiMenuItem("help-topic-4", "Help topic #&4")
-      .enable(false)
       .append(new UiMenuItem("help-topic-41", "Help topic #41"))
       .append(new UiMenuItem("help-topic-42", "Help topic #42"))
       .append(new UiMenuItem("help-topic-43", "Help topic #43"));
@@ -289,7 +294,8 @@ export class AppWindow {
     if (__DARWIN__) {
       menuCommands.append(darwinMenu);
     }
-    menuCommands.append(fileMenu)
+    menuCommands
+      .append(fileMenu)
       .append(viewMenu)
       .append(helpMenu);
 

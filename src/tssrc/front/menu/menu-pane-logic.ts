@@ -5,6 +5,7 @@ export function flattenCommandGroup(items: UiMenuItem[]): UiMenuItem[] {
   const flattened: UiMenuItem[] = [];
   let lastItemWasGroup = false;
   let groupJustEnded = false;
+  let index = 0;
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
 
@@ -22,13 +23,14 @@ export function flattenCommandGroup(items: UiMenuItem[]): UiMenuItem[] {
     if (item.items.length > 0) {
       for (let j = 0; j < item.items.length; j++) {
         const subitem = item.items[j];
-        flattened.push(subitem);
+        flattened.push(Object.assign({}, subitem, {index}));
+        index++;
       }
       groupJustEnded = true;
     } else {
-      flattened.push(item);
+      flattened.push(Object.assign({}, item, {index}));
+      index++;
     }
   }
-  console.log(flattened);
   return flattened;
 }

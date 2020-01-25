@@ -14,7 +14,7 @@ export class AboutCommand extends UiMenuItem {
 
 export class OptionsCommand extends UiMenuItem {
   constructor() {
-    super("show-preferences", __DARWIN__ ? "Preferences..." : "&Options...");
+    super("show-preferences", __DARWIN__ ? "Preferences..." : "O&ptions...");
   }
 
   onExecute(window: BrowserWindow) {

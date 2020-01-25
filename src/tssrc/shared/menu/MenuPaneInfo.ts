@@ -5,6 +5,10 @@ import { UiMenuItem } from "./ui-menu-item";
  */
 export class MenuPaneInfo {
   /**
+   * Unique pane ID.
+   */
+  id: number;
+  /**
    * The index of the item in the parent, if this is a submenu pane
    */
   parentIndex: number;

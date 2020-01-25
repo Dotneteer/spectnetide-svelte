@@ -55,7 +55,12 @@ export class UiMenuItem implements MenuItemState {
   /**
    * Optional menu item in the shell
    */
-  shellMenuItem: MenuItemConstructorOptions | undefined;
+  shellMenuItem?: MenuItemConstructorOptions;
+
+  /**
+   * Optional index in a menu pane
+   */
+  index?: number;
 
   /**
    * Indicates if this item is displayed as a separator.

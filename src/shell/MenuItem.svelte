@@ -1,21 +1,40 @@
 <script>
   import { onMount } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import SvgIcon from "./controls/SvgIcon.svelte";
   import MenuText from "./MenuText.svelte";
   import { friendlyAcceleratorText } from "../tslib/front/menu/menu-item-logic";
 
+  // ==========================================================================
+  // Component parameters
+  // --- UiMenuItem representation
   export let item;
-  export let highlight;
-  export let selected;
-  export let topPos;
-  export let leftPos;
 
+  // --- Should be accelerator key highlighted?
+  export let highlight;
+
+  // --- Is this item selected?
+  export let selected;
+
+  // ==========================================================================
+  // Internal variables
+  // --- Access the host HTML element
   let hostElement;
 
+  // ==========================================================================
+  // Component logic
+  const dispatch = createEventDispatcher();
+
+  // --- Notify parent about the item rectangle when rendered
   onMount(() => {
-    topPos = hostElement.offsetTop;
-    leftPos = hostElement.offsetLeft;
-    console.log(`(${leftPos},${topPos})`);
+    if (!item.separator) {
+      dispatch("itemmounted", {
+        left: hostElement.offsetLeft,
+        top: hostElement.offsetTop,
+        width: hostElement.offsetWidth,
+        height: hostElement.offsetHeight
+      });
+    }
   });
 </script>
 
@@ -39,7 +58,7 @@
     opacity: 0.3;
   }
 
-  .menu-item.label {
+  .menu-item .label {
     flex-grow: 1;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -62,7 +81,7 @@
     border: none;
     height: 1px;
     border-bottom: 1px solid #ffffff;
-    margin: 4px 0px;
+    margin: 4px 10px;
     opacity: 0.3;
   }
 
@@ -99,19 +118,21 @@
       {:else}
         <div class="icon-placeholder" />
       {/if}
-    <div class="label">
-      <MenuText text={item.label} {highlight} />
-    </div>
-    {#if item.items.length > 0 && item.accelerator}
-      <div class="accelerator">{friendlyAcceleratorText(item.accelerator)}</div>
-    {/if}
-    {#if item.items.length > 0}
-      <SvgIcon
-        xclass="submenu-icon"
-        iconName="submenu-arrow"
-        width={14}
-        height={14} />
-    {/if}
+      <div class="label">
+        <MenuText text={item.label} {highlight} />
+      </div>
+      {#if item.items.length > 0 && item.accelerator}
+        <div class="accelerator">
+          {friendlyAcceleratorText(item.accelerator)}
+        </div>
+      {/if}
+      {#if item.items.length > 0}
+        <SvgIcon
+          xclass="submenu-icon"
+          iconName="submenu-arrow"
+          width={14}
+          height={14} />
+      {/if}
     </div>
   {/if}
 </div>

@@ -12,6 +12,14 @@ export const darkTheme: ITheme = {
     "--status-bar-background-color": "#007acc",
     "--status-bar-color": "#ffffff",
 
+    "--icon-default-size": "12",
+    "--icon-default-fill": "#ffffff",
+
+    "--titlebar-background-color": "#333333",
+    "--titlebar-focused-background-color": "#3c3c3c",
+    "--titlebar-text-color": "#cccccc",
+    "--titlebar-focused-text-color": "#ffffff",
+
     "--menu-bar-background-color": "#3c3c3c",
     "--menu-active-background-color": "#505050",
     "--menu-text-color": "#ffffff",
@@ -20,12 +28,7 @@ export const darkTheme: ITheme = {
     "--menu-pane-background-color": "#252526",
     "--menu-pane-shadow": "rgb(0, 0, 0) 0px 2px 4px",
     "--menu-selected-background": "#094771",
-    "--menu-selected-text-color": "#ffffff",
-
-    "--titlebar-background-color": "#333333",
-    "--titlebar-focused-background-color": "#3c3c3c",
-    "--titlebar-text-color": "#cccccc",
-    "--titlebar-focused-text-color": "#ffffff",
+    "--menu-selected-text-color": "#ffffff"
 
     // "--window-frame-border-color": "transparent",
     // "--window-frame-border-width": "0px",

@@ -11,7 +11,13 @@ import { StateAwareObject } from "../shared/state/StateAwareObject";
 // --- Set up the store
 const defaultState: AppState = {
   appHasFocus: true,
-  isModalDisplayed: false
+  isModalDisplayed: false,
+  appMenu: {
+    highlightAccessKeys: false,
+    selectedIndex: -1,
+    openPanes: [],
+    keyboardAction: false
+  }
 };
 
 const spectNetApp = combineReducers(appReducers);

@@ -5,7 +5,7 @@
   "scripts": {
     "ts:clear": "rimraf ./src/tslib",
     "ts": "npm run ts:clear && tsc -p ./src/tssrc",
-    "ts:w": "npm run ts:clear && tsc -p ./src/tssrc -w",
+    "ts:w": "tsc -p ./src/tssrc -w",
     "build": "webpack",
     "start": "sirv public",
     "electron": "npm run build && npm run pure-electron",

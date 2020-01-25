@@ -12,6 +12,14 @@ export const lightTheme: ITheme = {
     "--status-bar-background-color": "#007acc",
     "--status-bar-color": "#c0c0c0",
 
+    "--icon-default-size": "12",
+    "--icon-default-fill": "#ffffff",
+
+    "--titlebar-background-color": "#3e3e3e",
+    "--titlebar-focused-background-color": "#3c3c3c",
+    "--titlebar-text-color": "#dddddd",
+    "--titlebar-focused-text-color": "#ffffff",
+
     "--menu-bar-background-color": "c8c8c8",
     "--menu-active-background-color": "#505050",
     "--menu-text-color": "#ffffff",
@@ -21,11 +29,6 @@ export const lightTheme: ITheme = {
     "--menu-pane-shadow": "rgb(0, 0, 0) 0px 2px 4px",
     "--menu-selected-background": "#094771",
     "--menu-selected-text-color": "#ffffff",
-
-    "--titlebar-background-color": "#3e3e3e",
-    "--titlebar-focused-background-color": "#3c3c3c",
-    "--titlebar-text-color": "#dddddd",
-    "--titlebar-focused-text-color": "#ffffff"
 
     // "--window-frame-border-color": "transparent",
     // "--window-frame-border-width": "0px",

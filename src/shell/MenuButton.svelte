@@ -8,18 +8,19 @@
   export let highlight = false;
   export let pointed = false;
   export let titleColor;
-  export let topPos;
-  export let leftPos;
 
   const dispatch = createEventDispatcher();
 
   let hostElement;
 
-  onMount(() => {
-    topPos = hostElement.offsetTop;
-    leftPos = hostElement.offsetLeft;
-    console.log(`(${leftPos},${topPos})`);
-  });
+  onMount(() =>
+    dispatch("buttonmounted", {
+      left: hostElement.offsetLeft,
+      top: hostElement.offsetTop,
+      width: hostElement.offsetWidth,
+      height: hostElement.offsetHeight
+    })
+  );
 </script>
 
 <style>

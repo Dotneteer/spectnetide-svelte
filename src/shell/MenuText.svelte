@@ -8,7 +8,6 @@
     let preText = "";
     let accessKeyText = "";
     let postText = "";
-    console.log(title);
     if (title) {
       const m = title.match(/^(.*?)?(?:&([^&]))(.*)?$/);
       // --- We have a menu text without accelerator key

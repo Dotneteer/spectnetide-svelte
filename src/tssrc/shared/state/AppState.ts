@@ -34,7 +34,7 @@ export interface MenuState {
   /**
    * The root of the menu structure
    */
-  menu: UiMenuItem;
+  menu?: UiMenuItem;
 
   /**
    * The index of the pointed menu button in the menu bar
