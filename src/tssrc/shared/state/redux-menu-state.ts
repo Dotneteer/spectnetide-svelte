@@ -9,6 +9,8 @@ import { appWindow } from "./redux-window-state";
 import { MenuPaneInfo } from "../menu/MenuPaneInfo";
 import { flattenCommandGroup } from "../../front/menu/menu-pane-logic";
 
+let autoPaneId = -1;
+
 /**
  * Creates an action for setting the main menu
  * @param menu Menu to set
@@ -260,8 +262,6 @@ export function appMenuStateReducer(
     }
 
     case "MENU_PANE_OPEN":
-      console.log(state.openPanes);
-      console.log(payload);
       return {
         ...state,
         openPanes: [...state.openPanes, payload.pane],
@@ -281,12 +281,12 @@ export function appMenuStateReducer(
       if (pane) {
         const selectedIndex =
           payload.itemIndex >= 0
-            ? pane.items[payload.itemIndex].enabled
+            ? flattenCommandGroup(pane.items)[payload.itemIndex].enabled
               ? payload.itemIndex
               : -1
             : -1;
         panes[payload.paneIndex] = {
-          id: 0,
+          id: autoPaneId--,
           items: pane.items,
           parentIndex: pane.parentIndex,
           leftPos: pane.leftPos,

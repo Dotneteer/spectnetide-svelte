@@ -78,6 +78,10 @@
         on:pointed={ev => dispatch('itempointed', {
             depth,
             flatIndex: ev.detail ? index : -1
+          })}
+        on:clicked={ev => dispatch('itemclicked', {
+            depth,
+            flatIndex: index
           })} />
     {/each}
   {/if}

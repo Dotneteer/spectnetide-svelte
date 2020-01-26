@@ -80,7 +80,7 @@ export class UiMenuItem implements MenuItemState {
   /**
    * Is the item visible?
    */
-  visible: boolean;
+  visible: boolean = true;
 
   /**
    * Is the item checked?

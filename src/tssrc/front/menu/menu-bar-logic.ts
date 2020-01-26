@@ -9,7 +9,8 @@ import {
   menuItemSelectAction,
   menuCloseAllAction,
   menuButtonClickAction,
-  menuKeepPaneAction
+  menuKeepPaneAction,
+  menuItemPointAction
 } from "../../shared/state/redux-menu-state";
 import { MenuPaneInfo } from "../../shared/menu/MenuPaneInfo";
 import { ElementRectangle } from "./ElementRectangle";
@@ -118,6 +119,7 @@ export function handleItemPointed(args: ItemPointedArgs): void {
     setTimeout(() => {
       // --- We remove the last submenu if the last mouse point is not on the submenu or
       // --- the parent menu item.
+      const state = store.getState().appMenu;
       if (
         lastMouseEntered &&
         lastMouseEntered.depth < delayedRemove &&
@@ -129,14 +131,33 @@ export function handleItemPointed(args: ItemPointedArgs): void {
     }, 400);
   }
 
-  
+  // --- Select the pointed menu item
+  store.dispatch(menuItemPointAction(args.depth, args.flatIndex));
+  let parentIndex = state.openPanes[args.depth].parentIndex;
+  for (let i = args.depth - 1; i >= 0; i--) {
+    store.dispatch(menuItemPointAction(i, parentIndex));
+    parentIndex = state.openPanes[i].parentIndex;
+  }
+
+  // --- Open submenu, if the current item has it -- with a little delay
+  setTimeout(() => {
+    const subMenuPane = getSubmenuPane();
+    if (subMenuPane) {
+      store.dispatch(menuPaneOpenAction(subMenuPane, false));
+      return;
+    }
+  }, 600);
 }
 
 /**
  * Handles the event when a menu item has been clicked.
  */
-export function handleItemClicked(): void {
-  // TODO: Implement this method
+export function handleItemClicked(args: ItemPointedArgs): void {
+  const state = store.getState().appMenu;
+  const item = flattenCommandGroup(state.openPanes[args.depth].items)[args.flatIndex];
+  if (item.visible && item.enabled) {
+    executeMenuItem(item);
+  }
 }
 
 /**
@@ -254,12 +275,10 @@ export function handleKeyDown(ev: KeyboardEvent): void {
   } else {
     // --- We're looking for the accelerator key of a main menu item.
     const pressedIndex = findAccKey(ev.code, state.menu.items);
-    console.log(`Pressed index: ${pressedIndex}`);
     if (pressedIndex >= 0) {
       // --- Accelerator key found, set the main menu item to display
       let pane =
         state.openPanes.length === 0 ? getButtonPane(pressedIndex) : undefined;
-      console.log(pane);
       store.dispatch(menuButtonSetAction(pressedIndex, pane, true));
       return;
     }
@@ -270,7 +289,6 @@ export function handleKeyDown(ev: KeyboardEvent): void {
  * Handles the event when a key has been released down
  */
 export function handleKeyUp(ev: KeyboardEvent): void {
-  console.log(`KeyUp: ${ev.code}`);
   if (ev.code === "AltLeft") {
     store.dispatch(menuAltReleased());
   }
@@ -281,7 +299,6 @@ export function handleKeyUp(ev: KeyboardEvent): void {
  * @param index Button index
  */
 export function handleButtonMouseEnter(index: number): void {
-  console.log(`Mouse entered: ${index}`);
   const state = store.getState().appMenu;
   const pane = state.openPanes.length > 0 ? getButtonPane(index) : undefined;
   store.dispatch(menuButtonSetAction(index, pane, false));
@@ -314,7 +331,7 @@ function tryOpenSubmenuPane(): boolean {
   const subMenuPane = getSubmenuPane();
   if (subMenuPane) {
     store.dispatch(menuPaneOpenAction(subMenuPane, true));
-    //lastMouseEntered = undefined;
+    lastMouseEntered = undefined;
     return true;
   }
   return false;

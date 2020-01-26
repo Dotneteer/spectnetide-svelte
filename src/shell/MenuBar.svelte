@@ -19,7 +19,8 @@
     handleKeyUp,
     handleButtonMouseEnter,
     handleButtonClick,
-    handleItemPointed
+    handleItemPointed,
+    handleItemClicked
   } from "../tslib/front/menu/menu-bar-logic";
 
   // --- Menu bar title color depends on focused/unfocused state
@@ -91,7 +92,8 @@
           topPos={pane.topPos}
           on:panemounted={ev => handlePaneMounted(index, ev.detail)}
           on:paneitemmounted={ev => handlePaneItemMounted(index, ev.detail.index, ev.detail.rectangle)}
-          on:itempointed={ev => handleItemPointed(ev.detail)} />
+          on:itempointed={ev => handleItemPointed(ev.detail)} 
+          on:itemclicked={ev => handleItemClicked(ev.detail)}/>
       {/each}
     {/if}
   {/if}

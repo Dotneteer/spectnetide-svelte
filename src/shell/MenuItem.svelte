@@ -101,7 +101,8 @@
 
 <div bind:this={hostElement}
   on:mouseenter={() => dispatch("pointed", true)}
-  on:mouseleave={() => dispatch("pointed", false)}>
+  on:mouseleave={() => dispatch("pointed", false)}
+  on:click={() => dispatch("clicked")}>
   {#if item.separator}
     <div class="separator" />
   {:else}
