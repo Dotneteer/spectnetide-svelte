@@ -7,13 +7,19 @@
     createRendererProcessStateAware,
     rendererProcessStore
   } from "../tslib/front/rendererProcessStore";
-  import { refreshMenuAction } from "../tslib/shared/state/redux-menu-state";
+  import {
+    refreshMenuAction,
+    menuCloseAllAction
+  } from "../tslib/shared/state/redux-menu-state";
   import {
     handleButtonMounted,
     handlePaneMounted,
     handlePaneItemMounted,
     handleKeyDown,
-    handleKeyUp
+    handleKeyUp,
+    handleButtonMouseEnter,
+    handleButtonClick,
+    handleItemPointed
   } from "../tslib/front/menu/menu-bar-logic";
 
   // --- Menu bar title color depends on focused/unfocused state
@@ -22,13 +28,23 @@
   // --- Store the app menu here
   let appMenu;
 
-  // --- Respond to the event when manu state changes
+  // --- Respond to the event when menu state changes
   const stateAware = createRendererProcessStateAware("appMenu");
   stateAware.onStateChanged.on(state => {
     appMenu = state;
-    console.log(appMenu);
   });
-  onDestroy(() => stateAware.onStateChanged.release());
+
+  // --- Respond to the event when application focus changes
+  const focusAware = createRendererProcessStateAware("appHasFocus");
+  focusAware.onStateChanged.on(state => {
+    if (!state) {
+      focusAware.dispatch(menuCloseAllAction());
+    }
+  });
+  onDestroy(() => {
+    stateAware.onStateChanged.release();
+    focusAware.onStateChanged.release();
+  });
 
   // --- Query the app menu the first time the component is rendered.
   onMount(() => {
@@ -61,8 +77,8 @@
         pointed={appMenu.selectedIndex === index}
         {titleColor}
         on:buttonmounted={e => handleButtonMounted(index, e.detail)}
-        on:pointed={e => console.log(`pointed: ${index}`)}
-        on:clicked={e => console.log(`clicked: ${index}`)} />
+        on:pointed={() => handleButtonMouseEnter(index)}
+        on:clicked={() => handleButtonClick(index)} />
     {/each}
     {#if appMenu.openPanes}
       {#each appMenu.openPanes as pane, index (pane.id)}
@@ -73,8 +89,9 @@
           selectedIndex={pane.selectedIndex}
           leftPos={pane.leftPos}
           topPos={pane.topPos}
-          on:panemounted={ev => handlePaneMounted(index, ev.detail)} 
-          on:paneitemmounted={ev => handlePaneItemMounted(index, ev.detail.index, ev.detail.rectangle)}/>
+          on:panemounted={ev => handlePaneMounted(index, ev.detail)}
+          on:paneitemmounted={ev => handlePaneItemMounted(index, ev.detail.index, ev.detail.rectangle)}
+          on:itempointed={ev => handleItemPointed(ev.detail)} />
       {/each}
     {/if}
   {/if}

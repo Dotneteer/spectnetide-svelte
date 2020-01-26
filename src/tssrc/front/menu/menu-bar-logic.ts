@@ -1,24 +1,40 @@
 import { menuAltPressed, menuAltReleased } from "../../shared/state/actions";
 import { rendererProcessStore } from "../rendererProcessStore";
 import {
-  menuPaneClose,
-  menuButtonSet,
-  menuPaneOpen,
-  menuItemDown,
-  menuItemUp,
-  menuItemSelect,
-  menuCloseAll
+  menuPaneCloseAction,
+  menuButtonSetAction,
+  menuPaneOpenAction,
+  menuItemDownAction,
+  menuItemUpAction,
+  menuItemSelectAction,
+  menuCloseAllAction,
+  menuButtonClickAction,
+  menuKeepPaneAction
 } from "../../shared/state/redux-menu-state";
 import { MenuPaneInfo } from "../../shared/menu/MenuPaneInfo";
 import { ElementRectangle } from "./ElementRectangle";
 import { flattenCommandGroup } from "./menu-pane-logic";
 import { UiMenuItem } from "../../shared/menu/ui-menu-item";
 
+/**
+ * Represents the event data when a menu item is pointed with the mouse.
+ */
+interface ItemPointedArgs {
+  // --- Pane depth
+  depth: number;
+
+  // --- flattened index
+  flatIndex: number;
+}
+
 // --- This is the store we use to dispatch redux actions
 const store = rendererProcessStore;
 
-// ---
+// --- Index of menu pade marked for delayed remove
 let delayedRemove = -1;
+
+// ---
+let lastSubmenuParent = -1;
 
 // --- Menu button boundary information
 const menuButtons: ElementRectangle[] = [];
@@ -32,6 +48,9 @@ const paneItems: ElementRectangle[][] = [];
 
 // --- Create a new sequence number for a new pane
 let nextPaneId = 0;
+
+// --- Store information about the last mouse entered event
+let lastMouseEntered: ItemPointedArgs | undefined;
 
 /**
  * Handles the event when a MenuButton instance is displayed.
@@ -77,8 +96,40 @@ export function handlePaneItemMounted(
 /**
  * Handles the event when a menu item has been pointed.
  */
-export function handleItemPointed(): void {
-  // TODO: Implement this method
+export function handleItemPointed(args: ItemPointedArgs): void {
+  if (
+    lastMouseEntered &&
+    lastMouseEntered.depth === args.depth &&
+    lastMouseEntered.flatIndex === args.flatIndex
+  ) {
+    // --- No change, event is raised because of re-rendering
+    return;
+  }
+  lastMouseEntered = args;
+
+  // --- Check for delayed remove
+  const state = store.getState().appMenu;
+
+  if (delayedRemove < 0 && args.depth < state.openPanes.length - 1) {
+    // --- We're about to remove a displayed submenu pane. Let allow the user move
+    // --- with the mouse for a little time before hiding the submenu item.
+    delayedRemove = state.openPanes.length - 1;
+    lastSubmenuParent = state.openPanes[delayedRemove].parentIndex;
+    setTimeout(() => {
+      // --- We remove the last submenu if the last mouse point is not on the submenu or
+      // --- the parent menu item.
+      if (
+        lastMouseEntered &&
+        lastMouseEntered.depth < delayedRemove &&
+        state.openPanes[delayedRemove - 1].selectedIndex !== lastSubmenuParent
+      ) {
+        store.dispatch(menuKeepPaneAction(lastMouseEntered.depth));
+      }
+      delayedRemove = -1;
+    }, 400);
+  }
+
+  
 }
 
 /**
@@ -92,7 +143,6 @@ export function handleItemClicked(): void {
  * Handles the event when a key has been pressed down
  */
 export function handleKeyDown(ev: KeyboardEvent): void {
-  console.log(`KeyDown: ${ev.code}`);
   if (ev.code === "AltLeft") {
     store.dispatch(menuAltPressed());
   }
@@ -109,7 +159,7 @@ export function handleKeyDown(ev: KeyboardEvent): void {
 
   // --- "Escape" removes the focus
   if (ev.code === "Escape") {
-    store.dispatch(menuPaneClose());
+    store.dispatch(menuPaneCloseAction());
     return;
   }
 
@@ -117,7 +167,7 @@ export function handleKeyDown(ev: KeyboardEvent): void {
   if (ev.code === "ArrowLeft") {
     // --- More than one menu pane is open, close the last one
     if (state.openPanes.length > 1) {
-      store.dispatch(menuPaneClose());
+      store.dispatch(menuPaneCloseAction());
       return;
     }
 
@@ -129,7 +179,7 @@ export function handleKeyDown(ev: KeyboardEvent): void {
 
     // --- Open the pane of the menu button
     const pane = state.openPanes.length > 0 ? getButtonPane(index) : undefined;
-    store.dispatch(menuButtonSet(index, pane, true));
+    store.dispatch(menuButtonSetAction(index, pane, true));
     return;
   }
 
@@ -153,9 +203,8 @@ export function handleKeyDown(ev: KeyboardEvent): void {
 
     // --- Open the pane of the menu button
     const pane = state.openPanes.length > 0 ? getButtonPane(index) : undefined;
-    store.dispatch(menuButtonSet(index, pane, true));
-    // TODO: Store this info
-    //lastMouseEntered = undefined;
+    store.dispatch(menuButtonSetAction(index, pane, true));
+    lastMouseEntered = undefined;
     return;
   }
 
@@ -168,7 +217,7 @@ export function handleKeyDown(ev: KeyboardEvent): void {
     // --- Open the button's pane, provided none is open
     if (state.openPanes.length === 0) {
       store.dispatch(
-        menuButtonSet(
+        menuButtonSetAction(
           state.selectedIndex,
           getButtonPane(state.selectedIndex),
           true
@@ -178,13 +227,13 @@ export function handleKeyDown(ev: KeyboardEvent): void {
     }
 
     // --- Move down one item
-    store.dispatch(menuItemDown());
+    store.dispatch(menuItemDownAction());
     return;
   }
 
   if (ev.code === "ArrowUp") {
     // --- Move up one item
-    store.dispatch(menuItemUp());
+    store.dispatch(menuItemUpAction());
     return;
   }
 
@@ -195,9 +244,9 @@ export function handleKeyDown(ev: KeyboardEvent): void {
 
   if (state.openPanes.length > 0) {
     const pane = state.openPanes[state.openPanes.length - 1];
-    const pressedIndex = findAccKey(ev.code, pane.items);
+    const pressedIndex = findAccKey(ev.code, flattenCommandGroup(pane.items));
     if (pressedIndex >= 0) {
-      store.dispatch(menuItemSelect(pressedIndex));
+      store.dispatch(menuItemSelectAction(pressedIndex));
       setTimeout(() => {
         menuItemAction();
       }, 100);
@@ -205,16 +254,13 @@ export function handleKeyDown(ev: KeyboardEvent): void {
   } else {
     // --- We're looking for the accelerator key of a main menu item.
     const pressedIndex = findAccKey(ev.code, state.menu.items);
+    console.log(`Pressed index: ${pressedIndex}`);
     if (pressedIndex >= 0) {
       // --- Accelerator key found, set the main menu item to display
       let pane =
-        state.openPanes.length > 0 ? getButtonPane(pressedIndex) : undefined;
-      store.dispatch(menuButtonSet(pressedIndex, pane, true));
-
-      // --- Open the related manu pane
-      const index = state.selectedIndex;
-      pane = getButtonPane(index);
-      store.dispatch(menuButtonSet(index, pane, true));
+        state.openPanes.length === 0 ? getButtonPane(pressedIndex) : undefined;
+      console.log(pane);
+      store.dispatch(menuButtonSetAction(pressedIndex, pane, true));
       return;
     }
   }
@@ -230,6 +276,33 @@ export function handleKeyUp(ev: KeyboardEvent): void {
   }
 }
 
+/**
+ * Handles the event when the mouse enters a menu button.
+ * @param index Button index
+ */
+export function handleButtonMouseEnter(index: number): void {
+  console.log(`Mouse entered: ${index}`);
+  const state = store.getState().appMenu;
+  const pane = state.openPanes.length > 0 ? getButtonPane(index) : undefined;
+  store.dispatch(menuButtonSetAction(index, pane, false));
+  lastMouseEntered = undefined;
+}
+
+/**
+ * Handles the event when a menu button is clicked.
+ * @param index button index
+ */
+export function handleButtonClick(index: number): void {
+  store.dispatch(
+    menuButtonClickAction(
+      store.getState().appMenu.openPanes.length > 0
+        ? undefined
+        : getButtonPane(index),
+      index
+    )
+  );
+}
+
 // ============================================================================
 // Helpers
 
@@ -240,7 +313,7 @@ export function handleKeyUp(ev: KeyboardEvent): void {
 function tryOpenSubmenuPane(): boolean {
   const subMenuPane = getSubmenuPane();
   if (subMenuPane) {
-    store.dispatch(menuPaneOpen(subMenuPane, true));
+    store.dispatch(menuPaneOpenAction(subMenuPane, true));
     //lastMouseEntered = undefined;
     return true;
   }
@@ -358,7 +431,7 @@ function setFirstMenuItemIndex(pane: MenuPaneInfo): void {
  */
 function findAccKey(code: string, items: UiMenuItem[]): number {
   code = code.toLowerCase();
-  return flattenCommandGroup(items).findIndex(
+  return items.findIndex(
     item =>
       item.accessKey &&
       ("key" + item.accessKey.toLowerCase() === code ||
@@ -380,7 +453,7 @@ function menuItemAction(): void {
   const state = store.getState().appMenu;
   if (state.openPanes.length === 0) {
     store.dispatch(
-      menuButtonSet(
+      menuButtonSetAction(
         state.selectedIndex,
         getButtonPane(state.selectedIndex),
         true
@@ -409,7 +482,7 @@ function executeMenuItem(item: UiMenuItem): void {
   console.log("executeMenuItem");
   console.log(item);
   if (item.items.length === 0 && !item.separator) {
-    store.dispatch(menuCloseAll());
+    store.dispatch(menuCloseAllAction());
     // executeMenuItem(item.id);
   }
 }

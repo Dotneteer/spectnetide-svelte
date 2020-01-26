@@ -37,17 +37,17 @@ export const refreshMenuAction = createAliasedAction("REFRESH_MENU", () => {
 /**
  * Action that handles the AltLeft key down in a menu
  */
-export const menuAltPressed = createLocalAction("MENU_ALT_PRESSED");
+export const menuAltPressedAction = createLocalAction("MENU_ALT_PRESSED");
 
 /**
  * Action that handles the AltLeft key up in a menu
  */
-export const menuAltReleased = createLocalAction("MENU_ALT_RELEASED");
+export const menuAltReleasedAction = createLocalAction("MENU_ALT_RELEASED");
 
 /**
  * Action that handles the left arrow key down in a menu
  */
-export function menuButtonSet(
+export function menuButtonSetAction(
   itemIndex: number,
   pane: MenuPaneInfo,
   keyboardAction: boolean
@@ -62,14 +62,14 @@ export function menuButtonSet(
 /**
  * Action that handles when mouse enters a menu button
  */
-export function menuButtonMouseEnter(itemIndex: number): SpectNetAction {
+export function menuButtonMouseEnterAction(itemIndex: number): SpectNetAction {
   return createLocalAction("MENU_BUTTON_MOUSE_ENTER", { itemIndex });
 }
 
 /**
  * Action that handles when a menu button is clicked
  */
-export function menuButtonClick(
+export function menuButtonClickAction(
   pane: MenuPaneInfo,
   itemIndex: number
 ): SpectNetAction {
@@ -79,35 +79,35 @@ export function menuButtonClick(
 /**
  * Action that handles when a menu button is clicked
  */
-export function menuPaneClose(): SpectNetAction {
+export function menuPaneCloseAction(): SpectNetAction {
   return createLocalAction("MENU_PANE_CLOSE");
 }
 
 /**
  * Action that selectes the specified item in the current menu pane
  */
-export function menuItemSelect(itemIndex: number): SpectNetAction {
+export function menuItemSelectAction(itemIndex: number): SpectNetAction {
   return createLocalAction("MENU_ITEM_SELECT", { itemIndex });
 }
 
 /**
  * Action that moves down one item in the current menu pane
  */
-export function menuItemDown(): SpectNetAction {
+export function menuItemDownAction(): SpectNetAction {
   return createLocalAction("MENU_ITEM_DOWN");
 }
 
 /**
  * Action that moves up one item in the current menu pane
  */
-export function menuItemUp(): SpectNetAction {
+export function menuItemUpAction(): SpectNetAction {
   return createLocalAction("MENU_ITEM_UP");
 }
 
 /**
  * Action that moves up one item in the current menu pane
  */
-export function menuPaneOpen(
+export function menuPaneOpenAction(
   pane: MenuPaneInfo,
   keyboardAction: boolean
 ): SpectNetAction {
@@ -120,14 +120,14 @@ export function menuPaneOpen(
 /**
  * Action that drops all open panes behind the specified one
  */
-export function menuKeepPane(paneIndex: number): SpectNetAction {
+export function menuKeepPaneAction(paneIndex: number): SpectNetAction {
   return createLocalAction("MENU_KEEP_PANES", { paneIndex });
 }
 
 /**
  * Action that moves up one item in the current menu pane
  */
-export function menuItemPoint(
+export function menuItemPointAction(
   paneIndex: number,
   itemIndex: number
 ): SpectNetAction {
@@ -140,7 +140,7 @@ export function menuItemPoint(
 /**
  * Action that closes all menu panes and deactivetes the menu bar.
  */
-export function menuCloseAll(): SpectNetAction {
+export function menuCloseAllAction(): SpectNetAction {
   return createLocalAction("MENU_CLOSE_ALL");
 }
 
@@ -193,7 +193,7 @@ export function appMenuStateReducer(
       return {
         ...state,
         selectedIndex: payload.itemIndex,
-        openPanes: [payload.pane]
+        openPanes: payload.pane ? [payload.pane]: []
       };
 
     case "MENU_PANE_CLOSE": {

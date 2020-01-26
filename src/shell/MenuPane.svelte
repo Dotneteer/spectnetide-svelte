@@ -59,7 +59,8 @@
   }
 </style>
 
-<div bind:this={hostElement}
+<div
+  bind:this={hostElement}
   class="menu-pane"
   style="z-index:{depth + 100};top:{topPos}px;left:{leftPos}px">
   {#if groupItems}
@@ -73,7 +74,11 @@
             index: item.index,
             rectangle: ev.detail
           });
-        }} />
+        }}
+        on:pointed={ev => dispatch('itempointed', {
+            depth,
+            flatIndex: ev.detail ? index : -1
+          })} />
     {/each}
   {/if}
 </div>
