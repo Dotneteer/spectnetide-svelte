@@ -1,9 +1,9 @@
 <script>
   import { onMount } from "svelte";
   import { createEventDispatcher } from "svelte";
-  import SvgIcon from "./controls/SvgIcon.svelte";
+  import SvgIcon from "../controls/SvgIcon.svelte";
   import MenuText from "./MenuText.svelte";
-  import { friendlyAcceleratorText } from "../tslib/front/menu/menu-item-logic";
+  import { friendlyAcceleratorText } from "../menu/menu-item-logic";
 
   // ==========================================================================
   // Component parameters

@@ -1,17 +1,18 @@
 <script>
   import { onDestroy } from "svelte";
+  import "../../../public/assets/spectnet-logo.png"
 
-  import SvgIcon from "./controls/SvgIcon.svelte";
+  import SvgIcon from "../controls/SvgIcon.svelte";
   import MenuBar from "./MenuBar.svelte";
   import AppCaption from "./AppCaption.svelte";
 
-  import { ThemeService } from "../tslib/front/themes/ThemeService";
+  import { ThemeService } from "../themes/ThemeService";
   import {
     minimizeAppWindowAction,
     restoreAppWindowAction,
     maximizeAppWindowAction
-  } from "../tslib/shared/state/redux-window-state";
-  import { createRendererProcessStateAware } from "../tslib/front/rendererProcessStore";
+  } from "../../shared/state/redux-window-state";
+  import { createRendererProcessStateAware } from "../rendererProcessStore";
 
   // --- We change Titlebar colors as the app focus changes
   let titleColor;
@@ -92,7 +93,7 @@
   class="component"
   style="color:{titleColor};background-color:{backgroundColor}">
   <div class="logo">
-    <img alt="logo" src="./assets/spectnet-logo.png" />
+    <img alt="logo" src="./public/assets/spectnet-logo.png" />
   </div>
   <MenuBar {titleColor} />
   <AppCaption />

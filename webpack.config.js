@@ -26,7 +26,7 @@ const commonConfig = {
       "@renderer": srcPaths("src/renderer"),
       "@utils": srcPaths("src/utils")
     },
-    extensions: [".js", ".json", ".ts", ".tsx"]
+    extensions: [".mjs", ".js", ".json", ".ts", ],
   },
   module: {
     rules: [
@@ -80,6 +80,7 @@ const rendererConfig = lodash.cloneDeep(commonConfig);
 rendererConfig.entry = "./src/renderer/main.js";
 rendererConfig.target = "electron-renderer";
 rendererConfig.output.filename = "renderer.bundle.js";
+rendererConfig.resolve.mainFields = ["svelte", "browser", "module", "main"];
 rendererConfig.plugins = [
   new HtmlWebpackPlugin({
     template: path.resolve(__dirname, "./public/index.html")

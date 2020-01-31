@@ -1,5 +1,5 @@
 <script>
-  import { rendererProcessStore } from "../tslib/front/rendererProcessStore";
+  import { rendererProcessStore } from "../rendererProcessStore";
 
 </script>
 

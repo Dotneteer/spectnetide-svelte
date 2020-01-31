@@ -1,10 +1,59 @@
 <script>
+  import Titlebar from "./components/Titlebar.svelte";
+  import ActivityBar from "./components/ActivityBar.svelte";
+  import SideBar from "./components/SideBar.svelte";
+  import MainCanvas from "./components/MainCanvas.svelte";
+  import Statusbar from "./components/Statusbar.svelte";
+  
+  import { ThemeService } from "./themes/ThemeService";
+  import { lightTheme } from "./themes/light-theme";
+  import { darkTheme } from "./themes/dark-theme";  
+
+  let themeStyle = "";
+  let themeClass = "";
+
+  ThemeService.themeChanged.on(theme => {
+    let styleValue = "";
+    for (const key in theme.properties) {
+      styleValue += `${key}:${theme.properties[key]};`;
+    }
+    themeStyle = styleValue.trimRight();
+    themeClass = `${theme.name}-theme`;
+  });
+
+  ThemeService.registerTheme(lightTheme);
+  ThemeService.registerTheme(darkTheme);
+  ThemeService.setTheme("dark");
 </script>
 
 <style>
-  h1 {
-    color: red;
+  main {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex-shrink: 0;
+    user-select: none;
+    background-color: var(--shell-canvas-background-color);
+  }
+
+  .main-panel {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+    height: 100%;
+    width: 100%;
   }
 </style>
 
-<h1>Hello from Svelte</h1>
+<main style={themeStyle} class={themeClass}>
+  <Titlebar />
+  <div class="main-panel">
+    <ActivityBar />
+    <SideBar />
+    <MainCanvas />
+  </div>
+  <Statusbar />
+</main>

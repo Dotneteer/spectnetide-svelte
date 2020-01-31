@@ -6,11 +6,11 @@
   import {
     createRendererProcessStateAware,
     rendererProcessStore
-  } from "../tslib/front/rendererProcessStore";
+  } from "../rendererProcessStore";
   import {
     refreshMenuAction,
     menuCloseAllAction
-  } from "../tslib/shared/state/redux-menu-state";
+  } from "../../shared/state/redux-menu-state";
   import {
     handleButtonMounted,
     handlePaneMounted,
@@ -21,7 +21,7 @@
     handleButtonClick,
     handleItemPointed,
     handleItemClicked
-  } from "../tslib/front/menu/menu-bar-logic";
+  } from "../menu/menu-bar-logic";
 
   // --- Menu bar title color depends on focused/unfocused state
   export let titleColor;
