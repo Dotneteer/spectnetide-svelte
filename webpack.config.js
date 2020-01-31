@@ -1,33 +1,35 @@
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const path = require("path");
+const CopyPkgJsonPlugin = require("copy-pkg-json-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");const path = require("path");
 
-const mode = process.env.NODE_ENV || "development";
-const prod = mode === "production";
+const lodash = require("lodash");
 
-module.exports = {
-  target: "electron-main",
-  entry: {
-    bundle: ["./src/main.js"]
-  },
+function srcPaths(src) {
+  return path.join(__dirname, src);
+}
+
+const isEnvProduction = process.env.NODE_ENV === "production";
+const isEnvDevelopment = process.env.NODE_ENV === "development";
+
+// #region Common settings
+const commonConfig = {
+  devtool: isEnvDevelopment ? "source-map" : false,
+  mode: isEnvProduction ? "production" : "development",
+  output: { path: srcPaths("dist") },
+  node: { __dirname: false, __filename: false },
   resolve: {
     alias: {
-      svelte: path.resolve("node_modules", "svelte")
+      "@": srcPaths("src"),
+      "@main": srcPaths("src/main"),
+      "@models": srcPaths("src/models"),
+      "@public": srcPaths("public"),
+      "@renderer": srcPaths("src/renderer"),
+      "@utils": srcPaths("src/utils")
     },
-    extensions: [".mjs", ".js", ".svelte"],
-    mainFields: ["svelte", "browser", "module", "main"]
-  },
-  output: {
-    path: __dirname + "/public/build",
-    filename: "bundle.js"
+    extensions: [".js", ".json", ".ts", ".tsx"]
   },
   module: {
     rules: [
-      {
-        test: /\.ts$/,
-        loader: "ts-loader",
-        exclude: /node_modules/,
-        options: { configFile: "../tsconfig.build.json" }
-      },
       {
         test: /\.svelte$/,
         use: {
@@ -39,23 +41,52 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
-        use: [
-          /**
-           * MiniCssExtractPlugin doesn't support HMR.
-           * For developing, use 'style-loader' instead.
-           * */
-          prod ? MiniCssExtractPlugin.loader : "style-loader",
-          "css-loader"
-        ]
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        loader: "ts-loader"
+      },
+      {
+        test: /\.(scss|css)$/,
+        use: ["style-loader", "css-loader"]
+      },
+      {
+        test: /\.(jpg|png|svg|ico|icns)$/,
+        loader: "file-loader",
+        options: {
+          name: "[path][name].[ext]"
+        }
       }
-    ]    
-  },
-  mode,
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "bundle.css"
-    })
-  ],
-  devtool: prod ? false : "source-map"
+    ]
+  }
 };
+// #endregion
+
+const mainConfig = lodash.cloneDeep(commonConfig);
+mainConfig.entry = "./src/main/main.ts";
+mainConfig.target = "electron-main";
+mainConfig.output.filename = "main.bundle.js";
+mainConfig.plugins = [
+  new CopyPkgJsonPlugin({
+    remove: ["scripts", "devDependencies", "build"],
+    replace: {
+      main: "./main.bundle.js",
+      scripts: { start: "electron ./main.bundle.js" },
+      postinstall: "electron-builder install-app-deps"
+    }
+  })
+];
+
+const rendererConfig = lodash.cloneDeep(commonConfig);
+rendererConfig.entry = "./src/renderer/main.js";
+rendererConfig.target = "electron-renderer";
+rendererConfig.output.filename = "renderer.bundle.js";
+rendererConfig.plugins = [
+  new HtmlWebpackPlugin({
+    template: path.resolve(__dirname, "./public/index.html")
+  }),
+  new MiniCssExtractPlugin({
+    filename: "bundle.css"
+  })
+];
+
+module.exports = [mainConfig, rendererConfig];
