@@ -6,6 +6,12 @@
     justify-content: center;
     font-size: 0.8em;
   }
+
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 </style>
 
 <div>

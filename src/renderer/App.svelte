@@ -1,9 +1,9 @@
 <script>
-  import Titlebar from "./components/Titlebar.svelte";
-  import ActivityBar from "./components/ActivityBar.svelte";
-  import SideBar from "./components/SideBar.svelte";
-  import MainCanvas from "./components/MainCanvas.svelte";
-  import Statusbar from "./components/Statusbar.svelte";
+  import Titlebar from "./shell/Titlebar.svelte";
+  import ActivityBar from "./shell/ActivityBar.svelte";
+  import SideBar from "./shell/SideBar.svelte";
+  import MainCanvas from "./shell/MainCanvas.svelte";
+  import Statusbar from "./shell/Statusbar.svelte";
   
   import { ThemeService } from "./themes/ThemeService";
   import { lightTheme } from "./themes/light-theme";

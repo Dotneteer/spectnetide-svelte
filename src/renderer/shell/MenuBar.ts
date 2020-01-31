@@ -13,8 +13,8 @@ import {
   menuItemPointAction
 } from "../../shared/state/redux-menu-state";
 import { MenuPaneInfo } from "../../shared/menu/MenuPaneInfo";
-import { ElementRectangle } from "./ElementRectangle";
-import { flattenCommandGroup } from "./menu-pane-logic";
+import { ElementRectangle } from "../helpers/ElementRectangle";
+import { flattenCommandGroup } from "../../shared/menu/ui-menu-item";
 import { UiMenuItem } from "../../shared/menu/ui-menu-item";
 
 /**

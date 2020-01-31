@@ -1,5 +1,17 @@
 <script>
   import { onMount, onDestroy } from "svelte";
+  import {
+    handleButtonMounted,
+    handlePaneMounted,
+    handlePaneItemMounted,
+    handleKeyDown,
+    handleKeyUp,
+    handleButtonMouseEnter,
+    handleButtonClick,
+    handleItemPointed,
+    handleItemClicked
+  } from "./MenuBar";
+
   import MenuButton from "./MenuButton.svelte";
   import MenuPane from "./MenuPane.svelte";
 
@@ -11,17 +23,6 @@
     refreshMenuAction,
     menuCloseAllAction
   } from "../../shared/state/redux-menu-state";
-  import {
-    handleButtonMounted,
-    handlePaneMounted,
-    handlePaneItemMounted,
-    handleKeyDown,
-    handleKeyUp,
-    handleButtonMouseEnter,
-    handleButtonClick,
-    handleItemPointed,
-    handleItemClicked
-  } from "../menu/menu-bar-logic";
 
   // --- Menu bar title color depends on focused/unfocused state
   export let titleColor;
@@ -60,6 +61,9 @@
   div {
     display: flex;
     flex-grow: 0;
+    flex-shrink: 1;
+    flex-wrap: wrap;
+    overflow: hidden;
     height: 100%;
     -webkit-app-region: no-drag;
   }
@@ -92,8 +96,8 @@
           topPos={pane.topPos}
           on:panemounted={ev => handlePaneMounted(index, ev.detail)}
           on:paneitemmounted={ev => handlePaneItemMounted(index, ev.detail.index, ev.detail.rectangle)}
-          on:itempointed={ev => handleItemPointed(ev.detail)} 
-          on:itemclicked={ev => handleItemClicked(ev.detail)}/>
+          on:itempointed={ev => handleItemPointed(ev.detail)}
+          on:itemclicked={ev => handleItemClicked(ev.detail)} />
       {/each}
     {/if}
   {/if}

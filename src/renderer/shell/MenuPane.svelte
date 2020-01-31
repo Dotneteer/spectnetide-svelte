@@ -3,7 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import MenuItem from "./MenuItem.svelte";
 
-  import { flattenCommandGroup } from "../menu/menu-pane-logic";
+  import { flattenCommandGroup } from "../../shared/menu/ui-menu-item";
 
   // ==========================================================================
   // Component parameters

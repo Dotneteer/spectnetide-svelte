@@ -1,4 +1,4 @@
-import { UiMenuItem } from "../menu/ui-menu-item";
+import { UiMenuItem, flattenCommandGroup } from "../menu/ui-menu-item";
 import {
   SpectNetAction,
   createAliasedAction,
@@ -7,7 +7,6 @@ import {
 import { MenuState } from "./AppState";
 import { appWindow } from "./redux-window-state";
 import { MenuPaneInfo } from "../menu/MenuPaneInfo";
-import { flattenCommandGroup } from "../../renderer/menu/menu-pane-logic";
 
 let autoPaneId = -1;
 

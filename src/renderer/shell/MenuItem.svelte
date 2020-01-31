@@ -1,9 +1,9 @@
 <script>
-  import { onMount } from "svelte";
-  import { createEventDispatcher } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
+  import { friendlyAcceleratorText } from "./MenuItem";
+
   import SvgIcon from "../controls/SvgIcon.svelte";
   import MenuText from "./MenuText.svelte";
-  import { friendlyAcceleratorText } from "../menu/menu-item-logic";
 
   // ==========================================================================
   // Component parameters
@@ -99,10 +99,11 @@
   }
 </style>
 
-<div bind:this={hostElement}
-  on:mouseenter={() => dispatch("pointed", true)}
-  on:mouseleave={() => dispatch("pointed", false)}
-  on:click={() => dispatch("clicked")}>
+<div
+  bind:this={hostElement}
+  on:mouseenter={() => dispatch('pointed', true)}
+  on:mouseleave={() => dispatch('pointed', false)}
+  on:click={() => dispatch('clicked')}>
   {#if item.separator}
     <div class="separator" />
   {:else}
