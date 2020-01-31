@@ -1,5 +1,5 @@
 import { BrowserWindow, MenuItemConstructorOptions } from "electron";
-import { ILiteEvent, LiteEvent } from "../utils/LiteEvent";
+import { ILiteEvent, LiteEvent } from "./utils/LiteEvent";
 
 /**
  * Represents the state of a menu item

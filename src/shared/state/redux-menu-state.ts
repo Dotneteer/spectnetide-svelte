@@ -7,7 +7,7 @@ import {
 import { MenuState } from "./AppState";
 import { appWindow } from "./redux-window-state";
 import { MenuPaneInfo } from "../menu/MenuPaneInfo";
-import { flattenCommandGroup } from "../../front/menu/menu-pane-logic";
+import { flattenCommandGroup } from "../../renderer/menu/menu-pane-logic";
 
 let autoPaneId = -1;
 

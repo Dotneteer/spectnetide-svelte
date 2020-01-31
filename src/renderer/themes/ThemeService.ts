@@ -2,7 +2,7 @@ import { ITheme } from "./theme-core";
 import { IconInfo } from "./IconInfo";
 import { IGlobalStyleHandler } from "./IGlobalStylehandler";
 import { IconDefs } from "./IconDefs";
-import { ILiteEvent, LiteEvent } from "../../shared/utils/LiteEvent";
+import { ILiteEvent, LiteEvent } from "../../shared/menu/utils/LiteEvent";
 
 /**
  * Implements the theme service

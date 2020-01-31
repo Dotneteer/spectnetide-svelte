@@ -1,7 +1,7 @@
 import { Unsubscribe } from "redux";
 import { AppState } from "./AppState";
 import { SpectNetAction } from "./redux-core";
-import { LiteEvent, ILiteEvent } from "../utils/LiteEvent";
+import { LiteEvent, ILiteEvent } from "../menu/utils/LiteEvent";
 /**
  * Reprensent an object that is aware of the state of its associated store
  */

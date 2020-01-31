@@ -103,11 +103,9 @@ export class AppWindow {
       // --- See https://github.com/atom/atom/commit/683bef5b9d133cb194b476938c77cc07fd05b972
       backgroundColor: "#fff",
       webPreferences: {
-        // --- Disable auxclick event
-        // --- See https://developers.google.com/web/updates/2016/10/auxclick
-        disableBlinkFeatures: "Auxclick",
-        // --- Enable, among other things, the ResizeObserver
-        experimentalFeatures: true
+        webSecurity: false,
+        devTools: process.env.NODE_ENV === "production" ? false : true,
+        nodeIntegration: true
       },
       acceptFirstMouse: true
     };
@@ -198,7 +196,7 @@ export class AppWindow {
       // --- Indev mode, setup hot reload
       const fileToWatch = path.join(
         __dirname,
-        "../../../public/build/bundle.js"
+        "./renderer.bundle.js"
       );
       watcher = require("chokidar").watch(fileToWatch, { ignoreInitial: true });
       watcher.on("change", () => this._window.reload());
@@ -215,7 +213,7 @@ export class AppWindow {
     // --- Load the main file
     const fileToLoad = `file://${path.join(
       __dirname,
-      "../../../public/index.html"
+      "./index.html"
     )}`;
     this._window.loadURL(fileToLoad);
   }
