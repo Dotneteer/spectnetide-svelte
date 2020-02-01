@@ -1,4 +1,4 @@
-import { BrowserWindow, MenuItemConstructorOptions } from "electron";
+import { BrowserWindow } from "electron";
 import { ILiteEvent, LiteEvent } from "./utils/LiteEvent";
 
 /**
@@ -8,84 +8,42 @@ export interface MenuItemState {
   /**
    * Is the item enabled?
    */
-  readonly enabled: boolean;
+  enabled: boolean;
 
   /**
    * Is the item visible?
    */
-  readonly visible: boolean;
-
-  /**
-   * Is the item checked?
-   */
-  readonly checked: boolean;
-
-  /**
-   * The menu item's label
-   */
-  readonly label: string;
-}
-
-/**
- * Represents an executable menu item with its UI-state information
- */
-export class UiMenuItem implements MenuItemState {
-  private _statusUpdated = new LiteEvent<UiMenuItem>();
-
-  // --- Automatic sequential ID
-  private static _nextId = 1;
-
-  /**
-   * Instantiates a new item
-   * @param id Unique item identifier
-   * @param label Initial label
-   * @param role Optional predefined role
-   */
-  constructor(
-    public readonly id?: string,
-    label?: string,
-    public readonly role?: MenuRole
-  ) {
-    if (!id) id = `menu-item-${UiMenuItem._nextId++}`;
-    this.label = label || "";
-    const m = this.label.match(/&([^&])/);
-    this.accessKey = m ? m[1] : null;
-  }
-
-  /**
-   * Optional menu item in the shell
-   */
-  shellMenuItem?: MenuItemConstructorOptions;
-
-  /**
-   * Optional index in a menu pane
-   */
-  index?: number;
-
-  /**
-   * Indicates if this item is displayed as a separator.
-   */
-  separator: boolean = false;
-
-  /**
-   * The menu item's label
-   */
-  label: string;
-
-  /**
-   * Is the item enabled?
-   */
-  enabled: boolean = true;
-
-  /**
-   * Is the item visible?
-   */
-  visible: boolean = true;
+  visible: boolean;
 
   /**
    * Is the item checked?
    */
   checked: boolean;
+
+  /**
+   * The menu item's label
+   */
+  label: string;
+}
+
+/**
+ * Defines the data contents of a menu item
+ */
+export interface MenuItemDescriptor extends MenuItemState {
+  /**
+   * The unique identifier of this menu item
+   */
+  id: string;
+
+  /**
+   * Type of the menu item
+   */
+  type?: MenuItemType;
+
+  /**
+   * Preset role of the menu item
+   */
+  role?: MenuRole;
 
   /**
    * The access key of the menu item
@@ -98,50 +56,89 @@ export class UiMenuItem implements MenuItemState {
   accelerator: string;
 
   /**
-   * Instructs the menu item to execute its associated action
-   * @param window Host browser window
-   * Override this method to specify execution behavior
+   * Items of the submenu, provided this item is a submenu type.
    */
-  onExecute(window: BrowserWindow): void {}
+  submenu?: MenuItemDescriptor[];
+}
+
+/**
+ * This class represents the base class for a menu command
+ */
+export abstract class MenuItemBase implements MenuItemDescriptor {
+  // --- Automatic sequential ID
+  private static _nextId = 1;
+
+  // --- Raise when the status of the item is updated.
+  private _statusUpdated = new LiteEvent<MenuItemBase>();
 
   /**
-   * Instructs the menu item to update its status
-   * @param window Host browser window
-   * Override this method to specify update behavior
+   * Instantiates a new item
+   * @param id Unique item identifier
+   * @param label Initial label
+   * @param role Optional predefined role
    */
-  onQueryStatus(window: BrowserWindow): void {}
+  constructor(id?: string, label?: string, role?: MenuRole) {
+    this.id = id || `menu-item-${MenuItemBase._nextId++}`;
+    this.label = label || "";
+    const m = this.label.match(/&([^&])/);
+    this.accessKey = m ? m[1] : null;
 
-  /**
-   * Sets the "enabled" flag of the item
-   * @param enabled "enabled" flag value
-   */
-  enable(enabled: boolean): UiMenuItem {
-    this.enabled = enabled;
-    return this;
+    this.type = "normal";
+    this.role = role;
+
+    this.enabled = this.visible = true;
+    this.checked = false;
   }
 
   /**
-   * Sets the accelerator key of the item
-   * @param accelerator Accelerator key
+   * The unique identifier of this menu item
    */
-  withAccelerator(accelerator: string): UiMenuItem {
-    this.accelerator = accelerator;
-    return this;
-  }
+  id: string;
 
   /**
-   * Appends a new subitem to the existing ones.
-   * @param item Item to append.
+   * Type of the menu item
    */
-  append(item: UiMenuItem): UiMenuItem {
-    if (item) this.items.push(item);
-    return this;
-  }
+  type?: MenuItemType;
 
   /**
-   * Subitems within this menu item
+   * Is the item enabled?
    */
-  readonly items: UiMenuItem[] = [];
+  enabled: boolean;
+
+  /**
+   * Is the item visible?
+   */
+  visible: boolean;
+
+  /**
+   * Is the item checked?
+   */
+  checked: boolean;
+
+  /**
+   * The menu item's label
+   */
+  label: string;
+
+  /**
+   * Preset role of the menu item
+   */
+  role?: MenuRole;
+
+  /**
+   * The access key of the menu item
+   */
+  accessKey: string | null;
+
+  /**
+   * The accelerator key combination
+   */
+  accelerator: string;
+
+  /**
+   * Items of the submenu, provided this item is a submenu type.
+   */
+  submenu?: MenuItemDescriptor[];
 
   /**
    * Updates the status of the item in the specified browser window
@@ -168,68 +165,116 @@ export class UiMenuItem implements MenuItemState {
   /**
    * Fires when the status of the command has been updated
    */
-  get statusUpdated(): ILiteEvent<UiMenuItem> {
+  get statusUpdated(): ILiteEvent<MenuItemBase> {
     return this._statusUpdated;
+  }
+
+  /**
+   * Instructs the menu item to execute its associated action
+   * @param window Host browser window
+   * Override this method to specify execution behavior
+   */
+  onExecute(window: BrowserWindow): void {}
+
+  /**
+   * Instructs the menu item to update its status
+   * @param window Host browser window
+   * Override this method to specify update behavior
+   */
+  onQueryStatus(window: BrowserWindow): void {}
+
+  /**
+   * Sets the "enabled" flag of the item
+   * @param enabled "enabled" flag value
+   */
+  enable(enabled: boolean): MenuItemBase {
+    this.enabled = enabled;
+    return this;
+  }
+
+  /**
+   * Sets the "checked" flag of the item
+   * @param enabled "checked" flag value
+   */
+  check(checked: boolean): MenuItemBase {
+    this.checked = checked;
+    return this;
+  }
+
+  /**
+   * Sets the accelerator key of the item
+   * @param accelerator Accelerator key
+   */
+  withAccelerator(accelerator: string): MenuItemBase {
+    this.accelerator = accelerator;
+    return this;
+  }
+
+  /**
+   * Appends a new subitem to the existing ones.
+   * @param item Item to append.
+   */
+  append(item: MenuItemBase): MenuItemBase {
+    this.type = "submenu";
+    if (item) {
+      if (!this.submenu) {
+        this.submenu = [item]
+      } else {
+        this.submenu.push(item);
+      }
+    }
+    return this;
   }
 }
 
 /**
- * Defines a separator menu item.
+ * Represents a normal menu item
  */
-export class SeparatorMenuItem extends UiMenuItem {
+export class StandardMenuItem extends MenuItemBase {
+  constructor(id: string, label: string) {
+    super(id, label);
+  }
+}
+
+/**
+ * Represents a menu separator item
+ */
+export class MenuSeparator extends MenuItemBase {
   constructor() {
     super();
-    this.separator = true;
+    this.type = "separator";
+  }
+}
+
+/**
+ * Represents a checkbox item
+ */
+export class CheckboxMenuItem extends MenuItemBase {
+  /**
+   * Instantiates a new item
+   * @param id Unique item identifier
+   * @param label Initial label
+   * @param role Optional predefined role
+   */
+  constructor(id?: string, label?: string) {
+    super(id, label);
+    this.type = "checkbox";
   }
 }
 
 /**
  * Defines a menu item with predefined Electron Shell role
  */
-export class ElectronShellMenuItem extends UiMenuItem {
-  constructor(role: MenuRole, label?: string, accelerator?: string) {
-    super(undefined, label, role);
+export class ElectronShellMenuItem extends MenuItemBase {
+  constructor(
+    role: MenuRole,
+    label?: string,
+    accelerator?: string,
+    id?: string
+  ) {
+    super(id || role, label, role);
     if (accelerator) this.withAccelerator(accelerator);
   }
-}
-
-/**
- * Flattens the specified menu items
- * @param items Command group to flatten
- */
-export function flattenCommandGroup(items: UiMenuItem[]): UiMenuItem[] {
-  if (!items) return [];
-  const flattened: UiMenuItem[] = [];
-  let lastItemWasGroup = false;
-  let groupJustEnded = false;
-  let index = 0;
-  for (let i = 0; i < items.length; i++) {
-    const item = items[i];
-
-    // --- Provide separator between groups
-    if (
-      (i > 0 && item.items.length > 0 !== lastItemWasGroup) ||
-      groupJustEnded
-    ) {
-      flattened.push(new SeparatorMenuItem());
-    }
-
-    lastItemWasGroup = item.items.length > 0;
-    groupJustEnded = false;
-
-    if (item.items.length > 0) {
-      for (let j = 0; j < item.items.length; j++) {
-        const subitem = item.items[j];
-        flattened.push(Object.assign({}, subitem, {index}));
-        index++;
-      }
-      groupJustEnded = true;
-    } else {
-      flattened.push(Object.assign({}, item, {index}));
-      index++;
-    }
-  }
-  return flattened;
 }
 
 /**
@@ -280,3 +325,9 @@ export type MenuRole =
   | "moveTabToNewWindow"
   | "windowMenu";
 
+export type MenuItemType =
+  | "normal"
+  | "separator"
+  | "submenu"
+  | "checkbox"
+  | "radio";

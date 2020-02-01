@@ -1,6 +1,6 @@
 import { WindowState } from "./redux-window-state";
-import { UiMenuItem } from "../menu/ui-menu-item";
 import { MenuPaneInfo } from "../menu/MenuPaneInfo";
+import { MenuItemBase } from "../menu/ui-menu-item";
 
 /**
  * Represents the state of the application
@@ -34,7 +34,7 @@ export interface MenuState {
   /**
    * The root of the menu structure
    */
-  menu?: UiMenuItem;
+  menu?: MenuItemBase[];
 
   /**
    * The index of the pointed menu button in the menu bar

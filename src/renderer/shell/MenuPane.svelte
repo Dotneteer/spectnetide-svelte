@@ -3,8 +3,6 @@
   import { createEventDispatcher } from "svelte";
   import MenuItem from "./MenuItem.svelte";
 
-  import { flattenCommandGroup } from "../../shared/menu/ui-menu-item";
-
   // ==========================================================================
   // Component parameters
   // --- Pane depth
@@ -32,8 +30,6 @@
 
   // ==========================================================================
   // Component logic
-  $: groupItems = flattenCommandGroup(items);
-
   const dispatch = createEventDispatcher();
 
   onMount(() => {
@@ -63,15 +59,15 @@
   bind:this={hostElement}
   class="menu-pane"
   style="z-index:{depth + 100};top:{topPos}px;left:{leftPos}px">
-  {#if groupItems}
-    {#each groupItems as item, index}
+  {#if items}
+    {#each items as item, index}
       <MenuItem
         {item}
         {highlight}
         selected={selectedIndex === index}
         on:itemmounted={ev => {
           dispatch('paneitemmounted', {
-            index: item.index,
+            index: index,
             rectangle: ev.detail
           });
         }}

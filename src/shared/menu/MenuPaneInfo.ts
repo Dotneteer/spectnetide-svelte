@@ -1,4 +1,4 @@
-import { UiMenuItem } from "./ui-menu-item";
+import { MenuItemDescriptor } from "./ui-menu-item";
 
 /**
  * This class describes information about menu panes opened in the main menu.
@@ -16,7 +16,7 @@ export class MenuPaneInfo {
   /**
    * Menu items in the pane
    */
-  items: UiMenuItem[];
+  items: MenuItemDescriptor[];
 
   /**
    * Left position in pixels

@@ -1,4 +1,3 @@
-import { UiMenuItem, flattenCommandGroup } from "../menu/ui-menu-item";
 import {
   SpectNetAction,
   createAliasedAction,
@@ -7,6 +6,7 @@ import {
 import { MenuState } from "./AppState";
 import { appWindow } from "./redux-window-state";
 import { MenuPaneInfo } from "../menu/MenuPaneInfo";
+import { MenuItemBase } from "../menu/ui-menu-item";
 
 let autoPaneId = -1;
 
@@ -14,7 +14,7 @@ let autoPaneId = -1;
  * Creates an action for setting the main menu
  * @param menu Menu to set
  */
-export function setAppMenuAction(menu: UiMenuItem): SpectNetAction {
+export function setAppMenuAction(menu: MenuItemBase[]): SpectNetAction {
   return {
     type: "SET_MENU",
     payload: {
@@ -280,7 +280,7 @@ export function appMenuStateReducer(
       if (pane) {
         const selectedIndex =
           payload.itemIndex >= 0
-            ? flattenCommandGroup(pane.items)[payload.itemIndex].enabled
+            ? pane.items[payload.itemIndex].enabled
               ? payload.itemIndex
               : -1
             : -1;
@@ -343,13 +343,12 @@ function getOpenMenuPanes(
  * @param step Step (-1: previous item, 1: next item)
  */
 function getNextMenuItemIndex(pane: MenuPaneInfo, step: number): number {
-  const items = flattenCommandGroup(pane.items);
-  const count = items.length;
+  const count = pane.items.length;
   let selectedIndex = pane.selectedIndex;
-  for (let i = 1; i < items.length; i++) {
+  for (let i = 1; i < pane.items.length; i++) {
     const nextItemIndex = (pane.selectedIndex + step * i + count) % count;
-    const item = items[nextItemIndex];
-    if (!item.separator && item.enabled) {
+    const item = pane.items[nextItemIndex];
+    if (item.type !== "separator" && item.enabled) {
       selectedIndex = nextItemIndex;
       break;
     }

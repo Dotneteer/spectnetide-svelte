@@ -75,7 +75,7 @@
 <svelte:window on:keydown={handleKeyDown} on:keyup={handleKeyUp} />
 <div tabindex="0">
   {#if appMenu}
-    {#each appMenu.menu.items as item, index}
+    {#each appMenu.menu as item, index}
       <MenuButton
         text={item.label}
         highlight={appMenu.highlightAccessKeys || false}

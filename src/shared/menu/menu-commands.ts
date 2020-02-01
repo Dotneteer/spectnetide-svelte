@@ -1,8 +1,8 @@
-import { UiMenuItem } from "./ui-menu-item";
 import { BrowserWindow } from "electron";
 import { __DARWIN__ } from "../../main/utils/electron-utils";
+import { MenuItemBase } from "./ui-menu-item";
 
-export class AboutCommand extends UiMenuItem {
+export class AboutCommand extends MenuItemBase {
   constructor() {
     super("show-about", "About ZX Spectrum IDE...");
   }
@@ -12,7 +12,7 @@ export class AboutCommand extends UiMenuItem {
   }
 }
 
-export class OptionsCommand extends UiMenuItem {
+export class OptionsCommand extends MenuItemBase {
   constructor() {
     super("show-preferences", __DARWIN__ ? "Preferences..." : "O&ptions...");
   }
@@ -22,7 +22,7 @@ export class OptionsCommand extends UiMenuItem {
   }
 }
 
-export class NewProjectCommand extends UiMenuItem {
+export class NewProjectCommand extends MenuItemBase {
   constructor() {
     super("create-project", __DARWIN__ ? "New Project..." : "&New project...");
   }
@@ -32,7 +32,7 @@ export class NewProjectCommand extends UiMenuItem {
   }
 }
 
-export class OpenProjectCommand extends UiMenuItem {
+export class OpenProjectCommand extends MenuItemBase {
   constructor() {
     super("open-project", __DARWIN__ ? "Open Project..." : "&Open project...");
   }
@@ -42,7 +42,7 @@ export class OpenProjectCommand extends UiMenuItem {
   }
 }
 
-export class CloseProjectCommand extends UiMenuItem {
+export class CloseProjectCommand extends MenuItemBase {
   constructor() {
     super("close-project", __DARWIN__ ? "Close Project" : "Close project");
   }
@@ -52,7 +52,7 @@ export class CloseProjectCommand extends UiMenuItem {
   }
 }
 
-export class ShowExplorerCommand extends UiMenuItem {
+export class ShowExplorerCommand extends MenuItemBase {
   constructor() {
     super("show-project", __DARWIN__ ? "Show Explorer" : "Show explorer");
   }
@@ -62,7 +62,7 @@ export class ShowExplorerCommand extends UiMenuItem {
   }
 }
 
-export class ShowSpectrumEmulatorCommand extends UiMenuItem {
+export class ShowSpectrumEmulatorCommand extends MenuItemBase {
   constructor() {
     super(
       "show-spectrum-emulator",
@@ -75,7 +75,7 @@ export class ShowSpectrumEmulatorCommand extends UiMenuItem {
   }
 }
 
-export class ShowRegistersCommand extends UiMenuItem {
+export class ShowRegistersCommand extends MenuItemBase {
   constructor() {
     super("show-registers", __DARWIN__ ? "Z80 Registers" : "Z80 registers");
   }
@@ -85,7 +85,7 @@ export class ShowRegistersCommand extends UiMenuItem {
   }
 }
 
-export class ShowDisassemblyCommand extends UiMenuItem {
+export class ShowDisassemblyCommand extends MenuItemBase {
   constructor() {
     super(
       "show-disassembly",
@@ -98,7 +98,7 @@ export class ShowDisassemblyCommand extends UiMenuItem {
   }
 }
 
-export class ShowMemoryCommand extends UiMenuItem {
+export class ShowMemoryCommand extends MenuItemBase {
   constructor() {
     super(
       "show-memory",
@@ -111,7 +111,7 @@ export class ShowMemoryCommand extends UiMenuItem {
   }
 }
 
-export class ToggleDevToolsCommand extends UiMenuItem {
+export class ToggleDevToolsCommand extends MenuItemBase {
   constructor() {
     super(
       "toggle-dev-tools",

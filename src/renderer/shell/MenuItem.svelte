@@ -104,14 +104,14 @@
   on:mouseenter={() => dispatch('pointed', true)}
   on:mouseleave={() => dispatch('pointed', false)}
   on:click={() => dispatch('clicked')}>
-  {#if item.separator}
+  {#if item.type === "separator"}
     <div class="separator" />
   {:else}
     <div
       class="menu-item"
       class:disabled={!item.enabled}
       class:checked={item.checked}
-      class:submenu={item.items.length > 0}
+      class:submenu={item.submenu && item.submenu.length > 0}
       class:selected>
       {#if item.checked}
         <SvgIcon
@@ -125,12 +125,12 @@
       <div class="label">
         <MenuText text={item.label} {highlight} />
       </div>
-      {#if item.items.length > 0 && item.accelerator}
+      {#if item.submenu && item.submenu.length > 0 && item.accelerator}
         <div class="accelerator">
           {friendlyAcceleratorText(item.accelerator)}
         </div>
       {/if}
-      {#if item.items.length > 0}
+      {#if item.submenu && item.submenu.length > 0}
         <SvgIcon
           xclass="submenu-icon"
           iconName="submenu-arrow"

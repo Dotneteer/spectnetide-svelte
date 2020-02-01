@@ -17,7 +17,7 @@
     "noImplicitThis": true,
     "strictNullChecks": false,
     "sourceMap": true,
-    "target": "esnext",
+    "target": "es6",
   },
   "exclude": ["node_modules"]
 }

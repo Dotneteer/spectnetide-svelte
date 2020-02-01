@@ -23,7 +23,13 @@ import {
   maximizeAppWindowAction,
   minimizeAppWindowAction
 } from "../shared/state/redux-window-state";
-import { UiMenuItem, ElectronShellMenuItem } from "../shared/menu/ui-menu-item";
+import {
+  ElectronShellMenuItem,
+  MenuItemBase,
+  StandardMenuItem,
+  MenuSeparator,
+  MenuItemDescriptor
+} from "../shared/menu/ui-menu-item";
 import {
   AboutCommand,
   OptionsCommand,
@@ -64,7 +70,7 @@ export class AppWindow {
   private _window: BrowserWindow | null;
 
   // --- The associated menu command hierarchy
-  private _appCommands: UiMenuItem | null;
+  private _appCommands: MenuItemBase[] | null;
 
   // --- The associated Electron Shell application menu
   private _appMenu: Menu;
@@ -176,7 +182,7 @@ export class AppWindow {
   /**
    * Gets the application menu's command structure
    */
-  get appCommands(): UiMenuItem | null {
+  get appCommands(): MenuItemBase[] | null {
     return this.appCommands;
   }
 
@@ -194,10 +200,7 @@ export class AppWindow {
     let watcher: any;
     if (__DEV__) {
       // --- Indev mode, setup hot reload
-      const fileToWatch = path.join(
-        __dirname,
-        "./renderer.bundle.js"
-      );
+      const fileToWatch = path.join(__dirname, "./renderer.bundle.js");
       watcher = require("chokidar").watch(fileToWatch, { ignoreInitial: true });
       watcher.on("change", () => this._window.reload());
     }
@@ -211,10 +214,7 @@ export class AppWindow {
     });
 
     // --- Load the main file
-    const fileToLoad = `file://${path.join(
-      __dirname,
-      "./index.html"
-    )}`;
+    const fileToLoad = `file://${path.join(__dirname, "./index.html")}`;
     this._window.loadURL(fileToLoad);
   }
 
@@ -222,82 +222,71 @@ export class AppWindow {
    * Sets up the initial application menu
    */
   setupMenu(): void {
-    const aboutGroup = new UiMenuItem().append(new AboutCommand());
-    const prefsGroup = new UiMenuItem().append(new OptionsCommand());
-    const servicesGroup = new UiMenuItem().append(
-      new ElectronShellMenuItem("services")
-    );
-    const appWindowGroup = new UiMenuItem()
-      .append(new ElectronShellMenuItem("hide"))
-      .append(new ElectronShellMenuItem("hideOthers"))
-      .append(new ElectronShellMenuItem("unhide"));
-    const quitGroup = new UiMenuItem().append(
-      new ElectronShellMenuItem("quit", __DARWIN__ ? undefined : "E&xit")
+    const preferencesItem = new OptionsCommand();
+    const quitItem = new ElectronShellMenuItem(
+      "quit",
+      __DARWIN__ ? undefined : "E&xit"
     );
 
-    const darwinMenu = new UiMenuItem("darwin", "ZX Spectrum IDE")
-      .append(aboutGroup)
-      .append(prefsGroup)
-      .append(servicesGroup)
-      .append(appWindowGroup)
-      .append(quitGroup);
-
-    const createGroup = new UiMenuItem()
+    // --- Assemble the "File" menu
+    const fileMenu = new StandardMenuItem("file", __DARWIN__ ? "File" : "&File")
       .append(new NewProjectCommand())
-      .append(new OpenProjectCommand());
-    const closeGroup = new UiMenuItem().append(new CloseProjectCommand());
-    const fileMenu = new UiMenuItem("file", __DARWIN__ ? "File" : "&File")
-      .append(createGroup)
-      .append(closeGroup);
+      .append(new OpenProjectCommand())
+      .append(new MenuSeparator())
+      .append(new CloseProjectCommand());
     if (!__DARWIN__) {
-      fileMenu.append(prefsGroup);
+      fileMenu.append(preferencesItem);
     }
-    fileMenu.append(quitGroup);
+    fileMenu.append(quitItem);
 
-    const explorerGroup = new UiMenuItem()
+    // --- Assemble the "View" menu
+    const viewMenu = new StandardMenuItem("view", __DARWIN__ ? "View" : "&View")
       .append(new ShowExplorerCommand())
-      .append(new ShowSpectrumEmulatorCommand());
-    const spectrumWindowsGroup = new UiMenuItem()
+      .append(new ShowSpectrumEmulatorCommand())
+      .append(new MenuSeparator())
       .append(new ShowRegistersCommand())
       .append(new ShowDisassemblyCommand())
-      .append(new ShowMemoryCommand());
-    const devToolGroup = new UiMenuItem().append(new ToggleDevToolsCommand());
+      .append(new ShowMemoryCommand())
+      .append(new MenuSeparator())
+      .append(new ToggleDevToolsCommand());
 
-    const viewMenu = new UiMenuItem("view", __DARWIN__ ? "View" : "&View")
-      .append(explorerGroup)
-      .append(spectrumWindowsGroup)
-      .append(devToolGroup);
+    const help3Submenu = new StandardMenuItem("help-topic-3", "Help topic #&3")
+      .append(new StandardMenuItem("help-topic-31", "Help topic #31"))
+      .append(new StandardMenuItem("help-topic-32", "Help topic #32"))
+      .append(new StandardMenuItem("help-topic-33", "Help topic #33"));
+    const help4Submenu = new StandardMenuItem("help-topic-4", "Help topic #&4")
+      .append(new StandardMenuItem("help-topic-41", "Help topic #41"))
+      .append(new StandardMenuItem("help-topic-42", "Help topic #42"))
+      .append(new StandardMenuItem("help-topic-43", "Help topic #43"));
 
-    const help1Group = new UiMenuItem()
-      .enable(false)
-      .append(new UiMenuItem("help-topic-1", "Help topic #1"))
-      .append(new UiMenuItem("help-topic-2", "Help topic #2"));
-    const help3SubGroup = new UiMenuItem("help-topic-3", "Help topic #&3")
-      .append(new UiMenuItem("help-topic-31", "Help topic #31"))
-      .append(new UiMenuItem("help-topic-32", "Help topic #32"))
-      .append(new UiMenuItem("help-topic-33", "Help topic #33"));
-    const help4SubGroup = new UiMenuItem("help-topic-4", "Help topic #&4")
-      .append(new UiMenuItem("help-topic-41", "Help topic #41"))
-      .append(new UiMenuItem("help-topic-42", "Help topic #42"))
-      .append(new UiMenuItem("help-topic-43", "Help topic #43"));
-    const help2Group = new UiMenuItem()
-      .append(help3SubGroup)
-      .append(help4SubGroup);
+    // --- Assemble the "Help" menu
+    const helpMenu = new StandardMenuItem("help", __DARWIN__ ? "Help" : "H&elp")
+      .append(new StandardMenuItem("help-topic-1", "Help topic #1"))
+      .append(new StandardMenuItem("help-topic-2", "Help topic #2"))
+      .append(new MenuSeparator())
+      .append(help3Submenu)
+      .append(new MenuSeparator())
+      .append(help4Submenu);
 
-    const helpMenu = new UiMenuItem("help", __DARWIN__ ? "Help" : "H&elp")
-      .append(help1Group)
-      .append(help2Group);
-
-    const menuCommands = new UiMenuItem();
+    const darwinMenu = new StandardMenuItem("darwin", "ZX Spectrum IDE")
+      .append(new AboutCommand())
+      .append(new MenuSeparator())
+      .append(preferencesItem)
+      .append(new MenuSeparator())
+      .append(new ElectronShellMenuItem("services"))
+      .append(new MenuSeparator())
+      .append(new ElectronShellMenuItem("hide"))
+      .append(new ElectronShellMenuItem("hideOthers"))
+      .append(new ElectronShellMenuItem("unhide"))
+      .append(new MenuSeparator())
+      .append(quitItem);
+    const mainMenu: MenuItemBase[] = [];
     if (__DARWIN__) {
-      menuCommands.append(darwinMenu);
+      mainMenu.push(darwinMenu);
     }
-    menuCommands
-      .append(fileMenu)
-      .append(viewMenu)
-      .append(helpMenu);
+    mainMenu.push(fileMenu, viewMenu, helpMenu);
 
-    this._appCommands = menuCommands;
+    this._appCommands = mainMenu;
     const template = this.buildDefaultMenuFromCommands(this._appCommands);
     this._appMenu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(this._appMenu);
@@ -317,19 +306,19 @@ export class AppWindow {
    * @param command Root command
    */
   private buildDefaultMenuFromCommands(
-    commands: UiMenuItem
+    menus: MenuItemBase[]
   ): MenuItemConstructorOptions[] {
     const topItems: MenuItemConstructorOptions[] = [];
-    commands.items.forEach(item => {
+    menus.forEach(item => {
       if (!item.label) {
         throw new Error("Top level command item must have a label.");
       }
-      if (item.items.length === 0) {
+      if (item.submenu.length === 0) {
         throw new Error(
           "Top level command item must have at least one subcommand."
         );
       }
-      topItems.push(this.buildMenuPaneFromCommands(item));
+      topItems.push(this.buildMenuPaneFromCommands(item.label, item.submenu));
     });
     return topItems;
   }
@@ -339,70 +328,32 @@ export class AppWindow {
    * @param menuGroup
    */
   private buildMenuPaneFromCommands(
-    menuGroup: UiMenuItem
+    label: string,
+    menuGroup: MenuItemDescriptor[] | undefined
   ): MenuItemConstructorOptions {
-    const separator: MenuItemConstructorOptions = { type: "separator" };
     const pane: MenuItemConstructorOptions[] = [];
-    let lastItemWasGroup = false;
-    let groupJustEnded = false;
-    for (let i = 0; i < menuGroup.items.length; i++) {
-      const subitem = menuGroup.items[i];
-
-      // --- Provide separator between groups
-      if (
-        (i > 0 && subitem.items.length > 0 !== lastItemWasGroup) ||
-        groupJustEnded
-      ) {
-        pane.push(separator);
-      }
-      lastItemWasGroup = subitem.items.length > 0;
-      groupJustEnded = false;
-      if (subitem.items.length > 0) {
-        // --- We are about to process a command group
-        for (const item of subitem.items) {
-          let newItem: MenuItemConstructorOptions | null = null;
-          if (item.items.length > 0) {
-            // --- This is a submenu to render
-            const submenu = this.buildMenuPaneFromCommands(item);
-            pane.push(submenu);
-          } else if (item.role) {
-            // --- An Electron Shell predefined role
-            newItem = {
-              type: "normal",
-              role: item.role
-            };
-          } else {
-            // --- Normal menu item
-            newItem = {
-              label: item.label,
-              accelerator: item.accelerator,
-              click: () => item.onExecute(this._window)
-            };
-          }
-
-          if (newItem == null) continue;
-
-          // --- Ad a new item to the pane
-          item.shellMenuItem = newItem;
-          pane.push(newItem);
-        }
-        groupJustEnded = true;
-      } else {
-        // --- Normal menu item
-        pane.push({
-          label: subitem.label,
-          accelerator: subitem.accelerator,
-          click: () => subitem.onExecute(this._window)
-        });
-      }
-    }
+    const appWindow = this;
+    menuGroup.map(function(item: MenuItemBase): MenuItemConstructorOptions {
+      return {
+        id: item.id,
+        type: item.type,
+        role: item.role,
+        submenu: item.submenu
+          ? appWindow.buildMenuPaneFromCommands(item.label, item.submenu).submenu
+          : undefined,
+        label: item.label,
+        accelerator: item.accelerator,
+        enabled: item.enabled,
+        visible: item.visible,
+        checked: item.checked,
+        click: () => item.onExecute(appWindow._window)
+      };
+    });
 
     // --- Done
-    var newMenuItem: MenuItemConstructorOptions = {
-      label: menuGroup.label,
+    return {
+      label,
       submenu: pane
     };
-    menuGroup.shellMenuItem = newMenuItem;
-    return newMenuItem;
   }
 }

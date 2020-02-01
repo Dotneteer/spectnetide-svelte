@@ -14,8 +14,7 @@ import {
 } from "../../shared/state/redux-menu-state";
 import { MenuPaneInfo } from "../../shared/menu/MenuPaneInfo";
 import { ElementRectangle } from "../helpers/ElementRectangle";
-import { flattenCommandGroup } from "../../shared/menu/ui-menu-item";
-import { UiMenuItem } from "../../shared/menu/ui-menu-item";
+import { MenuItemBase, MenuItemDescriptor } from "@/shared/menu/ui-menu-item";
 
 /**
  * Represents the event data when a menu item is pointed with the mouse.
@@ -154,7 +153,7 @@ export function handleItemPointed(args: ItemPointedArgs): void {
  */
 export function handleItemClicked(args: ItemPointedArgs): void {
   const state = store.getState().appMenu;
-  const item = flattenCommandGroup(state.openPanes[args.depth].items)[args.flatIndex];
+  const item = state.openPanes[args.depth].items[args.flatIndex];
   if (item.visible && item.enabled) {
     executeMenuItem(item);
   }
@@ -195,7 +194,7 @@ export function handleKeyDown(ev: KeyboardEvent): void {
     // --- Move to the left
     let index = state.selectedIndex - 1;
     if (index < 0) {
-      index = state.menu.items.length - 1;
+      index = state.menu.length - 1;
     }
 
     // --- Open the pane of the menu button
@@ -218,7 +217,7 @@ export function handleKeyDown(ev: KeyboardEvent): void {
 
     // --- We're in the first menu pane, move to the right
     let index = state.selectedIndex + 1;
-    if (index > state.menu.items.length - 1) {
+    if (index > state.menu.length - 1) {
       index = 0;
     }
 
@@ -265,7 +264,7 @@ export function handleKeyDown(ev: KeyboardEvent): void {
 
   if (state.openPanes.length > 0) {
     const pane = state.openPanes[state.openPanes.length - 1];
-    const pressedIndex = findAccKey(ev.code, flattenCommandGroup(pane.items));
+    const pressedIndex = findAccKey(ev.code, pane.items);
     if (pressedIndex >= 0) {
       store.dispatch(menuItemSelectAction(pressedIndex));
       setTimeout(() => {
@@ -274,7 +273,7 @@ export function handleKeyDown(ev: KeyboardEvent): void {
     }
   } else {
     // --- We're looking for the accelerator key of a main menu item.
-    const pressedIndex = findAccKey(ev.code, state.menu.items);
+    const pressedIndex = findAccKey(ev.code, state.menu);
     if (pressedIndex >= 0) {
       // --- Accelerator key found, set the main menu item to display
       let pane =
@@ -347,7 +346,7 @@ function getButtonPane(index: number): MenuPaneInfo | undefined {
   const pane = {
     id: nextPaneId++,
     parentIndex: -1,
-    items: state.menu.items[index].items,
+    items: state.menu ? state.menu[index].submenu : ([] as MenuItemBase[]),
     leftPos: buttonRect.left,
     topPos: buttonRect.top + buttonRect.height,
     selectedIndex: -1
@@ -373,8 +372,8 @@ function getSubmenuPane(): MenuPaneInfo | null {
     return null;
   }
 
-  const item = flattenCommandGroup(pane.items)[pane.selectedIndex];
-  if (item.items.length === 0) {
+  const item = pane.items[pane.selectedIndex];
+  if (!item.submenu || item.submenu.length === 0) {
     // --- Selected item is not submenu
     return null;
   }
@@ -390,7 +389,7 @@ function getSubmenuPane(): MenuPaneInfo | null {
   const newPane: MenuPaneInfo = {
     id: nextPaneId++,
     parentIndex: pane.selectedIndex,
-    items: item.items,
+    items: item.submenu,
     leftPos: pane.leftPos + paneDim.width,
     topPos: position.top + paneDim.top - 8,
     selectedIndex: -1
@@ -415,9 +414,8 @@ function getSelectedItemPosition(): { left: number; top: number } | null {
   if (pane.selectedIndex < 0) {
     return null;
   }
-  const flattened = flattenCommandGroup(pane.items);
   const { left, top } = paneItems[state.openPanes.length - 1][
-    flattened[pane.selectedIndex].index
+    pane.selectedIndex
   ];
   return {
     left,
@@ -430,10 +428,9 @@ function getSelectedItemPosition(): { left: number; top: number } | null {
  * @param pane Menu pane information
  */
 function setFirstMenuItemIndex(pane: MenuPaneInfo): void {
-  const items = flattenCommandGroup(pane.items);
   let selectedIndex = -1;
-  for (let i = 0; i < items.length; i++) {
-    if (!items[i].separator && items[i].enabled) {
+  for (let i = 0; i < pane.items.length; i++) {
+    if (pane.items[i].type !== "separator" && pane.items[i].enabled) {
       selectedIndex = i;
       break;
     }
@@ -446,7 +443,7 @@ function setFirstMenuItemIndex(pane: MenuPaneInfo): void {
  * @param code Access key code
  * @param items Items to search
  */
-function findAccKey(code: string, items: UiMenuItem[]): number {
+function findAccKey(code: string, items: MenuItemDescriptor[]): number {
   code = code.toLowerCase();
   return items.findIndex(
     item =>
@@ -487,7 +484,7 @@ function menuItemAction(): void {
   }
 
   // --- Execute the selected and enabled menu item.
-  executeMenuItem(flattenCommandGroup(pane.items)[pane.selectedIndex]);
+  executeMenuItem(pane.items[pane.selectedIndex]);
   return;
 }
 
@@ -495,11 +492,12 @@ function menuItemAction(): void {
  * Executes the specified menu item, provided, it is executable.
  * @param item Menu item to executes
  */
-function executeMenuItem(item: UiMenuItem): void {
-  console.log("executeMenuItem");
-  console.log(item);
-  if (item.items.length === 0 && !item.separator) {
+function executeMenuItem(item: MenuItemDescriptor): void {
+  if (
+    (!item.submenu || item.submenu.length === 0) &&
+    item.type !== "separator"
+  ) {
     store.dispatch(menuCloseAllAction());
-    // executeMenuItem(item.id);
-  }
+    //executeMenuItem(item.id);
+  } 
 }
