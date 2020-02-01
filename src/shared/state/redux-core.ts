@@ -1,12 +1,7 @@
 import { webContents, ipcMain, remote, ipcRenderer } from "electron";
 import { Payload } from "./Payload";
 import { ActionTypes } from "./ActionTypes";
-
-/**
- * This type represents the name of the IPC channel we use when forward main process
- * actions to the renderer process.
- */
-const REDUX_ACTION_CHANNEL = "redux-action";
+import { REDUX_ACTION_CHANNEL } from "../channel-ids";
 
 /**
  * The name of the function that serializes the redux state.

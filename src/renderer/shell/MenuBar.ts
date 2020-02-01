@@ -15,6 +15,8 @@ import {
 import { MenuPaneInfo } from "../../shared/menu/MenuPaneInfo";
 import { ElementRectangle } from "../helpers/ElementRectangle";
 import { MenuItemBase, MenuItemDescriptor } from "@/shared/menu/ui-menu-item";
+import { ipcRenderer } from "electron";
+import { MENU_EXEC_CHANNEL } from "@/shared/channel-ids";
 
 /**
  * Represents the event data when a menu item is pointed with the mouse.
@@ -498,6 +500,8 @@ function executeMenuItem(item: MenuItemDescriptor): void {
     item.type !== "separator"
   ) {
     store.dispatch(menuCloseAllAction());
-    //executeMenuItem(item.id);
+
+    // --- Send the execution action to the main process.
+    ipcRenderer.send(MENU_EXEC_CHANNEL, item.id);
   } 
 }

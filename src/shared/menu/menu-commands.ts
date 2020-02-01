@@ -7,9 +7,9 @@ export class AboutCommand extends MenuItemBase {
     super("show-about", "About ZX Spectrum IDE...");
   }
 
-  onExecute(window: BrowserWindow) {
-    // TODO: Implement this command
-  }
+  // onExecute(window: BrowserWindow) {
+  //   // TODO: Implement this command
+  // }
 }
 
 export class OptionsCommand extends MenuItemBase {
@@ -17,9 +17,9 @@ export class OptionsCommand extends MenuItemBase {
     super("show-preferences", __DARWIN__ ? "Preferences..." : "O&ptions...");
   }
 
-  onExecute(window: BrowserWindow) {
-    // TODO: Implement this command
-  }
+  // onExecute(window: BrowserWindow) {
+  //   // TODO: Implement this command
+  // }
 }
 
 export class NewProjectCommand extends MenuItemBase {
@@ -27,9 +27,9 @@ export class NewProjectCommand extends MenuItemBase {
     super("create-project", __DARWIN__ ? "New Project..." : "&New project...");
   }
 
-  onExecute(window: BrowserWindow) {
-    // TODO: Implement this command
-  }
+  // onExecute(window: BrowserWindow) {
+  //   // TODO: Implement this command
+  // }
 }
 
 export class OpenProjectCommand extends MenuItemBase {
@@ -37,9 +37,9 @@ export class OpenProjectCommand extends MenuItemBase {
     super("open-project", __DARWIN__ ? "Open Project..." : "&Open project...");
   }
 
-  onExecute(window: BrowserWindow) {
-    // TODO: Implement this command
-  }
+  // onExecute(window: BrowserWindow) {
+  //   // TODO: Implement this command
+  // }
 }
 
 export class CloseProjectCommand extends MenuItemBase {
@@ -47,9 +47,9 @@ export class CloseProjectCommand extends MenuItemBase {
     super("close-project", __DARWIN__ ? "Close Project" : "Close project");
   }
 
-  onExecute(window: BrowserWindow) {
-    // TODO: Implement this command
-  }
+  // onExecute(window: BrowserWindow) {
+  //   // TODO: Implement this command
+  // }
 }
 
 export class ShowExplorerCommand extends MenuItemBase {
@@ -57,9 +57,9 @@ export class ShowExplorerCommand extends MenuItemBase {
     super("show-project", __DARWIN__ ? "Show Explorer" : "Show explorer");
   }
 
-  onExecute(window: BrowserWindow) {
-    // TODO: Implement this command
-  }
+  // onExecute(window: BrowserWindow) {
+  //   // TODO: Implement this command
+  // }
 }
 
 export class ShowSpectrumEmulatorCommand extends MenuItemBase {
@@ -80,9 +80,9 @@ export class ShowRegistersCommand extends MenuItemBase {
     super("show-registers", __DARWIN__ ? "Z80 Registers" : "Z80 registers");
   }
 
-  onExecute(window: BrowserWindow) {
-    // TODO: Implement this command
-  }
+  // onExecute(window: BrowserWindow) {
+  //   // TODO: Implement this command
+  // }
 }
 
 export class ShowDisassemblyCommand extends MenuItemBase {
@@ -93,9 +93,9 @@ export class ShowDisassemblyCommand extends MenuItemBase {
     );
   }
 
-  onExecute(window: BrowserWindow) {
-    // TODO: Implement this command
-  }
+  // onExecute(window: BrowserWindow) {
+  //   // TODO: Implement this command
+  // }
 }
 
 export class ShowMemoryCommand extends MenuItemBase {
@@ -106,9 +106,9 @@ export class ShowMemoryCommand extends MenuItemBase {
     );
   }
 
-  onExecute(window: BrowserWindow) {
-    // TODO: Implement this command
-  }
+  // onExecute(window: BrowserWindow) {
+  //   // TODO: Implement this command
+  // }
 }
 
 export class ToggleDevToolsCommand extends MenuItemBase {
@@ -119,9 +119,9 @@ export class ToggleDevToolsCommand extends MenuItemBase {
     );
   }
 
-  onExecute(window: BrowserWindow) {
-    // TODO: Implement this command
-  }
+  // onExecute(window: BrowserWindow) {
+  //   // TODO: Implement this command
+  // }
 }
 
 

@@ -7,10 +7,10 @@ import {
 } from "./utils/electron-utils";
 import {
   BrowserWindow,
-  MenuItem,
   MenuItemConstructorOptions,
   Menu,
-  app
+  ipcMain,
+  IpcMainEvent
 } from "electron";
 import { mainProcessStore } from "./mainProcessStore";
 import {
@@ -44,6 +44,8 @@ import {
   ToggleDevToolsCommand
 } from "../shared/menu/menu-commands";
 import { setAppMenuAction } from "../shared/state/redux-menu-state";
+import { MENU_EXEC_CHANNEL } from "@/shared/channel-ids";
+import { menuItemDown } from "@/shared/state/actions";
 
 /**
  * Stores a reference to the lazily loaded `electron-window-state` package.
@@ -74,6 +76,9 @@ export class AppWindow {
 
   // --- The associated Electron Shell application menu
   private _appMenu: Menu;
+
+  // --- The map of available commands
+  private _commandMap: Map<string, MenuItemBase>;
 
   // ==========================================================================
   // Lifecycle methods
@@ -167,6 +172,15 @@ export class AppWindow {
       mainProcessStore.dispatch(restoreAppWindowAction());
     });
 
+    // --- Set up menu command execution
+    ipcMain.on(MENU_EXEC_CHANNEL, (_event: IpcMainEvent, commandId: string) => {
+      const itemToExecute = this._commandMap.get(commandId);
+      if (!itemToExecute) {
+        throw new Error(`Unknown menu command: ${commandId}`);
+      }
+      itemToExecute.onExecute(this.window);
+    });
+
     // --- Allow the `electron-windows-state` package to follow and save the
     // --- app window's state
     savedWindowState.manage(this._window);
@@ -191,6 +205,13 @@ export class AppWindow {
    */
   get appMenu(): Menu | null {
     return this._appMenu;
+  }
+
+  /**
+   * Gets the command map
+   */
+  get commandMap(): Map<string, MenuItemBase> {
+    return this._commandMap;
   }
 
   /**
@@ -262,7 +283,9 @@ export class AppWindow {
     // --- Assemble the "Help" menu
     const helpMenu = new StandardMenuItem("help", __DARWIN__ ? "Help" : "H&elp")
       .append(new StandardMenuItem("help-topic-1", "Help topic #1"))
-      .append(new StandardMenuItem("help-topic-2", "Help topic #2"))
+      .append(
+        new StandardMenuItem("help-topic-2", "Help topic #2").enable(false)
+      )
       .append(new MenuSeparator())
       .append(help3Submenu)
       .append(new MenuSeparator())
@@ -287,7 +310,11 @@ export class AppWindow {
     mainMenu.push(fileMenu, viewMenu, helpMenu);
 
     this._appCommands = mainMenu;
-    const template = this.buildDefaultMenuFromCommands(this._appCommands);
+    this._commandMap = new Map<string, MenuItemBase>();
+    const template = this.buildDefaultMenuFromCommands(
+      this._appCommands,
+      this._commandMap
+    );
     this._appMenu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(this._appMenu);
     mainProcessStore.dispatch(setAppMenuAction(this._appCommands));
@@ -306,7 +333,8 @@ export class AppWindow {
    * @param command Root command
    */
   private buildDefaultMenuFromCommands(
-    menus: MenuItemBase[]
+    menus: MenuItemBase[],
+    commandMap: Map<string, MenuItemBase>
   ): MenuItemConstructorOptions[] {
     const topItems: MenuItemConstructorOptions[] = [];
     menus.forEach(item => {
@@ -318,7 +346,9 @@ export class AppWindow {
           "Top level command item must have at least one subcommand."
         );
       }
-      topItems.push(this.buildMenuPaneFromCommands(item.label, item.submenu));
+      topItems.push(
+        this.buildMenuPaneFromCommands(item.label, item.submenu, commandMap)
+      );
     });
     return topItems;
   }
@@ -329,25 +359,50 @@ export class AppWindow {
    */
   private buildMenuPaneFromCommands(
     label: string,
-    menuGroup: MenuItemDescriptor[] | undefined
+    menuGroup: MenuItemDescriptor[] | undefined,
+    commandMap: Map<string, MenuItemBase>
   ): MenuItemConstructorOptions {
-    const pane: MenuItemConstructorOptions[] = [];
     const appWindow = this;
-    menuGroup.map(function(item: MenuItemBase): MenuItemConstructorOptions {
-      return {
+    const pane = menuGroup.map(function(
+      item: MenuItemBase
+    ): MenuItemConstructorOptions {
+      if (
+        item.type !== "separator" &&
+        (!item.submenu || item.submenu.length > 0)
+      ) {
+        // --- Leaf menu item (command)
+        if (commandMap.has(item.id)) {
+          throw new Error(
+            `Menu command with id '${item.id}' already registered.`
+          );
+        }
+        commandMap.set(item.id, item);
+      }
+
+      // --- Create an Electron Shell menu item
+      const menuItem: MenuItemConstructorOptions = {
         id: item.id,
         type: item.type,
         role: item.role,
         submenu: item.submenu
-          ? appWindow.buildMenuPaneFromCommands(item.label, item.submenu).submenu
+          ? appWindow.buildMenuPaneFromCommands(
+              item.label,
+              item.submenu,
+              commandMap
+            ).submenu
           : undefined,
         label: item.label,
         accelerator: item.accelerator,
         enabled: item.enabled,
         visible: item.visible,
         checked: item.checked,
-        click: () => item.onExecute(appWindow._window)
       };
+
+      // --- Set up custom action
+      if (!menuItem.role) {
+        menuItem.click = () => item.onExecute(appWindow._window);
+      }
+      return menuItem;
     });
 
     // --- Done

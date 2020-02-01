@@ -174,7 +174,9 @@ export abstract class MenuItemBase implements MenuItemDescriptor {
    * @param window Host browser window
    * Override this method to specify execution behavior
    */
-  onExecute(window: BrowserWindow): void {}
+  onExecute(window: BrowserWindow): void {
+    console.log(`Command '${this.id}' executed.`);
+  }
 
   /**
    * Instructs the menu item to update its status
