@@ -1,6 +1,10 @@
 <script>
+  import ActivityButton from "./ActivityButton.svelte"
+
+  import { ActivityService } from "../activity/ActivityService";
   import { rendererProcessStore } from "../rendererProcessStore";
 
+  export let activities;
 </script>
 
 <style>
@@ -15,4 +19,10 @@
   }
 </style>
 
-<aside />
+<aside>
+{#if activities}
+  {#each activities as activity}
+    <ActivityButton {activity} />
+  {/each}
+{/if}
+</aside>

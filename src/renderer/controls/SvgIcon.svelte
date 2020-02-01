@@ -42,5 +42,8 @@
   style={styleValue}
   viewBox="0 0 {iconInfo.width}
   {iconInfo.height}">
-  <path d={iconInfo.path} />
+  <path
+    d={iconInfo.path}
+    fill-rule={iconInfo['fill-rule']}
+    clip-rule={iconInfo['clip-rule']} />
 </svg>

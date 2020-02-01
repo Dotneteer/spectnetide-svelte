@@ -25,6 +25,11 @@ export interface AppState {
    * Application menu state
    */
   appMenu?: MenuState;
+
+  /**
+   * The ID of the current activity
+   */
+  activity: string | null;
 }
 
 /**

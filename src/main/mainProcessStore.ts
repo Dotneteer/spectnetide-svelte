@@ -17,7 +17,8 @@ const defaultState: AppState = {
     selectedIndex: -1,
     openPanes: [],
     keyboardAction: false
-  }
+  },
+  activity: null
 };
 
 const spectNetApp = combineReducers(appReducers);

@@ -8,7 +8,9 @@
   import { ThemeService } from "./themes/ThemeService";
   import { lightTheme } from "./themes/light-theme";
   import { darkTheme } from "./themes/dark-theme";  
+  import { ActivityService } from "./activity/ActivityService";
 
+  // --- Set up application themes
   let themeStyle = "";
   let themeClass = "";
 
@@ -24,6 +26,31 @@
   ThemeService.registerTheme(lightTheme);
   ThemeService.registerTheme(darkTheme);
   ThemeService.setTheme("dark");
+
+  // --- Set up application activities
+  let activities;
+  ActivityService.activitiesChanged.on(items => activities = items);
+
+  ActivityService.registerActivity({
+    id: "emulator-view",
+    iconName: "vm"
+  });
+  ActivityService.registerActivity({
+    id: "file-view",
+    iconName: "files"
+  });
+  ActivityService.registerActivity({
+    id: "debug-view",
+    iconName: "debug"
+  });
+  ActivityService.registerActivity({
+    id: "test-view",
+    iconName: "beaker"
+  });
+  ActivityService.registerActivity({
+    id: "settings",
+    iconName: "settings-gear"
+  });
 </script>
 
 <style>
@@ -36,6 +63,7 @@
     flex-shrink: 0;
     user-select: none;
     background-color: var(--shell-canvas-background-color);
+    outline: none;
   }
 
   .main-panel {
@@ -48,10 +76,10 @@
   }
 </style>
 
-<main style={themeStyle} class={themeClass}>
+<main style={themeStyle} class={themeClass} tabindex="0">
   <Titlebar />
   <div class="main-panel">
-    <ActivityBar />
+    <ActivityBar {activities} />
     <SideBar />
     <MainCanvas />
   </div>

@@ -42,6 +42,7 @@
   style="color:{titleColor}"
   class:pointed
   on:mouseenter={() => dispatch('pointed')}
+  on:mouseleave={() => dispatch('unpointed')}
   on:click={() => dispatch('clicked')}>
   <MenuText {text} {highlight} />
 </div>

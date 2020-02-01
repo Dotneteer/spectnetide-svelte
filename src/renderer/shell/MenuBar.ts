@@ -1,4 +1,4 @@
-import { menuAltPressed, menuAltReleased } from "../../shared/state/actions";
+import { menuAltPressed, menuAltReleased, menuButtonMouseEnter } from "../../shared/state/actions";
 import { rendererProcessStore } from "../rendererProcessStore";
 import {
   menuPaneCloseAction,
@@ -15,8 +15,7 @@ import {
 import { MenuPaneInfo } from "../../shared/menu/MenuPaneInfo";
 import { ElementRectangle } from "../helpers/ElementRectangle";
 import { MenuItemBase, MenuItemDescriptor } from "@/shared/menu/ui-menu-item";
-import { ipcRenderer } from "electron";
-import { MENU_EXEC_CHANNEL } from "@/shared/channel-ids";
+import { executeCommand } from "../helpers/commands";
 
 /**
  * Represents the event data when a menu item is pointed with the mouse.
@@ -306,6 +305,13 @@ export function handleButtonMouseEnter(index: number): void {
   lastMouseEntered = undefined;
 }
 
+export function handleButtonMouseLeave(): void {
+  const state = store.getState().appMenu;
+  if (state.openPanes.length === 0) {
+    store.dispatch(menuButtonMouseEnter(-1));
+  }
+}
+
 /**
  * Handles the event when a menu button is clicked.
  * @param index button index
@@ -500,8 +506,6 @@ function executeMenuItem(item: MenuItemDescriptor): void {
     item.type !== "separator"
   ) {
     store.dispatch(menuCloseAllAction());
-
-    // --- Send the execution action to the main process.
-    ipcRenderer.send(MENU_EXEC_CHANNEL, item.id);
+    executeCommand(item.id);
   } 
 }

@@ -1,19 +1,20 @@
+<script>
+export let title = "<untitled>";
+</script>
 <style>
   div {
     display: flex;
     flex-grow: 1;
     flex-shrink: 1;
+    flex-basis: auto;
     justify-content: center;
     font-size: 0.8em;
-  }
-
-  span {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    zoom: 1;
   }
+
 </style>
 
-<div>
-  <span>Zx Spectrum IDE</span>
-</div>
+<div>{title}</div>

@@ -187,7 +187,7 @@ export function appMenuStateReducer(
       return {
         ...state,
         selectedIndex: payload.itemIndex,
-        keyboardAction: true
+        keyboardAction: false
       };
 
     case "MENU_BUTTON_CLICK":

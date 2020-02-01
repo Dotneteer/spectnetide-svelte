@@ -74,7 +74,7 @@ export class StateAwareObject<TState = AppState> {
    * @param oldState Old state
    * @param newState New state
    */
-  get onStateChanged(): ILiteEvent<AppState> {
+  get onStateChanged(): ILiteEvent<TState> {
     return this._onStateChanged;
   }
 }

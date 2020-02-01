@@ -7,6 +7,7 @@
     handleKeyDown,
     handleKeyUp,
     handleButtonMouseEnter,
+    handleButtonMouseLeave,
     handleButtonClick,
     handleItemPointed,
     handleItemClicked
@@ -21,7 +22,8 @@
   } from "../rendererProcessStore";
   import {
     refreshMenuAction,
-    menuCloseAllAction
+    menuCloseAllAction,
+    menuButtonMouseEnterAction
   } from "../../shared/state/redux-menu-state";
 
   // --- Menu bar title color depends on focused/unfocused state
@@ -73,7 +75,7 @@
 </style>
 
 <svelte:window on:keydown={handleKeyDown} on:keyup={handleKeyUp} />
-<div tabindex="0">
+<div tabindex="0" on:blur={() => stateAware.dispatch(menuCloseAllAction())}>
   {#if appMenu}
     {#each appMenu.menu as item, index}
       <MenuButton
@@ -83,6 +85,7 @@
         {titleColor}
         on:buttonmounted={e => handleButtonMounted(index, e.detail)}
         on:pointed={() => handleButtonMouseEnter(index)}
+        on:unpointed={() => handleButtonMouseLeave()}
         on:clicked={() => handleButtonClick(index)} />
     {/each}
     {#if appMenu.openPanes}

@@ -26,4 +26,14 @@ export interface IconInfo {
    * Optional fill value.
    */
   fill?: string;
+
+  /**
+   * The fill-rule value of the icon
+   */
+  "fill-rule"?: string;
+
+  /**
+   * The clip-rule value of the icon
+   */
+  "clip-rule"?: string;
 }

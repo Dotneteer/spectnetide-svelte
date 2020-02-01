@@ -119,9 +119,7 @@ export class ToggleDevToolsCommand extends MenuItemBase {
     );
   }
 
-  // onExecute(window: BrowserWindow) {
-  //   // TODO: Implement this command
-  // }
+  onExecute(window: BrowserWindow) {
+    window.webContents.toggleDevTools();
+  }
 }
-
-

@@ -13,6 +13,7 @@
     maximizeAppWindowAction
   } from "../../shared/state/redux-window-state";
   import { createRendererProcessStateAware } from "../rendererProcessStore";
+  import { executeCommand } from "../helpers/commands.ts"
 
   // --- We change Titlebar colors as the app focus changes
   let titleColor;
@@ -96,7 +97,7 @@
     <img alt="logo" src="./public/assets/spectnet-logo.png" />
   </div>
   <MenuBar {titleColor} />
-  <AppCaption />
+  <AppCaption title="ZX Spectrum IDE"/>
   <div class="title-buttons">
     <div
       class="window-control"
@@ -116,7 +117,8 @@
         <SvgIcon iconName="maximize" fill="white" width="10" height="10" />
       </div>
     {/if}
-    <div class="window-control close">
+    <div class="window-control close"
+        on:click={() => executeCommand("quit")}>
       <SvgIcon iconName="close-lean" fill="white" width="10" height="10" />
     </div>
   </div>
