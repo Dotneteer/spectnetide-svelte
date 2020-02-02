@@ -1,9 +1,14 @@
 <script>
+  import { onMount } from "svelte";
+
   import Titlebar from "./shell/Titlebar.svelte";
   import ActivityBar from "./shell/ActivityBar.svelte";
   import SideBar from "./shell/SideBar.svelte";
   import MainCanvas from "./shell/MainCanvas.svelte";
   import Statusbar from "./shell/Statusbar.svelte";
+
+  import Split from "./controls/Splitter";
+  //import Split from "split.js";
   
   import { ThemeService } from "./themes/ThemeService";
   import { lightTheme } from "./themes/light-theme";
@@ -26,6 +31,14 @@
   ThemeService.registerTheme(darkTheme);
   ThemeService.setTheme("dark");
 
+  onMount(() => {
+    Split(["#sidebar", "#main-canvas"], {
+      gutterStyle: (_dim, _size, _index) => ({
+        cursor: "col-resize",
+        width: "8px"
+      })
+    });
+  });
 </script>
 
 <style>
@@ -49,14 +62,20 @@
     height: 100%;
     width: 100%;
   }
+
+  .gutter-horizontal {
+    cursor: col-resize;
+  }
 </style>
 
 <main style={themeStyle} class={themeClass} tabindex="0">
   <Titlebar />
   <div class="main-panel">
     <ActivityBar />
-    <SideBar />
-    <MainCanvas />
+    <div class="main-panel">
+      <SideBar id="sidebar" />
+      <MainCanvas id="main-canvas" />
+    </div>
   </div>
   <Statusbar />
 </main>

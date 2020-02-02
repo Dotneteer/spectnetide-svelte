@@ -1,3 +1,7 @@
+<script>
+  export let id;
+</script>
+
 <style>
   aside {
     display: flex;
@@ -10,4 +14,4 @@
   }
 </style>
 
-<aside />
+<aside {id} />

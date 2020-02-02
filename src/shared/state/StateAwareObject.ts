@@ -7,6 +7,7 @@ import { LiteEvent, ILiteEvent } from "../menu/utils/LiteEvent";
  */
 export class StateAwareObject<TState = AppState> {
   private _unsubscribeFunc: Unsubscribe;
+  private _previousState: TState;
   private _state: TState;
   private _onStateChanged = new LiteEvent<TState>();
 
@@ -28,10 +29,17 @@ export class StateAwareObject<TState = AppState> {
   }
 
   /**
-   * The current state of the component
+   * The current state of the store
    */
   get state(): TState {
     return this._state;
+  }
+
+  /**
+   * Gets the previous state of the store
+   */
+  get previousState(): TState {
+    return this._previousState;
   }
 
   /**
@@ -48,9 +56,9 @@ export class StateAwareObject<TState = AppState> {
    */
   evalState(): void {
     const state = this.store.getState() as AppState;
-    const oldState = this._state;
+    this._previousState = this._state;
     this._state = this.extractPartialState(state);
-    if (oldState !== this._state) {
+    if (this._previousState !== this._state) {
       this._onStateChanged.fire(this._state);
     }
   }
