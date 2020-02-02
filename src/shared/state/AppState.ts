@@ -1,6 +1,7 @@
 import { WindowState } from "./redux-window-state";
 import { MenuPaneInfo } from "../menu/MenuPaneInfo";
 import { MenuItemBase } from "../menu/ui-menu-item";
+import { Activity } from "../activity/Activity";
 
 /**
  * Represents the state of the application
@@ -29,7 +30,7 @@ export interface AppState {
   /**
    * The ID of the current activity
    */
-  activity: string | null;
+  activityBar?: ActivityBarState
 }
 
 /**
@@ -60,4 +61,24 @@ export interface MenuState {
    * Indicates if the last action was a keyboard action
    */
   keyboardAction: boolean;
+}
+
+/**
+ * Represents the state of the activity bar
+ */
+export interface ActivityBarState {
+  /**
+   * The list of activities to display
+   */
+  activities?: Activity[];
+
+  /**
+   * The index of the active activity
+   */
+  activeIndex?: number;
+
+  /**
+   * The index of activity the mouse points to
+   */
+  pointedIndex?: number;
 }

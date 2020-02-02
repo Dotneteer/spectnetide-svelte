@@ -1,5 +1,6 @@
 import { MenuPaneInfo } from "../menu/MenuPaneInfo";
 import { MenuItemBase } from "../menu/ui-menu-item";
+import { Activity } from "../activity/Activity";
 
 /**
  * This interface represents the shape of the payload
@@ -14,4 +15,5 @@ export interface Payload {
   model?: string;
   edition?: string;
   runsInDebugMode?: boolean;
+  activities?: Activity[]
 }

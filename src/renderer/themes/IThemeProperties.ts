@@ -29,4 +29,8 @@ export interface IThemeProperties {
   "--menu-pane-shadow": string;
   "--menu-selected-background": string;
   "--menu-selected-text-color": string;
+
+  "--activity-icon-color": string;
+  "--activity-current-icon-color": string;
+  "--activity-current-background-color": string;
 }

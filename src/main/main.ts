@@ -2,7 +2,7 @@ import { app } from "electron";
 import { AppWindow } from "./AppWindow";
 
 // --- Global reference to the mainwindow
-let mainWindow;
+let mainWindow: AppWindow;
 
 /**
  * Sets up the main window
@@ -10,6 +10,7 @@ let mainWindow;
 function setupAppWindow() {
   mainWindow = new AppWindow();
   mainWindow.setupMenu();
+  mainWindow.setupActivityBar();
   mainWindow.load();
 }
 

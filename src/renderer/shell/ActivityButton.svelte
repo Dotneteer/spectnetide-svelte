@@ -1,8 +1,16 @@
 <script>
+  import { createEventDispatcher } from "svelte";
   import { Activity } from "../../shared/activity/Activity";
+  import { ThemeService } from "../themes/ThemeService";
+
   import SvgIcon from "../controls/SvgIcon.svelte";
 
   export let activity;
+  export let active;
+  export let pointed;
+  export let isSystem
+
+  const dispatch = createEventDispatcher();
 </script>
 
 <style>
@@ -13,10 +21,29 @@
     justify-content: center;
     align-items: center;
   }
+  
+  .active {
+    background-color: var(--activity-current-background-color);
+  }
+
+  .system {
+    align-self: flex-end
+  }
+
 </style>
 
-  <div>
-{#if activity}
-    <SvgIcon iconName={activity.iconName} width="24" height="24" />
-{/if}
-  </div>
+<div
+  class:active
+  class:system={isSystem}
+  on:click={() => dispatch('clicked')}
+  on:mouseenter={() => dispatch('pointed')}
+  on:mouseleave={() => dispatch('unpointed')}>
+  
+  {#if activity}
+    <SvgIcon
+      iconName={activity.iconName}
+      width="24"
+      height="24"
+      fill={ThemeService.getProperty(active || pointed ? '--activity-current-icon-color' : '--activity-icon-color')} />
+  {/if}
+</div>

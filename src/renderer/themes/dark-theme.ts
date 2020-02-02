@@ -7,7 +7,7 @@ export const darkTheme: ITheme = {
   name: "dark",
   properties: {
     "--shell-canvas-background-color": "#1E1E1E",
-    "--activity-bar-background-color": "#303030",
+    "--activity-bar-background-color": "#333333",
     "--sidebar-background-color": "#252526",
     "--status-bar-background-color": "#007acc",
     "--status-bar-color": "#ffffff",
@@ -17,18 +17,23 @@ export const darkTheme: ITheme = {
 
     "--titlebar-background-color": "#333333",
     "--titlebar-focused-background-color": "#3c3c3c",
-    "--titlebar-text-color": "#cccccc",
-    "--titlebar-focused-text-color": "#ffffff",
+    "--titlebar-text-color": "#ffffffc0",
+    "--titlebar-focused-text-color": "#ffffffe0",
 
     "--menu-bar-background-color": "#3c3c3c",
     "--menu-active-background-color": "#505050",
-    "--menu-text-color": "#ffffff",
+    "--menu-text-color": "#ffffffc0",
     "--menu-disabled-text-color": "#AAAAAA",
     "--menu-selected-background-color": "#094771",
     "--menu-pane-background-color": "#252526",
     "--menu-pane-shadow": "rgb(0, 0, 0) 0px 2px 4px",
     "--menu-selected-background": "#094771",
-    "--menu-selected-text-color": "#ffffff"
+    "--menu-selected-text-color": "#ffffff",
+
+    "--activity-icon-color": "#ffffff66",
+    "--activity-current-icon-color": "#ffffff",
+    "--activity-current-background-color": "#505050",
+
 
     // "--window-frame-border-color": "transparent",
     // "--window-frame-border-width": "0px",

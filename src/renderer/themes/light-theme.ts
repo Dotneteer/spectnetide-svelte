@@ -30,6 +30,10 @@ export const lightTheme: ITheme = {
     "--menu-selected-background": "#094771",
     "--menu-selected-text-color": "#ffffff",
 
+    "--activity-icon-color": "#cccccc",
+    "--activity-current-icon-color": "#ffffff",
+    "--activity-current-background-color": "#505050",
+
     // "--window-frame-border-color": "transparent",
     // "--window-frame-border-width": "0px",
     // "--window-pane-border-color": "#dcdcdc",

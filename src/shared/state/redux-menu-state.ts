@@ -4,9 +4,9 @@ import {
   createLocalAction
 } from "./redux-core";
 import { MenuState } from "./AppState";
-import { appWindow } from "./redux-window-state";
 import { MenuPaneInfo } from "../menu/MenuPaneInfo";
 import { MenuItemBase } from "../menu/ui-menu-item";
+import { appWindow } from "./app-reducers";
 
 let autoPaneId = -1;
 
@@ -24,7 +24,7 @@ export function setAppMenuAction(menu: MenuItemBase[]): SpectNetAction {
 }
 
 /**
- * Creates an action for maximizing the application window
+ * Creates an action for refreshing the application menu
  */
 export const refreshMenuAction = createAliasedAction("REFRESH_MENU", () => {
   if (appWindow) {

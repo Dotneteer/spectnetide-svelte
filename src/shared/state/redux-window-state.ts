@@ -1,5 +1,5 @@
 import { createAliasedAction, SpectNetAction } from "./redux-core";
-import { AppWindow } from "../../main/AppWindow";
+import { appWindow } from "./app-reducers";
 
 /**
  * Represents the available values of window states.
@@ -10,19 +10,6 @@ export type WindowState =
   | "maximized"
   | "full-screen"
   | "hidden";
-
-/**
- * Stores the reference to the host browser window
- */
-export let appWindow: AppWindow;
-
-/**
- * Sets the referencve to the host browser window
- * @param window Host browser window
- */
-export function setAppWindow(window: AppWindow) {
-  appWindow = window;
-}
 
 /**
  * Creates an action for maximizing the application window

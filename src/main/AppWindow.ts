@@ -19,7 +19,6 @@ import {
   appLostFocusAction
 } from "../shared/state/redux-app-focus";
 import {
-  setAppWindow,
   restoreAppWindowAction,
   maximizeAppWindowAction,
   minimizeAppWindowAction
@@ -46,6 +45,9 @@ import {
 } from "../shared/menu/menu-commands";
 import { setAppMenuAction } from "../shared/state/redux-menu-state";
 import { MENU_EXEC_CHANNEL } from "@/shared/channel-ids";
+import { Activity } from "@/shared/activity/Activity";
+import { setActivitiesAction } from "@/shared/state/redux-activity-state";
+import { setAppWindow } from "@/shared/state/app-reducers";
 
 /**
  * Stores a reference to the lazily loaded `electron-window-state` package.
@@ -79,6 +81,9 @@ export class AppWindow {
 
   // --- The map of available commands
   private _commandMap: Map<string, MenuItem>;
+
+  // --- The available activities
+  private _activities: Activity[] | null;
 
   // ==========================================================================
   // Lifecycle methods
@@ -240,7 +245,7 @@ export class AppWindow {
   }
 
   /**
-   * Sets up the initial application menu
+   * Sets up the initial application menu.
    */
   setupMenu(): void {
     const preferencesItem = new OptionsCommand();
@@ -323,6 +328,42 @@ export class AppWindow {
    */
   refreshMenu(): void {
     mainProcessStore.dispatch(setAppMenuAction(this._appCommands));
+  }
+
+  /**
+   * Sets up the initial activity bar.
+   */
+  setupActivityBar(): void {
+    this._activities = [
+      {
+        id: "emulator-view",
+        iconName: "vm"
+      },
+      {
+        id: "file-view",
+        iconName: "files"
+      },
+      {
+        id: "debug-view",
+        iconName: "debug"
+      },
+      {
+        id: "test-view",
+        iconName: "beaker"
+      },
+      {
+        id: "settings",
+        iconName: "settings-gear",
+        isSystemActivity: true,
+      }
+    ];
+  }
+
+  /**
+   * Refreshes the state with the current activities.
+   */
+  refreshActivityBar(): void {
+    mainProcessStore.dispatch(setActivitiesAction(this._activities));
   }
 
   /**

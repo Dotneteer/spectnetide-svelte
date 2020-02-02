@@ -37,14 +37,9 @@ export interface ActionTypes {
   MENU_CLOSE_ALL: null,
   SET_MODAL: null,
 
-  // --- Project actions
-  OPEN_PROJECT: null,
-  CLOSE_PROJECT: null,
-  VM_CREATED: null,
-  VM_DISPOSED: null,
-  VM_START: null,
-  VM_PAUSING: null,
-  VM_PAUSED: null,
-  VM_STOPPING: null,
-  VM_STOPPED: null
+  // --- Activity bar actions
+  SET_ACTIVITIES: null;
+  REFRESH_ACTIVITIES: null;
+  CHANGE_ACTIVITY: null;
+  POINT_ACTIVITY: null;
 };
