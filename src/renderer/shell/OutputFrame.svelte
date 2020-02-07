@@ -1,4 +1,15 @@
 <script>
+  // ==========================================================================
+  // Represents the output window frame
+
+  // ==========================================================================
+  // Component parameters
+  // --- Initial size of the output frame
+  export let initialSize;
+
+  // --- Current output frame dimensions
+  export let outputWidth;
+  export let outputHeight;
 </script>
 
 <style>
@@ -11,5 +22,8 @@
   }
 </style>
 
-<div class="output-frame">
-</div>
+<div
+  class="output-frame"
+  data-initial-size={initialSize}
+  bind:clientWidth={outputWidth}
+  bind:clientHeight={outputHeight} />

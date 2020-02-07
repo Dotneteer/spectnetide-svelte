@@ -2,7 +2,7 @@
   // ==========================================================================
   // Generic container for panels that have splitters (gutters) among them.
 
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, createEventDispatcher } from "svelte";
   import Split from "../controls/Splitter";
   import {
     splitterMoved,
@@ -13,11 +13,21 @@
   } from "./SplitContainer";
   import { isDescendant } from "../../shared/html-utils";
 
+  // ==========================================================================
+  // Component parameters
   // --- Component split direction: "horizontal"/"vertical"
   export let direction = "horizontal";
 
   // --- Size of the gutter
   export let gutterSize = 8;
+  // ==========================================================================
+  // Internal variables
+  // --- Reference to the host element
+  let hostElement;
+
+  // ==========================================================================
+  // Component logic
+  const dispatch = createEventDispatcher();
 
   // --- Calculated properties used for styling
   $: flexDir = `flex-direction: ${
@@ -25,15 +35,15 @@
   }`;
   $: size = direction === "horizontal" ? "clientWidth" : "clientHeight";
 
-  // --- Reference to the host element
-  let hostElement;
-
+  // --- Initialize the component visuals
   onMount(() => {
-    // --- Notify child splitters when this one is moved
-    splitterMoved.on(onSplitterMoved);
     // --- Resize the splitter every time the component is rendered
     setupSplitter(true);
+    // --- Notify child splitters when this one is moved
+    splitterMoved.on(onSplitterMoved);
   });
+
+  // --- Clean up resources
   onDestroy(() => {
     // --- Unsubscribe from movement events
     splitterMoved.off(onSplitterMoved);
@@ -64,6 +74,9 @@
 
   // --- Notify child splitters
   function onSplitterMoved(node) {
+    if (node === hostElement) {
+      dispatch("moved", node);
+    }
     if (isDescendant(node, hostElement)) {
       setupSplitter(false);
     }

@@ -345,7 +345,7 @@ export class AppWindow {
       },
       {
         id: "debug-view",
-        iconName: "debug"
+        iconName: "debug-alt"
       },
       {
         id: "test-view",
