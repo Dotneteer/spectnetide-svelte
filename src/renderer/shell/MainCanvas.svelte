@@ -1,7 +1,3 @@
-<script>
-  export let id;
-</script>
-
 <style>
   div {
     display: block;
@@ -12,4 +8,4 @@
   }
 </style>
 
-<div {id} />
+<div />

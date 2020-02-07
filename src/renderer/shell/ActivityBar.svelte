@@ -25,7 +25,7 @@
 </script>
 
 <style>
-  aside {
+  .activity-bar {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -51,7 +51,7 @@
   }
 </style>
 
-<aside>
+<div class="activity-bar">
   <div class="button-area">
     {#if activities}
       {#each activities as activity, index}
@@ -85,4 +85,4 @@
       {/each}
     {/if}
   </div>
-</aside>
+</div>

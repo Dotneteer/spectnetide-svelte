@@ -69,10 +69,6 @@
     padding-right: 8px;
   }
 
-  .icon {
-    margin-right: 4px;
-  }
-
   .icon-placeholder {
     width: 18px;
   }

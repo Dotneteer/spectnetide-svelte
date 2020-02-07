@@ -1,9 +1,9 @@
 <script>
-  export let id;
+  export let initialSize = 192;
 </script>
 
 <style>
-  aside {
+  .sidebar {
     display: flex;
     flex-direction: column;
     flex-grow: 0;
@@ -14,4 +14,4 @@
   }
 </style>
 
-<aside {id} />
+<div class="sidebar" data-initial-size={initialSize} />
