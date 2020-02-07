@@ -1,4 +1,7 @@
 <script>
+  // ==========================================================================
+  // Represents the leftmost panel of the shell, the activity bar.
+
   import { onMount, onDestroy } from "svelte";
   import { createRendererProcessStateAware } from "../rendererProcessStore";
   import {
@@ -9,8 +12,13 @@
 
   import ActivityButton from "./ActivityButton.svelte";
 
+  // --- All activity objects (with corresponding icons)
   let activities;
+
+  // --- Index of the selected activity (-1: none)
   let activeIndex;
+
+  // --- Index of the activity pointed with mouse (-1: none)
   let pointedIndex;
 
   // --- Respond to the event when app focus changes
@@ -20,7 +28,11 @@
     activeIndex = state.activeIndex;
     pointedIndex = state.pointedIndex;
   });
+
+  // --- When rendered, let's refresh the list of activities
   onMount(() => stateAware.dispatch(refreshMenuAction()));
+
+  // --- Release resources
   onDestroy(() => stateAware.onStateChanged.release());
 </script>
 

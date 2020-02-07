@@ -56,7 +56,7 @@
   <Titlebar />
   <div class="main-panel">
     <ActivityBar />
-    <SplitContainer>
+    <SplitContainer gutterSize="4">
       <SideBar />
       <MainCanvas />
     </SplitContainer>

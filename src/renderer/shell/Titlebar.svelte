@@ -1,4 +1,8 @@
 <script>
+  // ==========================================================================
+  // Represents the shell's title bar with the logo, menu bar, title and drag
+  // area, and window chrome buttons.
+  
   import { onDestroy } from "svelte";
   import "../../../public/assets/spectnet-logo.png"
 
@@ -29,6 +33,8 @@
     windowState = state.windowState;
     calculateColors(state.appHasFocus);
   });
+
+  // --- Release resources
   onDestroy(() => stateAware.onStateChanged.release());
 
   // --- Calculate colors according to focus state
