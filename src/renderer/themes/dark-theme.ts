@@ -9,6 +9,8 @@ export const darkTheme: ITheme = {
     "--shell-canvas-background-color": "#1E1E1E",
     "--activity-bar-background-color": "#333333",
     "--sidebar-background-color": "#252526",
+    "--panel-separator-border": "#8080805a",
+
     "--status-bar-background-color": "#007acc",
     "--status-bar-color": "#ffffff",
 

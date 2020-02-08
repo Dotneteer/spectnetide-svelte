@@ -9,7 +9,8 @@
 
   // ==========================================================================
   // Component parameters
-  // --- Output window position: "left" | "bottom" | "right" | "hidden"
+  // --- Output window position
+  // --- "left" | "bottom" | "right" | "hidden" | maximized
   export let outputPosition = "bottom";
 
   // ==========================================================================
@@ -35,6 +36,9 @@
         outputPosition = "hidden";
         break;
       case "hidden":
+        outputPosition = "maximized";
+        break;
+      case "maximized":
         outputPosition = "left";
         break;
     }
@@ -42,7 +46,6 @@
 
   // --- Store output window sizes whenever the splitter moves.
   function splitterMoved() {
-    console.log(`o: ${outputPosition}`);
     if (outputPosition === "bottom") {
       verticalOutputSize = outputHeight;
     } else {
@@ -62,40 +65,26 @@
 
 <svelte:window on:keydown={() => rotatePos()} />
 <div>
-  {#if outputPosition === 'left'}
-    <SplitContainer
-      direction="horizontal"
-      gutterSize="4"
-      on:moved={() => splitterMoved()}>
+  <SplitContainer
+    direction={outputPosition === 'bottom' ? 'vertical' : 'horizontal'}
+    refreshTag={outputPosition}
+    on:moved={() => splitterMoved()}>
+    {#if outputPosition === 'left'}
       <OutputFrame
+        position={outputPosition}
         initialSize={horizontalOutputSize}
         bind:outputWidth
         bind:outputHeight />
+    {/if}
+    {#if outputPosition !== 'maximized'}
       <DocumentFrame />
-    </SplitContainer>
-  {:else if outputPosition === 'right'}
-    <SplitContainer
-      direction="horizontal"
-      gutterSize="4"
-      on:moved={() => splitterMoved()}>
-      <DocumentFrame />
+    {/if}
+    {#if outputPosition === 'bottom' || outputPosition === 'right' || outputPosition === 'maximized'}
       <OutputFrame
-        initialSize={horizontalOutputSize}
+        position={outputPosition}
+        initialSize={outputPosition === 'bottom' ? verticalOutputSize : horizontalOutputSize}
         bind:outputWidth
         bind:outputHeight />
-    </SplitContainer>
-  {:else if outputPosition === 'bottom'}
-    <SplitContainer
-      direction="vertical"
-      gutterSize="4"
-      on:moved={() => splitterMoved()}>
-      <DocumentFrame />
-      <OutputFrame
-        initialSize={verticalOutputSize}
-        bind:outputWidth
-        bind:outputHeight />
-    </SplitContainer>
-  {:else}
-    <DocumentFrame />
-  {/if}
+    {/if}
+  </SplitContainer>
 </div>

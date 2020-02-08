@@ -55,7 +55,7 @@
     display: flex;
     flex-shrink: 0;
     height: 30px;
-    color: var(--title-bar-text-color);
+    color: var(--titlebar-text-color);
     box-sizing: border-box;
     align-items: center;
     justify-content: start;

@@ -8,6 +8,7 @@ export interface IThemeProperties {
   "--shell-canvas-background-color": string;
   "--activity-bar-background-color": string;
   "--sidebar-background-color": string;
+  "--panel-separator-border": string;
 
   "--status-bar-background-color": string;
   "--status-bar-color": string;

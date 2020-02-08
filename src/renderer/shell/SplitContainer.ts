@@ -1,4 +1,5 @@
 import { ILiteEvent, LiteEvent } from "@/shared/menu/utils/LiteEvent";
+import { Direction } from "readline";
 
 const splitterMovedInternal = new LiteEvent<Node>();
 
@@ -20,12 +21,15 @@ export function raiseSplitterMoved(node: Node): void {
  * @param children Child elements within the container
  * @param includeFn Optional filter function to include desired elements
  */
-export function filterChildren(container: Node,
+export function filterChildren(
+  container: Node,
   children: Node[] | NodeList,
   includeFn?: (el: Node) => boolean
 ): Node[] {
   let childArray = Array.from(children);
-  childArray = childArray.filter((el: HTMLElement) => el.parentNode === container)
+  childArray = childArray.filter(
+    (el: HTMLElement) => el.parentNode === container
+  );
   const include =
     includeFn ||
     ((el: HTMLElement) =>
@@ -47,17 +51,41 @@ export function filterChildren(container: Node,
  * the desired intial size in pixels.
  */
 export function calculateInitialSizes(
-  containerSize: number,
-  clientOffsetName: string,
+  direction: string,
+  hostElement: HTMLElement,
   minSize: number,
   children: NodeList,
   isInitial: boolean
 ): number[] {
+  // --- Set up direction-dependent property names
+  let clientSize: string;
+  let clientDim: string;
+  let crossDim: string;
+
+  if (direction === "horizontal") {
+    clientSize = "clientWidth";
+    clientDim = "height";
+    crossDim = "width";
+  } else {
+    clientSize = "clientHeight";
+    clientDim = "width";
+    crossDim = "height";
+  }
+
+  // --- Set up child dimensions
+  const containerSize = hostElement[clientSize];
+  for (let i = 0; i < children.length; i++) {
+    (children[i] as any).style[clientDim] = "100%";
+    (children[i] as any).style[crossDim] =
+      children.length === 1 ? "100%" : undefined;
+  }
+
+
   // --- Get explicitly set initial sizes
   const initialSizes = Array.from(children).map(e =>
-    isInitial 
+    isInitial
       ? (e as HTMLElement).getAttribute("data-initial-size")
-      : (e as HTMLElement)[clientOffsetName]
+      : (e as HTMLElement)[clientSize]
   );
   const percentages: number[] = [];
 
@@ -105,7 +133,7 @@ export function calculateInitialSizes(
  */
 export function removeGutters(container: HTMLElement): void {
   let gutters = Array.from(container.querySelectorAll(".gutter"));
-  gutters = gutters.filter((el: HTMLElement) => el.parentNode === container)
+  gutters = gutters.filter((el: HTMLElement) => el.parentNode === container);
   for (let i = 0; i < gutters.length; i++) {
     container.removeChild(gutters[i]);
   }

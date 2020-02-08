@@ -9,6 +9,8 @@ export const lightTheme: ITheme = {
     "--shell-canvas-background-color": "#f0f0f0",
     "--activity-bar-background-color": "#c8c8c8",
     "--sidebar-background-color": "#c0c0c0",
+    "--panel-separator-border": "silver",
+
     "--status-bar-background-color": "#007acc",
     "--status-bar-color": "#c0c0c0",
 

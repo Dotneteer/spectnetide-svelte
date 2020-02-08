@@ -7,9 +7,10 @@
     height: 100%;
     width: 100%;
     overflow-x: hidden;
-    background-color: red;
+    background-color: var(--shell-canvas-background-color);
   }
 </style>
 
 <div class="document-frame">
+  <h1>Document frame</h1>
 </div>

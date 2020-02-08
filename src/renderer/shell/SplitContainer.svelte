@@ -2,7 +2,12 @@
   // ==========================================================================
   // Generic container for panels that have splitters (gutters) among them.
 
-  import { onMount, onDestroy, createEventDispatcher } from "svelte";
+  import {
+    onMount,
+    onDestroy,
+    afterUpdate,
+    createEventDispatcher
+  } from "svelte";
   import Split from "../controls/Splitter";
   import {
     splitterMoved,
@@ -20,6 +25,11 @@
 
   // --- Size of the gutter
   export let gutterSize = 8;
+
+  // --- This tag can have any value. The component refreshes itself when this
+  // --- get changed.
+  export let refreshTag;
+
   // ==========================================================================
   // Internal variables
   // --- Reference to the host element
@@ -29,11 +39,20 @@
   // Component logic
   const dispatch = createEventDispatcher();
 
+  let flexDir;
+  let size;
+
   // --- Calculated properties used for styling
-  $: flexDir = `flex-direction: ${
-    direction === "horizontal" ? "row" : "column"
-  }`;
-  $: size = direction === "horizontal" ? "clientWidth" : "clientHeight";
+  $: {
+    (() => {
+      if (!hostElement) return;
+      flexDir = `flex-direction: ${
+        direction === "horizontal" ? "row" : "column"
+      }`;
+      size = direction === "horizontal" ? "clientWidth" : "clientHeight";
+      setupSplitter(true);
+    })(direction, gutterSize, refreshTag);
+  }
 
   // --- Initialize the component visuals
   onMount(() => {
@@ -54,11 +73,10 @@
     removeGutters(hostElement);
     let children = hostElement.querySelectorAll("div");
     children = filterChildren(hostElement, children);
-    if (children.length < 2) return;
 
     const sizes = calculateInitialSizes(
-      hostElement[size],
-      size,
+      direction,
+      hostElement,
       100,
       children,
       isInitial
