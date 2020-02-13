@@ -41,6 +41,7 @@
 
   let flexDir;
   let size;
+  let refreshRequest = false;
 
   // --- Calculated properties used for styling
   $: {
@@ -50,9 +51,16 @@
         direction === "horizontal" ? "row" : "column"
       }`;
       size = direction === "horizontal" ? "clientWidth" : "clientHeight";
-      setupSplitter(true);
+      refreshRequest = true;
     })(direction, gutterSize, refreshTag);
   }
+
+  afterUpdate(() => {
+    if (refreshRequest) {
+      refreshRequest = false;
+      setupSplitter(true);
+    }
+  })
 
   // --- Initialize the component visuals
   onMount(() => {
@@ -81,6 +89,7 @@
       children,
       isInitial
     );
+
     Split(children, {
       sizes,
       gutterSize,

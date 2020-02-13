@@ -1,5 +1,4 @@
 import { ILiteEvent, LiteEvent } from "@/shared/menu/utils/LiteEvent";
-import { Direction } from "readline";
 
 const splitterMovedInternal = new LiteEvent<Node>();
 
@@ -80,6 +79,9 @@ export function calculateInitialSizes(
       children.length === 1 ? "100%" : undefined;
   }
 
+  if (children.length === 1) {
+    return [100];
+  }
 
   // --- Get explicitly set initial sizes
   const initialSizes = Array.from(children).map(e =>
