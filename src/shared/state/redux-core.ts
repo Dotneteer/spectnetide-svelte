@@ -14,6 +14,14 @@ const GET_REDUX_STATE_FUNC = "getReduxState";
 export const aliasRegistry = new Map<string, ActionCreator>();
 
 /**
+ * Creates an action for setting the activity bar contents
+ * @param activity List of activities to set
+ */
+export function createAction(type: keyof ActionTypes, payload?: Payload): ActionCreator {
+  return () => ({ type, payload });
+}
+
+/**
  * Creates an aliased action that is executed only in the main process, and the result
  * is broadcasted to the renderer process.
  * @param type Aliased action type

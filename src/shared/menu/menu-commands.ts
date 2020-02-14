@@ -1,6 +1,8 @@
 import { BrowserWindow } from "electron";
 import { __DARWIN__ } from "../../main/utils/electron-utils";
 import { MenuItemBase } from "./ui-menu-item";
+import { mainProcessStore } from "@/main/mainProcessStore";
+import { outputShowOutputAction, outputShowConsoleAction, outputShowErrorsAction } from "../state/redux-main-canvas-state";
 
 export class AboutCommand extends MenuItemBase {
   constructor() {
@@ -109,6 +111,36 @@ export class ShowMemoryCommand extends MenuItemBase {
   // onExecute(window: BrowserWindow) {
   //   // TODO: Implement this command
   // }
+}
+
+export class ShowOutputCommand extends MenuItemBase {
+  constructor() {
+    super("show-output", __DARWIN__ ? "Show Output" : "Show output");
+  }
+
+  onExecute(_window: BrowserWindow) {
+    mainProcessStore.dispatch(outputShowOutputAction());
+  }
+}
+
+export class ShowErrorsCommand extends MenuItemBase {
+  constructor() {
+    super("show-errors", __DARWIN__ ? "Show Errors" : "Show errors");
+  }
+
+  onExecute(_window: BrowserWindow) {
+    mainProcessStore.dispatch(outputShowErrorsAction());
+  }
+}
+
+export class ShowConsoleCommand extends MenuItemBase {
+  constructor() {
+    super("show-console", __DARWIN__ ? "Show Console" : "Show console");
+  }
+
+  onExecute(_window: BrowserWindow) {
+    mainProcessStore.dispatch(outputShowConsoleAction());
+  }
 }
 
 export class ToggleDevToolsCommand extends MenuItemBase {

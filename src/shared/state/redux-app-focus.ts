@@ -1,7 +1,7 @@
-import { createAliasedAction, SpectNetAction } from "./redux-core";
+import { SpectNetAction, createAction } from "./redux-core";
 
-export const appGotFocusAction = createAliasedAction("APP_GOT_FOCUS");
-export const appLostFocusAction = createAliasedAction("APP_LOST_FOCUS");
+export const appGotFocusAction = createAction("APP_GOT_FOCUS");
+export const appLostFocusAction = createAction("APP_LOST_FOCUS");
 
 /**
  * This reducer manages application window state changes

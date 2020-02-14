@@ -18,7 +18,16 @@ const defaultState: AppState = {
     openPanes: [],
     keyboardAction: false
   },
-  activityBar: undefined
+  activityBar: {
+    activities: [],
+    activeIndex: -1,
+    pointedIndex: -1
+  },
+  mainCanvas: {
+    outputPosition: "hidden",
+    chevronPosition: "up",
+    restorePosition: "bottom"
+  }
 };
 
 const spectNetApp = combineReducers(appReducers);

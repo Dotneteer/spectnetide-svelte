@@ -41,7 +41,10 @@ import {
   ShowRegistersCommand,
   ShowDisassemblyCommand,
   ShowMemoryCommand,
-  ToggleDevToolsCommand
+  ToggleDevToolsCommand,
+  ShowOutputCommand,
+  ShowErrorsCommand,
+  ShowConsoleCommand
 } from "../shared/menu/menu-commands";
 import { setAppMenuAction } from "../shared/state/redux-menu-state";
 import { MENU_EXEC_CHANNEL } from "@/shared/channel-ids";
@@ -273,6 +276,10 @@ export class AppWindow {
       .append(new ShowRegistersCommand())
       .append(new ShowDisassemblyCommand())
       .append(new ShowMemoryCommand())
+      .append(new MenuSeparator())
+      .append(new ShowOutputCommand())
+      .append(new ShowErrorsCommand())
+      .append(new ShowConsoleCommand())
       .append(new MenuSeparator())
       .append(new ToggleDevToolsCommand());
 

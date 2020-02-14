@@ -1,41 +1,16 @@
 <script>
+  import { createEventDispatcher } from "svelte";
   import OutputTabBar from "./OutputTabBar.svelte";
   import SvgIcon from "../controls/SvgIcon.svelte";
 
-  export let position;
+  // ==========================================================================
+  // Component parameters
+  // --- Output frame chevron position
+  export let chevronPosition;
 
-  let chevron = "up";
-  let previousPosition = "bottom";
-
-  $: {
-    (() => {
-      if (position === "maximized") {
-        switch (previousPosition) {
-          case "left":
-            chevron = "left";
-            break;
-          case "right":
-            chevron = "right";
-            break;
-          case "bottom":
-            chevron = "down";
-        }
-
-      } else {
-        switch (position) {
-          case "left":
-            chevron = "right";
-            break;
-          case "right":
-            chevron = "left";
-            break;
-          case "bottom":
-            chevron = "up";
-        }
-      }
-      previousPosition = position;
-    })(position);
-  }
+  // ==========================================================================
+  // Component logic
+  const dispatch = createEventDispatcher();
 </script>
 
 <style>
@@ -64,20 +39,21 @@
     width: 28px;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
   }
 </style>
 
 <div class="output-title">
   <OutputTabBar />
   <div class="title-buttons">
-    <div class="button">
+    <div class="button" on:click={() => dispatch("change-position")}>
       <SvgIcon
-        iconName={'chevron-' + chevron}
+        iconName={'chevron-' + chevronPosition}
         fill="white"
         width="16"
         height="16" />
     </div>
-    <div class="button">
+    <div class="button" on:click={() => dispatch("hide")}>
       <SvgIcon iconName="chrome-close" fill="white" width="14" height="14" />
     </div>
   </div>

@@ -42,4 +42,15 @@ export interface ActionTypes {
   REFRESH_ACTIVITIES: null;
   CHANGE_ACTIVITY: null;
   POINT_ACTIVITY: null;
+
+  // --- Main canvas actions
+  OUTPUT_SET_BOTTOM: null,
+  OUTPUT_SET_LEFT: null,
+  OUTPUT_SET_RIGHT: null,
+  OUTPUT_HIDE: null,
+  OUTPUT_SHOW_OUTPUT: null,
+  OUTPUT_SHOW_ERRORS: null,
+  OUTPUT_SHOW_CONSOLE: null,
+  OUTPUT_MAXIMIZE: null,
+  OUTPUT_RESTORE: null,
 };

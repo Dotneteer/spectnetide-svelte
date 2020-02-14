@@ -13,6 +13,12 @@
   // --- "left" | "bottom" | "right"
   export let position;
 
+  // --- Output frame chevron position
+  export let chevronPosition;
+
+  // --- The name of the active tab
+  export let activeTab;
+
   // --- Current output frame dimensions
   export let outputWidth;
   export let outputHeight;
@@ -49,6 +55,6 @@
   data-initial-size={initialSize}
   bind:clientWidth={outputWidth}
   bind:clientHeight={outputHeight}>
-  <OutputTitlebar {position} />
-  <h1>Output frame</h1>
+  <OutputTitlebar {position} {chevronPosition} on:change-position on:hide />
+  <h1>{activeTab}</h1>
 </div>
