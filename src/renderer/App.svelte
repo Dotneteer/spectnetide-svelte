@@ -5,6 +5,7 @@
   import SideBar from "./shell/SideBar.svelte";
   import MainCanvas from "./shell/MainCanvas.svelte";
   import Statusbar from "./shell/Statusbar.svelte";
+  import ContextMenu from "./shell/ContextMenu.svelte";
 
   import { ThemeService } from "./themes/ThemeService";
   import { lightTheme } from "./themes/light-theme";
@@ -62,4 +63,5 @@
     </SplitContainer>
   </div>
   <Statusbar />
+  <ContextMenu />
 </main>

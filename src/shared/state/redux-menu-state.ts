@@ -4,7 +4,7 @@ import {
   createLocalAction
 } from "./redux-core";
 import { MenuState } from "./AppState";
-import { MenuPaneInfo } from "../menu/MenuPaneInfo";
+import { MenuPaneInfo, getNextMenuItemIndex } from "../menu/MenuPaneInfo";
 import { MenuItemBase } from "../menu/ui-menu-item";
 import { appWindow } from "./app-reducers";
 
@@ -126,7 +126,7 @@ export function menuKeepPaneAction(paneIndex: number): SpectNetAction {
 }
 
 /**
- * Action that moves up one item in the current menu pane
+ * Action that sets a menu item pointed in the current menu pane
  */
 export function menuItemPointAction(
   paneIndex: number,
@@ -146,7 +146,7 @@ export function menuCloseAllAction(): SpectNetAction {
 }
 
 /**
- * This reducer manages application window state changes
+ * This reducer manages application menu state changes
  * @param state Input state
  * @param action Action executed
  */
@@ -337,21 +337,3 @@ function getOpenMenuPanes(
   };
 }
 
-/**
- * Gets the next menu item index
- * @param pane Menu pane information
- * @param step Step (-1: previous item, 1: next item)
- */
-function getNextMenuItemIndex(pane: MenuPaneInfo, step: number): number {
-  const count = pane.items.length;
-  let selectedIndex = pane.selectedIndex;
-  for (let i = 1; i < pane.items.length; i++) {
-    const nextItemIndex = (pane.selectedIndex + step * i + count) % count;
-    const item = pane.items[nextItemIndex];
-    if (item.type !== "separator" && item.enabled) {
-      selectedIndex = nextItemIndex;
-      break;
-    }
-  }
-  return selectedIndex;
-}

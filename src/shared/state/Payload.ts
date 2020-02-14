@@ -20,4 +20,5 @@ export interface Payload {
   chevronPosition?: ChevronPosition;
   restorePosition?: OutputPosition;
   activeTab?: OutputPanes;
+  props?: object;
 }

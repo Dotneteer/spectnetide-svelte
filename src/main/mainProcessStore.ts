@@ -26,7 +26,20 @@ const defaultState: AppState = {
   mainCanvas: {
     outputPosition: "hidden",
     chevronPosition: "up",
-    restorePosition: "bottom"
+    restorePosition: "bottom",
+    tabsStates: {
+      "errors": {},
+      "output": {
+        isScrollLockVisible: true,
+        isClearVisible: true,
+        scrollLock: false,
+      },
+      "console": {
+        isScrollLockVisible: true,
+        isClearVisible: true,
+        scrollLock: true,
+      },
+    }
   }
 };
 

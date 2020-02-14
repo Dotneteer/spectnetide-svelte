@@ -4,6 +4,7 @@ import { appMenuStateReducer } from "./redux-menu-state";
 import { activityStateReducer } from "./redux-activity-state";
 import { AppWindow } from "@/main/AppWindow";
 import { mainCanvasStateReducer } from "./redux-main-canvas-state";
+import { contextMenuStateReducer } from "./redux-context-menu-state";
 
 /**
  * The set of reducers we use within this application
@@ -13,7 +14,8 @@ export const appReducers = {
   windowState: windowStateReducer,
   appMenu: appMenuStateReducer,
   activityBar: activityStateReducer,
-  mainCanvas: mainCanvasStateReducer
+  mainCanvas: mainCanvasStateReducer,
+  contextMenu: contextMenuStateReducer
 };
 
 /**

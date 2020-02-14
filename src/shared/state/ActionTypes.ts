@@ -53,4 +53,13 @@ export interface ActionTypes {
   OUTPUT_SHOW_CONSOLE: null,
   OUTPUT_MAXIMIZE: null,
   OUTPUT_RESTORE: null,
+  OUTPUT_SET_PANE_PROPS: null,
+
+  // --- Context menu actions
+  CONTEXT_MENU_SHOW: null,
+  CONTEXT_MENU_HIDE: null,
+  CONTEXT_MENU_ITEM_SELECT: null,
+  CONTEXT_MENU_ITEM_DOWN: null,
+  CONTEXT_MENU_ITEM_UP: null,
+  CONTEXT_MENU_ITEM_POINT: null,
 };

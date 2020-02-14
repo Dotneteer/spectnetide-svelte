@@ -18,6 +18,7 @@
 
   // --- The name of the active tab
   export let activeTab;
+  export let activeTabState;
 
   // --- Current output frame dimensions
   export let outputWidth;
@@ -55,6 +56,6 @@
   data-initial-size={initialSize}
   bind:clientWidth={outputWidth}
   bind:clientHeight={outputHeight}>
-  <OutputTitlebar {position} {chevronPosition} on:change-position on:hide />
+  <OutputTitlebar {position} {chevronPosition} {activeTabState} on:change-position on:hide />
   <h1>{activeTab}</h1>
 </div>

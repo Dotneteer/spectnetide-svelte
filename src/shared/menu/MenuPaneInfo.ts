@@ -33,3 +33,22 @@ export class MenuPaneInfo {
    */
   selectedIndex: number;
 }
+
+/**
+ * Gets the next menu item index
+ * @param pane Menu pane information
+ * @param step Step (-1: previous item, 1: next item)
+ */
+export function getNextMenuItemIndex(pane: MenuPaneInfo, step: number): number {
+  const count = pane.items.length;
+  let selectedIndex = pane.selectedIndex;
+  for (let i = 1; i < pane.items.length; i++) {
+    const nextItemIndex = (pane.selectedIndex + step * i + count) % count;
+    const item = pane.items[nextItemIndex];
+    if (item.type !== "separator" && item.enabled) {
+      selectedIndex = nextItemIndex;
+      break;
+    }
+  }
+  return selectedIndex;
+}

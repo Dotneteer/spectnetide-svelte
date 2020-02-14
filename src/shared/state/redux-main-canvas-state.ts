@@ -21,6 +21,26 @@ export type ChevronPosition = "left" | "right" | "up" | "down";
  */
 export type OutputPanes = "errors" | "output" | "console";
 
+/**
+ * Represents the information about an output pane.
+ */
+export interface OutputPaneInfo {
+  /**
+   * Indicates if the "clear all" button is visible.
+   */
+  isClearVisible?: boolean;
+
+  /**
+   * Indicates if the "scroll lock" button is visible.
+   */
+  isScrollLockVisible?: boolean;
+
+  /**
+   * Indicates if scroll is locked.
+   */
+  scrollLock?: boolean;
+}
+
 export const outputSetBottomAction = createAction("OUTPUT_SET_BOTTOM");
 export const outputSetLeftAction = createAction("OUTPUT_SET_LEFT");
 export const outputSetRightAction = createAction("OUTPUT_SET_RIGHT");
@@ -32,6 +52,23 @@ export const outputRestoreAction = createAction("OUTPUT_RESTORE");
 export const outputHideAction = createAction("OUTPUT_HIDE");
 
 /**
+ * Displays the context meno
+ * @param pane Menu pane information
+ */
+export function outputSetPropsAction(
+  activeTab: OutputPanes,
+  props: OutputPaneInfo
+): SpectNetAction {
+  return {
+    type: "OUTPUT_SET_PANE_PROPS",
+    payload: {
+      activeTab,
+      props
+    }
+  };
+}
+
+/**
  * This reducer manages application window state changes
  * @param state Input state
  * @param action Action executed
@@ -40,9 +77,10 @@ export function mainCanvasStateReducer(
   state: MainCanvasState = {
     outputPosition: "bottom",
     chevronPosition: "up",
-    restorePosition: "bottom"
+    restorePosition: "bottom",
+    tabsStates: {}
   },
-  { type }: SpectNetAction
+  { type, payload }: SpectNetAction
 ): MainCanvasState {
   switch (type) {
     case "OUTPUT_SET_BOTTOM":
@@ -132,6 +170,11 @@ export function mainCanvasStateReducer(
             ? "right"
             : "down"
       };
+    case "OUTPUT_SET_PANE_PROPS":
+      return {
+        ...state,
+        tabsStates: { ...state.tabsStates, [payload.activeTab]: payload.props }
+      }
   }
   return state;
 }

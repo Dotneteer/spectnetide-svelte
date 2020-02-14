@@ -30,6 +30,7 @@
   let previousPosition;
   let chevronPosition = "up";
   let activeTab = "output";
+  let activeTabState;
 
   // --- Current dimensions of the output window
   let outputWidth;
@@ -42,9 +43,8 @@
     outputPosition = state.outputPosition;
     chevronPosition = state.chevronPosition;
     activeTab = state.activeTab;
-    console.log(state);
+    activeTabState = state.tabsStates[activeTab];
   });
-
 
   function rotatePos() {
     switch (outputPosition) {
@@ -107,6 +107,7 @@
     {#if outputPosition === 'left'}
       <OutputFrame
         {activeTab}
+        {activeTabState}
         position={outputPosition}
         {chevronPosition}
         initialSize={horizontalOutputSize}
@@ -121,6 +122,7 @@
     {#if outputPosition === 'bottom' || outputPosition === 'right' || outputPosition === 'maximized'}
       <OutputFrame
         {activeTab}
+        activeTabState={activeTabState}
         position={outputPosition}
         {chevronPosition}
         initialSize={outputPosition === 'bottom' ? verticalOutputSize : horizontalOutputSize}

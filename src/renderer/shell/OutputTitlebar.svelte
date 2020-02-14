@@ -1,16 +1,35 @@
 <script>
   import { createEventDispatcher } from "svelte";
+  import { rendererProcessStore } from "../rendererProcessStore";
+  import { showContextMenuAction } from "../../shared/state/redux-context-menu-state";
+  import { outputPaneContextMenu } from "../../shared/output-frame/output-frame-commands";
+
   import OutputTabBar from "./OutputTabBar.svelte";
   import SvgIcon from "../controls/SvgIcon.svelte";
+  import ToolbarIconButton from "../controls/ToolbarIconButton.svelte";
 
   // ==========================================================================
   // Component parameters
   // --- Output frame chevron position
   export let chevronPosition;
 
+  // --- State of the active tab
+  export let activeTabState;
+
   // ==========================================================================
   // Component logic
   const dispatch = createEventDispatcher();
+
+  function displayContextMenu() {
+    const menuInfo = {
+      items: outputPaneContextMenu.submenu,
+      leftPos: 100,
+      topPos: 100,
+      selectedIndex: -1
+    };
+    rendererProcessStore.dispatch(showContextMenuAction(menuInfo));
+    console.log("Show context menu");
+  }
 </script>
 
 <style>
@@ -31,30 +50,25 @@
     flex-grow: 0;
     flex-shrink: 0;
     height: 100%;
-    -webkit-app-region: no-drag;
-  }
-
-  .button {
-    display: flex;
-    width: 28px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
   }
 </style>
 
-<div class="output-title">
+<div class="output-title" on:click={displayContextMenu}>
   <OutputTabBar />
   <div class="title-buttons">
-    <div class="button" on:click={() => dispatch("change-position")}>
-      <SvgIcon
-        iconName={'chevron-' + chevronPosition}
-        fill="white"
-        width="16"
-        height="16" />
-    </div>
-    <div class="button" on:click={() => dispatch("hide")}>
-      <SvgIcon iconName="chrome-close" fill="white" width="14" height="14" />
-    </div>
+    {#if activeTabState && activeTabState.isScrollLockVisible}
+      {#if activeTabState.scrollLock}
+        <ToolbarIconButton iconName="lock" />
+      {:else}
+        <ToolbarIconButton iconName="unlock" />
+      {/if}
+    {/if}
+    {#if activeTabState && activeTabState.isClearVisible}
+      <ToolbarIconButton iconName="clear-all" />
+    {/if}
+    <ToolbarIconButton
+      iconName={'chevron-' + chevronPosition}
+      on:clicked={() => dispatch('change-position')} />
+    <ToolbarIconButton iconName="close" on:clicked={() => dispatch('hide')} />
   </div>
 </div>

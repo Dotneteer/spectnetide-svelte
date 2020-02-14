@@ -2,7 +2,7 @@ import { WindowState } from "./redux-window-state";
 import { MenuPaneInfo } from "../menu/MenuPaneInfo";
 import { MenuItemBase } from "../menu/ui-menu-item";
 import { Activity } from "../activity/Activity";
-import { OutputPosition, ChevronPosition, OutputPanes } from "./redux-main-canvas-state";
+import { OutputPosition, ChevronPosition, OutputPanes, OutputPaneInfo } from "./redux-main-canvas-state";
 
 /**
  * Represents the state of the application
@@ -37,6 +37,11 @@ export interface AppState {
    * The state of the main canvas
    */
   mainCanvas?: MainCanvasState;
+
+  /**
+   * The state of the context menu
+   */
+  contextMenu?: MenuPaneInfo;
 }
 
 /**
@@ -113,4 +118,9 @@ export interface MainCanvasState {
    * The identifier of the active output pane tab
    */
   activeTab?: OutputPanes;
+
+  /**
+   * Current output panes
+   */
+  tabsStates: {[key: string]: OutputPaneInfo}
 }
