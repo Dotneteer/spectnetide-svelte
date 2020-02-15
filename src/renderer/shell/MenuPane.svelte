@@ -51,6 +51,7 @@
     box-shadow: var(--menu-pane-shadow);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     padding: 8px 0px;
   }
 </style>

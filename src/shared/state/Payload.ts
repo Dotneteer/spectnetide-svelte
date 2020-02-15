@@ -21,4 +21,6 @@ export interface Payload {
   restorePosition?: OutputPosition;
   activeTab?: OutputPanes;
   props?: object;
+  width?: number;
+  height?: number;
 }

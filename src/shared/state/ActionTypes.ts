@@ -58,6 +58,7 @@ export interface ActionTypes {
   // --- Context menu actions
   CONTEXT_MENU_SHOW: null,
   CONTEXT_MENU_HIDE: null,
+  CONTEXT_MENU_MOUNTED: null,
   CONTEXT_MENU_ITEM_SELECT: null,
   CONTEXT_MENU_ITEM_DOWN: null,
   CONTEXT_MENU_ITEM_UP: null,

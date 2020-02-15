@@ -1,8 +1,5 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import { rendererProcessStore } from "../rendererProcessStore";
-  import { showContextMenuAction } from "../../shared/state/redux-context-menu-state";
-  import { outputPaneContextMenu } from "../../shared/output-frame/output-frame-commands";
 
   import OutputTabBar from "./OutputTabBar.svelte";
   import SvgIcon from "../controls/SvgIcon.svelte";
@@ -20,15 +17,17 @@
   // Component logic
   const dispatch = createEventDispatcher();
 
-  function displayContextMenu() {
-    const menuInfo = {
-      items: outputPaneContextMenu.submenu,
-      leftPos: 100,
-      topPos: 100,
-      selectedIndex: -1
-    };
-    rendererProcessStore.dispatch(showContextMenuAction(menuInfo));
-    console.log("Show context menu");
+  let rightMouseDown;
+
+  function handleMouseDown(ev) {
+    rightMouseDown = ev.button === 2;
+  }
+
+  function handleMouseUp(ev) {
+    if (rightMouseDown) {
+      dispatch("context-menu", ev);
+    }
+    rightMouseDown = false;
   }
 </script>
 
@@ -53,7 +52,10 @@
   }
 </style>
 
-<div class="output-title" on:click={displayContextMenu}>
+<div
+  class="output-title"
+  on:mousedown={handleMouseDown}
+  on:mouseup={handleMouseUp}>
   <OutputTabBar />
   <div class="title-buttons">
     {#if activeTabState && activeTabState.isScrollLockVisible}

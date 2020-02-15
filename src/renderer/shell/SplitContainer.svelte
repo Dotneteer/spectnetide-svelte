@@ -17,6 +17,9 @@
     removeGutters
   } from "./SplitContainer";
   import { isDescendant } from "../../shared/html-utils";
+  import { rendererProcessStore } from "../rendererProcessStore";
+  import { hideContextMenuAction } from "../../shared/state/redux-context-menu-state";
+  import { menuCloseAllAction } from "../../shared/state/redux-menu-state";
 
   // ==========================================================================
   // Component parameters
@@ -60,7 +63,7 @@
       refreshRequest = false;
       setupSplitter(true);
     }
-  })
+  });
 
   // --- Initialize the component visuals
   onMount(() => {
@@ -95,6 +98,10 @@
       gutterSize,
       direction,
       floatingGutter: true,
+      onDragStart: () => {
+        rendererProcessStore.dispatch(hideContextMenuAction());
+        rendererProcessStore.dispatch(menuCloseAllAction());
+      },
       onDragEnd: () => raiseSplitterMoved(hostElement)
     });
   }

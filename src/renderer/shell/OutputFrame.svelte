@@ -1,6 +1,9 @@
 <script>
   // ==========================================================================
   // Represents the output window frame
+  import { rendererProcessStore } from "../rendererProcessStore";
+  import { showContextMenuAction } from "../../shared/state/redux-context-menu-state";
+  import { outputPaneContextMenu } from "../../shared/output-frame/output-frame-commands";
 
   import OutputTitlebar from "./OutputTitlebar.svelte";
 
@@ -23,6 +26,20 @@
   // --- Current output frame dimensions
   export let outputWidth;
   export let outputHeight;
+
+  // ==========================================================================
+  // Component logic
+  let hostElement;
+
+  function showContextMenu(ev) {
+    const menuInfo = {
+      items: outputPaneContextMenu.submenu,
+      leftPos: ev.detail.clientX,
+      topPos: ev.detail.clientY,
+      selectedIndex: -1
+    };
+    rendererProcessStore.dispatch(showContextMenuAction(menuInfo));
+  }
 </script>
 
 <style>
@@ -49,6 +66,7 @@
 </style>
 
 <div
+  bind:this={hostElement}
   class="output-frame"
   class:left-docked={position === 'left'}
   class:right-docked={position === 'right'}
@@ -56,6 +74,12 @@
   data-initial-size={initialSize}
   bind:clientWidth={outputWidth}
   bind:clientHeight={outputHeight}>
-  <OutputTitlebar {position} {chevronPosition} {activeTabState} on:change-position on:hide />
+  <OutputTitlebar
+    {position}
+    {chevronPosition}
+    {activeTabState}
+    on:change-position
+    on:hide
+    on:context-menu={showContextMenu} />
   <h1>{activeTab}</h1>
 </div>

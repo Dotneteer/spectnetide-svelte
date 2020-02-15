@@ -51,6 +51,15 @@ export function contextItemPointAction(itemIndex: number): SpectNetAction {
 }
 
 /**
+ * Sets the specified item as selected
+ * @param itemIndex Index of the selected item
+ */
+export function contextMenuMountedAction(width: number, height: number): SpectNetAction {
+  return createLocalAction("CONTEXT_MENU_MOUNTED", { width, height });
+}
+
+
+/**
  * This reducer manages application menu state changes
  * @param state Input state
  * @param action Action executed
@@ -83,6 +92,12 @@ export function contextMenuStateReducer(
               : -1
             : -1
       };
+    case "CONTEXT_MENU_MOUNTED":
+      return {
+        ...state,
+        width: payload.width,
+        height: payload.height
+      }
   }
   return state;
 }

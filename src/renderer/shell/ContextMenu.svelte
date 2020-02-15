@@ -1,5 +1,5 @@
 <script>
-  import { onMount, onDestroy } from "svelte";
+  import { afterUpdate, onDestroy } from "svelte";
   import { createRendererProcessStateAware } from "../rendererProcessStore";
   import {
     showContextMenuAction,
@@ -7,10 +7,18 @@
     contextItemSelectAction,
     contextItemUpAction,
     contextItemDownAction,
-    contextItemPointAction
+    contextItemPointAction,
+    contextMenuMountedAction
   } from "../../shared/state/redux-context-menu-state";
 
   import MenuPane from "./MenuPane.svelte";
+
+  import {
+    handleKeyDown,
+    handleKeyUp,
+    handleItemPointed,
+    handleItemClicked
+  } from "./ContextMenu";
 
   let hostElement;
   let contextMenu;
@@ -18,18 +26,16 @@
   const stateAware = createRendererProcessStateAware("contextMenu");
   stateAware.onStateChanged.on(state => {
     contextMenu = state;
-    console.log(state);
   });
 
   const focusAware = createRendererProcessStateAware("appHasFocus");
   focusAware.onStateChanged.on(state => {
-    console.log("Focus changed.");
     if (!state) {
       focusAware.dispatch(hideContextMenuAction());
     }
   });
 
-  onMount(() => {
+  afterUpdate(() => {
     if (hostElement) {
       hostElement.focus();
     }
@@ -47,15 +53,13 @@
   }
 </style>
 
+<svelte:window on:keydown={handleKeyDown} on:keyup={handleKeyUp} />
 {#if contextMenu}
   <div
+    tabindex="-1"
     bind:this={hostElement}
-    tabindex="0"
     class="context-menu-container"
-    on:blur={() => {
-      console.log('onblur');
-      stateAware.dispatch(hideContextMenuAction());
-    }}>
+    on:blur={() => stateAware.dispatch(hideContextMenuAction())}>
     <MenuPane
       depth={0}
       items={contextMenu.items}

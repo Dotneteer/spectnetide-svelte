@@ -1,4 +1,6 @@
 <script>
+  import { windowSizeStore } from "../renderer/stores/window-size-store"
+
   import SplitContainer from "./shell/SplitContainer.svelte";
   import Titlebar from "./shell/Titlebar.svelte";
   import ActivityBar from "./shell/ActivityBar.svelte";
@@ -27,6 +29,15 @@
   ThemeService.registerTheme(lightTheme);
   ThemeService.registerTheme(darkTheme);
   ThemeService.setTheme("dark");
+
+  let windowWidth;
+  let windowHeight;
+
+  $: ((width, height) => {
+    if (width && height) {
+      windowSizeStore.setSize({ width, height});
+    }
+  })(windowWidth, windowHeight)
 </script>
 
 <style>
@@ -53,6 +64,7 @@
 
 </style>
 
+<svelte:window bind:innerWidth={windowWidth} bind:innerHeight={windowHeight} />
 <main style={themeStyle} class={themeClass} tabindex="0">
   <Titlebar />
   <div class="main-panel">

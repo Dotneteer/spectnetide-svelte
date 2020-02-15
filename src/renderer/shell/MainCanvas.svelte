@@ -46,26 +46,6 @@
     activeTabState = state.tabsStates[activeTab];
   });
 
-  function rotatePos() {
-    switch (outputPosition) {
-      case "left":
-        stateAware.dispatch(outputSetBottomAction());
-        break;
-      case "bottom":
-        stateAware.dispatch(outputSetRightAction());
-        break;
-      case "right":
-        stateAware.dispatch(outputHideAction());
-        break;
-      case "hidden":
-        stateAware.dispatch(outputMaximizeAction());
-        break;
-      case "maximized":
-        stateAware.dispatch(outputSetLeftAction());
-        break;
-    }
-  }
-
   // --- Store output window sizes whenever the splitter moves.
   function splitterMoved() {
     if (outputPosition === "bottom") {
@@ -93,13 +73,14 @@
   div {
     height: 100%;
     width: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
     z-index: 10;
+    outline: none;
   }
 </style>
 
-<svelte:window on:keydown={() => rotatePos()} />
-<div>
+<svelte:window />
+<div tabindex="-1">
   <SplitContainer
     direction={outputPosition === 'bottom' ? 'vertical' : 'horizontal'}
     refreshTag={outputPosition}

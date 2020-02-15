@@ -32,6 +32,16 @@ export class MenuPaneInfo {
    * Selectem item's index
    */
   selectedIndex: number;
+
+  /**
+   * Width optionally set after the pane is displayed
+   */
+  width?: number;
+
+  /**
+   * Height optionally set after the pane is displayed
+   */
+  height?: number;
 }
 
 /**
