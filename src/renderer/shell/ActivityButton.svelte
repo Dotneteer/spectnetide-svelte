@@ -1,7 +1,7 @@
 <script>
   import { createEventDispatcher } from "svelte";
+  import { themeStore } from "../stores/theme-store"
   import { Activity } from "../../shared/activity/Activity";
-  import { ThemeService } from "../themes/ThemeService";
 
   import SvgIcon from "../controls/SvgIcon.svelte";
 
@@ -44,6 +44,6 @@
       iconName={activity.iconName}
       width="24"
       height="24"
-      fill={ThemeService.getProperty(active || pointed ? '--activity-current-icon-color' : '--activity-icon-color')} />
+      fill={themeStore.getProperty(active || pointed ? '--activity-current-icon-color' : '--activity-icon-color')} />
   {/if}
 </div>

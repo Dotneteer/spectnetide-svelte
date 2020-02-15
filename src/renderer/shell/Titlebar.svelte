@@ -4,13 +4,13 @@
   // area, and window chrome buttons.
   
   import { onDestroy } from "svelte";
+  import { themeStore } from "../stores/theme-store"
   import "../../../public/assets/spectnet-logo.png"
 
   import SvgIcon from "../controls/SvgIcon.svelte";
   import MenuBar from "./MenuBar.svelte";
   import AppCaption from "./AppCaption.svelte";
 
-  import { ThemeService } from "../themes/ThemeService";
   import {
     minimizeAppWindowAction,
     restoreAppWindowAction,
@@ -42,11 +42,11 @@
     let propName = focused
       ? "--titlebar-focused-background-color"
       : "--titlebar-background-color";
-    backgroundColor = ThemeService.getProperty(propName);
+    backgroundColor = themeStore.getProperty(propName);
     propName = focused
       ? "--titlebar-focused-text-color"
       : "--titlebar-text-color";
-    titleColor = ThemeService.getProperty(propName);
+    titleColor = themeStore.getProperty(propName);
   }
 </script>
 

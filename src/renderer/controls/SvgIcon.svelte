@@ -1,7 +1,7 @@
 <script>
   // ==========================================================================
   // Represents an SVG icon
-  import { ThemeService } from "../themes/ThemeService";
+  import { themeStore} from "../stores/theme-store"
 
   // ==========================================================================
   // Component parameters
@@ -29,22 +29,22 @@
     fill === null || fill === undefined
       ? "white"
       : fill.startsWith("--")
-      ? ThemeService.getProperty(fill)
+      ? themStore.getProperty(fill)
       : fill;
   $: styleValue =
     `width:${
       width === undefined
-        ? ThemeService.getProperty("--icon-default-size")
+        ? themeStore.getProperty("--icon-default-size")
         : width
     }px;` +
     `height:${
       height === undefined
-        ? ThemeService.getProperty("--icon-default-size")
+        ? themeStore.getProperty("--icon-default-size")
         : height
     }px;` +
     `fill:${fillValue};` +
     `transform:rotate(${rotate}deg)`;
-  $: iconInfo = ThemeService.getIcon(iconName);
+  $: iconInfo = themeStore.getIcon(iconName);
 </script>
 
 <style>

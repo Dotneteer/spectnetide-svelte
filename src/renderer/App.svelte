@@ -1,6 +1,8 @@
 <script>
+  import { onDestroy } from "svelte";
   import { windowSizeStore } from "../renderer/stores/window-size-store"
-
+  import { themeStore } from "../renderer/stores/theme-store"
+  
   import SplitContainer from "./shell/SplitContainer.svelte";
   import Titlebar from "./shell/Titlebar.svelte";
   import ActivityBar from "./shell/ActivityBar.svelte";
@@ -9,7 +11,6 @@
   import Statusbar from "./shell/Statusbar.svelte";
   import ContextMenu from "./shell/ContextMenu.svelte";
 
-  import { ThemeService } from "./themes/ThemeService";
   import { lightTheme } from "./themes/light-theme";
   import { darkTheme } from "./themes/dark-theme";  
 
@@ -17,18 +18,20 @@
   let themeStyle = "";
   let themeClass = "";
 
-  ThemeService.themeChanged.on(theme => {
+  const unsubscribe = themeStore.subscribe(theme => {
     let styleValue = "";
     for (const key in theme.properties) {
       styleValue += `${key}:${theme.properties[key]};`;
     }
     themeStyle = styleValue.trimRight();
     themeClass = `${theme.name}-theme`;
-  });
+  })
 
-  ThemeService.registerTheme(lightTheme);
-  ThemeService.registerTheme(darkTheme);
-  ThemeService.setTheme("dark");
+  onDestroy(unsubscribe);
+
+  themeStore.registerTheme(lightTheme);
+  themeStore.registerTheme(darkTheme);
+  themeStore.setTheme("dark");
 
   let windowWidth;
   let windowHeight;
