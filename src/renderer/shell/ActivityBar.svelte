@@ -12,6 +12,8 @@
 
   import ActivityButton from "./ActivityButton.svelte";
 
+  // ==========================================================================
+  // Component logic
   // --- All activity objects (with corresponding icons)
   let activities;
 
@@ -21,7 +23,7 @@
   // --- Index of the activity pointed with mouse (-1: none)
   let pointedIndex;
 
-  // --- Respond to the event when app focus changes
+  // --- Respond to the event when activity bar state changes
   let stateAware = createRendererProcessStateAware("activityBar");
   stateAware.onStateChanged.on(state => {
     activities = state.activities;

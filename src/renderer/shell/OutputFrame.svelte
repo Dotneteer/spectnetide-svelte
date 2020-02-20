@@ -1,8 +1,8 @@
 <script>
   // ==========================================================================
   // Represents the output window frame
-  import { rendererProcessStore } from "../rendererProcessStore";
-  import { showContextMenuAction } from "../../shared/state/redux-context-menu-state";
+  import { createEventDispatcher } from "svelte";
+  import { contextMenuStore} from "../stores/context-menu-store";
   import { outputPaneContextMenu } from "../../shared/output-frame/output-frame-commands";
 
   import OutputTitlebar from "./OutputTitlebar.svelte";
@@ -31,6 +31,8 @@
   // Component logic
   let hostElement;
 
+  const dispatch = createEventDispatcher();
+
   function showContextMenu(ev) {
     const menuInfo = {
       items: outputPaneContextMenu.submenu,
@@ -38,7 +40,10 @@
       topPos: ev.detail.clientY,
       selectedIndex: -1
     };
-    rendererProcessStore.dispatch(showContextMenuAction(menuInfo));
+    contextMenuStore.request(menuInfo, ev.detail.clientX, ev.detail.clientY, id => {
+      dispatch("contex-menu-execute", id);
+    });
+
   }
 </script>
 

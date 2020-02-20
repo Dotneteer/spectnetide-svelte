@@ -17,18 +17,6 @@
   // Component logic
   const dispatch = createEventDispatcher();
 
-  let rightMouseDown;
-
-  function handleMouseDown(ev) {
-    rightMouseDown = ev.button === 2;
-  }
-
-  function handleMouseUp(ev) {
-    if (rightMouseDown) {
-      dispatch("context-menu", ev);
-    }
-    rightMouseDown = false;
-  }
 </script>
 
 <style>
@@ -52,11 +40,8 @@
   }
 </style>
 
-<div
-  class="output-title"
-  on:mousedown={handleMouseDown}
-  on:mouseup={handleMouseUp}>
-  <OutputTabBar />
+<div class="output-title">
+  <OutputTabBar on:context-menu />
   <div class="title-buttons">
     {#if activeTabState && activeTabState.isScrollLockVisible}
       {#if activeTabState.scrollLock}

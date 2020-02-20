@@ -46,6 +46,9 @@
     activeTabState = state.tabsStates[activeTab];
   });
 
+  // --- Release resources
+  onDestroy(() => stateAware.onStateChanged.release());
+
   // --- Store output window sizes whenever the splitter moves.
   function splitterMoved() {
     if (outputPosition === "bottom") {
@@ -59,14 +62,30 @@
   // --- maximized.
   function handleChangeOutputPosition() {
     if (outputPosition === "maximized") {
-        stateAware.dispatch(outputRestoreAction());
+      stateAware.dispatch(outputRestoreAction());
     } else {
-        stateAware.dispatch(outputMaximizeAction());
+      stateAware.dispatch(outputMaximizeAction());
     }
   }
 
-  // --- Release resources
-  onDestroy(() => stateAware.onStateChanged.release());
+  // --- Executes the context menu commands
+  function handleContextMenuExecute(ev) {
+    console.log(`MainCanvas executing: ${ev.detail}`);
+    switch (ev.detail) {
+      case "hide-output-pane":
+        stateAware.dispatch(outputHideAction());
+        break;
+      case "output-pane-left":
+        stateAware.dispatch(outputSetLeftAction());
+        break;
+      case "output-pane-right":
+        stateAware.dispatch(outputSetRightAction());
+        break;
+      case "output-pane-bottom":
+        stateAware.dispatch(outputSetBottomAction());
+        break;
+    }
+  }
 </script>
 
 <style>
@@ -94,8 +113,9 @@
         initialSize={horizontalOutputSize}
         bind:outputWidth
         bind:outputHeight
-        on:change-position={ev => handleChangeOutputPosition()}
-        on:hide={() => stateAware.dispatch(outputHideAction())} />
+        on:change-position={handleChangeOutputPosition}
+        on:hide={() => stateAware.dispatch(outputHideAction())}
+        on:contex-menu-execute={handleContextMenuExecute} />
     {/if}
     {#if outputPosition !== 'maximized'}
       <DocumentFrame />
@@ -103,14 +123,15 @@
     {#if outputPosition === 'bottom' || outputPosition === 'right' || outputPosition === 'maximized'}
       <OutputFrame
         {activeTab}
-        activeTabState={activeTabState}
+        {activeTabState}
         position={outputPosition}
         {chevronPosition}
         initialSize={outputPosition === 'bottom' ? verticalOutputSize : horizontalOutputSize}
         bind:outputWidth
         bind:outputHeight
-        on:change-position={ev => handleChangeOutputPosition()} 
-        on:hide={() => stateAware.dispatch(outputHideAction())} />
+        on:change-position={handleChangeOutputPosition}
+        on:hide={() => stateAware.dispatch(outputHideAction())}
+        on:contex-menu-execute={handleContextMenuExecute} />
     {/if}
   </SplitContainer>
 </div>

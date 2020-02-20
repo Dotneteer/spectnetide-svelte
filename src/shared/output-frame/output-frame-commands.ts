@@ -56,7 +56,7 @@ export class OutputPaneRightCommand extends MenuItemBase {
 export class OutputPaneBottomCommand extends MenuItemBase {
   constructor() {
     super(
-      "output-pane-right",
+      "output-pane-bottom",
       __DARWIN__ ? "Move Panel To Bottom" : "Move panel to bottom"
     );
   }
@@ -77,4 +77,4 @@ export const outputPaneContextMenu = new StandardMenuItem(
   .append(new MenuSeparator())
   .append(new OutputPaneLeftCommand())
   .append(new OutputPaneRightCommand())
-  .append(new OutputPaneRightCommand());
+  .append(new OutputPaneBottomCommand());

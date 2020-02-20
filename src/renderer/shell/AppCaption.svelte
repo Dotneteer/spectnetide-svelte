@@ -1,6 +1,9 @@
 <script>
-export let title = "<untitled>";
+  // ==========================================================================
+  // Represents the application's caption
+  export let title = "<untitled>";
 </script>
+
 <style>
   div {
     display: flex;
@@ -14,7 +17,6 @@ export let title = "<untitled>";
     text-overflow: ellipsis;
     zoom: 1;
   }
-
 </style>
 
 <div>{title}</div>

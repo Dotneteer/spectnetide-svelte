@@ -37,11 +37,6 @@ export interface AppState {
    * The state of the main canvas
    */
   mainCanvas?: MainCanvasState;
-
-  /**
-   * The state of the context menu
-   */
-  contextMenu?: MenuPaneInfo;
 }
 
 /**

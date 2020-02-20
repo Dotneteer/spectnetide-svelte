@@ -1,4 +1,11 @@
-import { menuAltPressed, menuAltReleased, menuButtonMouseEnter } from "../../shared/state/actions";
+// ==========================================================================
+// Code-behind logic for the MenuBar svelte component
+
+import {
+  menuAltPressed,
+  menuAltReleased,
+  menuButtonMouseEnter
+} from "../../shared/state/actions";
 import { rendererProcessStore } from "../rendererProcessStore";
 import {
   menuPaneCloseAction,
@@ -12,21 +19,11 @@ import {
   menuKeepPaneAction,
   menuItemPointAction
 } from "../../shared/state/redux-menu-state";
-import { MenuPaneInfo } from "../../shared/menu/MenuPaneInfo";
+import { contextMenuStore } from "../stores/context-menu-store";
+import { MenuPaneInfo, ItemPointedArgs } from "../../shared/menu/MenuPaneInfo";
 import { ElementRectangle } from "../helpers/ElementRectangle";
 import { MenuItemBase, MenuItemDescriptor } from "@/shared/menu/ui-menu-item";
 import { executeCommand } from "../helpers/commands";
-
-/**
- * Represents the event data when a menu item is pointed with the mouse.
- */
-interface ItemPointedArgs {
-  // --- Pane depth
-  depth: number;
-
-  // --- flattened index
-  flatIndex: number;
-}
 
 // --- This is the store we use to dispatch redux actions
 const store = rendererProcessStore;
@@ -291,6 +288,7 @@ export function handleKeyDown(ev: KeyboardEvent): void {
 export function handleKeyUp(ev: KeyboardEvent): void {
   if (ev.code === "AltLeft") {
     store.dispatch(menuAltReleased());
+    contextMenuStore.hide();
   }
 }
 
@@ -507,5 +505,5 @@ function executeMenuItem(item: MenuItemDescriptor): void {
   ) {
     store.dispatch(menuCloseAllAction());
     executeCommand(item.id);
-  } 
+  }
 }

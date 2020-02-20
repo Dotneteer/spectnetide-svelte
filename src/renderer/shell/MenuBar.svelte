@@ -1,4 +1,9 @@
 <script>
+  // ==========================================================================
+  // Represents the application's menubar in the custom chrome
+  //
+  // The menu bar contains menu buttons and a list of open menu panes.
+
   import { onMount, onDestroy } from "svelte";
   import {
     handleButtonMounted,
@@ -26,9 +31,15 @@
     menuButtonMouseEnterAction
   } from "../../shared/state/redux-menu-state";
 
+  // ==========================================================================
+  // Component parameters
+
   // --- Menu bar title color depends on focused/unfocused state
   export let titleColor;
 
+  // ==========================================================================
+  // Component logic
+  
   // --- Store the app menu here
   let appMenu;
 
@@ -45,18 +56,17 @@
       focusAware.dispatch(menuCloseAllAction());
     }
   });
-  onDestroy(() => {
-    stateAware.onStateChanged.release();
-    focusAware.onStateChanged.release();
-  });
 
   // --- Query the app menu the first time the component is rendered.
   onMount(() => {
     stateAware.dispatch(refreshMenuAction());
   });
 
-  // --- Keep information about open panes
-  let panes = [];
+  // --- Release resource
+  onDestroy(() => {
+    stateAware.onStateChanged.release();
+    focusAware.onStateChanged.release();
+  });
 </script>
 
 <style>

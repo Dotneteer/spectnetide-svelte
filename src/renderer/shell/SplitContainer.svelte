@@ -8,6 +8,7 @@
     afterUpdate,
     createEventDispatcher
   } from "svelte";
+  import { contextMenuStore } from "../stores/context-menu-store";
   import Split from "../controls/Splitter";
   import {
     splitterMoved,
@@ -18,7 +19,6 @@
   } from "./SplitContainer";
   import { isDescendant } from "../../shared/html-utils";
   import { rendererProcessStore } from "../rendererProcessStore";
-  import { hideContextMenuAction } from "../../shared/state/redux-context-menu-state";
   import { menuCloseAllAction } from "../../shared/state/redux-menu-state";
 
   // ==========================================================================
@@ -99,7 +99,7 @@
       direction,
       floatingGutter: true,
       onDragStart: () => {
-        rendererProcessStore.dispatch(hideContextMenuAction());
+        contextMenuStore.hide();
         rendererProcessStore.dispatch(menuCloseAllAction());
       },
       onDragEnd: () => raiseSplitterMoved(hostElement)

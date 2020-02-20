@@ -45,6 +45,18 @@ export class MenuPaneInfo {
 }
 
 /**
+ * Represents the event data when a menu item is pointed with the mouse.
+ */
+export interface ItemPointedArgs {
+  // --- Pane depth
+  depth: number;
+
+  // --- flattened index
+  flatIndex: number;
+}
+
+
+/**
  * Gets the next menu item index
  * @param pane Menu pane information
  * @param step Step (-1: previous item, 1: next item)

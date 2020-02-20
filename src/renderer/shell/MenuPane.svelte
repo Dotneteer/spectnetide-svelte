@@ -40,6 +40,7 @@
       height: hostElement.offsetHeight
     });
   });
+
 </script>
 
 <style>
