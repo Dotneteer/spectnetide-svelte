@@ -3,12 +3,12 @@
   // Represents the leftmost panel of the shell, the activity bar.
 
   import { onMount, onDestroy } from "svelte";
-  import { createRendererProcessStateAware } from "../rendererProcessStore";
+  import { createRendererProcessStateAware } from "../../rendererProcessStore";
   import {
     refreshMenuAction,
     changeActivityAction,
     pointActivityAction
-  } from "../../shared/state/redux-activity-state";
+  } from "../../../shared/state/redux-activity-state";
 
   import ActivityButton from "./ActivityButton.svelte";
 

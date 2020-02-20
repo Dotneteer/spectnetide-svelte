@@ -2,8 +2,8 @@
   // ==========================================================================
   // Represents the output window frame
   import { createEventDispatcher } from "svelte";
-  import { contextMenuStore} from "../stores/context-menu-store";
-  import { outputPaneContextMenu } from "../../shared/output-frame/output-frame-commands";
+  import { contextMenuStore} from "../../stores/context-menu-store";
+  import { outputPaneContextMenu } from "../../../shared/output-frame/output-frame-commands";
 
   import OutputTitlebar from "./OutputTitlebar.svelte";
 

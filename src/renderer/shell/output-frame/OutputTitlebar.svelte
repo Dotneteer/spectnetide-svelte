@@ -3,12 +3,12 @@
   // Represents the title bar of the Output frame
 
   import { createEventDispatcher } from "svelte";
-  import { rendererProcessStore } from "../rendererProcessStore";
-  import { outputScrollLockAction } from "../../shared/state/redux-main-canvas-state";
+  import { rendererProcessStore } from "../../rendererProcessStore";
+  import { outputScrollLockAction } from "../../../shared/state/redux-main-canvas-state";
 
   import OutputTabBar from "./OutputTabBar.svelte";
-  import SvgIcon from "../controls/SvgIcon.svelte";
-  import ToolbarIconButton from "../controls/ToolbarIconButton.svelte";
+  import SvgIcon from "../../controls/SvgIcon.svelte";
+  import ToolbarIconButton from "../../controls/ToolbarIconButton.svelte";
 
   // ==========================================================================
   // Component parameters

@@ -1,9 +1,9 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import { themeStore } from "../stores/theme-store"
-  import { Activity } from "../../shared/activity/Activity";
+  import { themeStore } from "../../stores/theme-store"
+  import { Activity } from "../../../shared/activity/Activity";
 
-  import SvgIcon from "../controls/SvgIcon.svelte";
+  import SvgIcon from "../../controls/SvgIcon.svelte";
 
   export let activity;
   export let active;

@@ -4,20 +4,20 @@
   // area, and window chrome buttons.
   
   import { onDestroy } from "svelte";
-  import { themeStore } from "../stores/theme-store"
-  import "../../../public/assets/spectnet-logo.png"
+  import { themeStore } from "../../stores/theme-store"
+  import "../../../../public/assets/spectnet-logo.png"
 
-  import SvgIcon from "../controls/SvgIcon.svelte";
-  import MenuBar from "./MenuBar.svelte";
+  import SvgIcon from "../../controls/SvgIcon.svelte";
+  import MenuBar from "../menu/MenuBar.svelte";
   import AppCaption from "./AppCaption.svelte";
 
   import {
     minimizeAppWindowAction,
     restoreAppWindowAction,
     maximizeAppWindowAction
-  } from "../../shared/state/redux-window-state";
-  import { createRendererProcessStateAware } from "../rendererProcessStore";
-  import { executeCommand } from "../helpers/commands.ts"
+  } from "../../../shared/state/redux-window-state";
+  import { createRendererProcessStateAware } from "../../rendererProcessStore";
+  import { executeCommand } from "../../helpers/commands.ts"
 
   // --- We change Titlebar colors as the app focus changes
   let titleColor;

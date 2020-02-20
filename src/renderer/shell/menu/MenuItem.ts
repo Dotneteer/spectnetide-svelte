@@ -1,4 +1,4 @@
-import { __DARWIN__ } from "../../main/utils/electron-utils";
+import { __DARWIN__ } from "../../../main/utils/electron-utils";
 
 /**
  * Returns a platform specific human readable version of an Electron

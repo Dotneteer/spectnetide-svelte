@@ -3,8 +3,8 @@
   // Represents the tab bar within the Output frame title
 
   import { createEventDispatcher } from "svelte";
-  import { rendererProcessStore } from "../rendererProcessStore";
-  import { outputShowPaneAction } from "../../shared/state/redux-main-canvas-state";
+  import { rendererProcessStore } from "../../rendererProcessStore";
+  import { outputShowPaneAction } from "../../../shared/state/redux-main-canvas-state";
 
   import OutputTab from "./OutputTab.svelte";
 

@@ -3,13 +3,13 @@
   import { windowSizeStore } from "../renderer/stores/window-size-store"
   import { themeStore } from "../renderer/stores/theme-store"
   
-  import SplitContainer from "./shell/SplitContainer.svelte";
-  import Titlebar from "./shell/Titlebar.svelte";
-  import ActivityBar from "./shell/ActivityBar.svelte";
-  import SideBar from "./shell/SideBar.svelte";
-  import MainCanvas from "./shell/MainCanvas.svelte";
-  import Statusbar from "./shell/Statusbar.svelte";
-  import ContextMenu from "./shell/ContextMenu.svelte";
+  import SplitContainer from "./controls/SplitContainer.svelte";
+  import Titlebar from "./shell/app-frame/Titlebar.svelte";
+  import ActivityBar from "./shell/activity-bar/ActivityBar.svelte";
+  import SideBar from "./shell/side-bar/SideBar.svelte";
+  import MainCanvas from "./shell/app-frame/MainCanvas.svelte";
+  import Statusbar from "./shell/app-frame/Statusbar.svelte";
+  import ContextMenu from "./shell/menu/ContextMenu.svelte";
 
   import { lightTheme } from "./themes/light-theme";
   import { darkTheme } from "./themes/dark-theme";  

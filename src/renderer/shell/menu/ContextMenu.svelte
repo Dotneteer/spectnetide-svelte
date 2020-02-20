@@ -18,8 +18,8 @@
   // z-index value to 20.
 
   import { afterUpdate, onDestroy } from "svelte";
-  import { contextMenuStore } from "../stores/context-menu-store";
-  import { createRendererProcessStateAware } from "../rendererProcessStore";
+  import { contextMenuStore } from "../../stores/context-menu-store";
+  import { createRendererProcessStateAware } from "../../rendererProcessStore";
 
   import MenuPane from "./MenuPane.svelte";
 

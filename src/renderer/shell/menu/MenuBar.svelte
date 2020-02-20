@@ -24,12 +24,12 @@
   import {
     createRendererProcessStateAware,
     rendererProcessStore
-  } from "../rendererProcessStore";
+  } from "../../rendererProcessStore";
   import {
     refreshMenuAction,
     menuCloseAllAction,
     menuButtonMouseEnterAction
-  } from "../../shared/state/redux-menu-state";
+  } from "../../../shared/state/redux-menu-state";
 
   // ==========================================================================
   // Component parameters

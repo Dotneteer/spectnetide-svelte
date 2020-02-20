@@ -9,7 +9,7 @@
     createEventDispatcher
   } from "svelte";
   import { contextMenuStore } from "../stores/context-menu-store";
-  import Split from "../controls/Splitter";
+  import Split from "./Splitter";
   import {
     splitterMoved,
     raiseSplitterMoved,

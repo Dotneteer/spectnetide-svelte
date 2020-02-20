@@ -4,10 +4,10 @@
   // output window frame
 
   import { onDestroy } from "svelte";
-  import SplitContainer from "./SplitContainer.svelte";
-  import DocumentFrame from "./DocumentFrame.svelte";
-  import OutputFrame from "./OutputFrame.svelte";
-  import { createRendererProcessStateAware } from "../rendererProcessStore";
+  import SplitContainer from "../../controls/SplitContainer.svelte";
+  import DocumentFrame from "../document-frame/DocumentFrame.svelte";
+  import OutputFrame from "../output-frame/OutputFrame.svelte";
+  import { createRendererProcessStateAware } from "../../rendererProcessStore";
   import {
     outputSetBottomAction,
     outputSetLeftAction,
@@ -15,7 +15,7 @@
     outputMaximizeAction,
     outputHideAction,
     outputRestoreAction
-  } from "../../shared/state/redux-main-canvas-state";
+  } from "../../../shared/state/redux-main-canvas-state";
 
   // ==========================================================================
   // Component parameters

@@ -2,7 +2,7 @@
   import { onMount, createEventDispatcher } from "svelte";
   import { friendlyAcceleratorText } from "./MenuItem";
 
-  import SvgIcon from "../controls/SvgIcon.svelte";
+  import SvgIcon from "../../controls/SvgIcon.svelte";
   import MenuText from "./MenuText.svelte";
 
   // ==========================================================================

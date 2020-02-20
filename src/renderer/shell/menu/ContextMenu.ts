@@ -1,7 +1,7 @@
 // ============================================================================
 // Code-behid logic for the ContextMenu Svelte component
 
-import { contextMenuStore } from "../stores/context-menu-store";
+import { contextMenuStore } from "../../stores/context-menu-store";
 import {
   ItemPointedArgs,
   MenuPaneInfo,

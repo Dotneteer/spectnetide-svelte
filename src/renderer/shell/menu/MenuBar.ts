@@ -5,8 +5,8 @@ import {
   menuAltPressed,
   menuAltReleased,
   menuButtonMouseEnter
-} from "../../shared/state/actions";
-import { rendererProcessStore } from "../rendererProcessStore";
+} from "../../../shared/state/actions";
+import { rendererProcessStore } from "../../rendererProcessStore";
 import {
   menuPaneCloseAction,
   menuButtonSetAction,
@@ -18,12 +18,12 @@ import {
   menuButtonClickAction,
   menuKeepPaneAction,
   menuItemPointAction
-} from "../../shared/state/redux-menu-state";
-import { contextMenuStore } from "../stores/context-menu-store";
-import { MenuPaneInfo, ItemPointedArgs } from "../../shared/menu/MenuPaneInfo";
-import { ElementRectangle } from "../helpers/ElementRectangle";
+} from "../../../shared/state/redux-menu-state";
+import { contextMenuStore } from "../../stores/context-menu-store";
+import { MenuPaneInfo, ItemPointedArgs } from "../../../shared/menu/MenuPaneInfo";
+import { ElementRectangle } from "../../helpers/ElementRectangle";
 import { MenuItemBase, MenuItemDescriptor } from "@/shared/menu/ui-menu-item";
-import { executeCommand } from "../helpers/commands";
+import { executeCommand } from "../../helpers/commands";
 
 // --- This is the store we use to dispatch redux actions
 const store = rendererProcessStore;
