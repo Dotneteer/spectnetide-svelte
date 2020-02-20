@@ -12,10 +12,6 @@ export interface Payload {
   itemIndex?: number;
   paneIndex?: number;
   keyboardAction?: boolean;
-  projectFolder?: string;
-  model?: string;
-  edition?: string;
-  runsInDebugMode?: boolean;
   activities?: Activity[];
   chevronPosition?: ChevronPosition;
   restorePosition?: OutputPosition;
@@ -23,4 +19,5 @@ export interface Payload {
   props?: object;
   width?: number;
   height?: number;
+  turnedOn?: boolean;
 }

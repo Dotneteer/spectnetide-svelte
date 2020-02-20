@@ -34,4 +34,7 @@ export interface IThemeProperties {
   "--activity-icon-color": string;
   "--activity-current-icon-color": string;
   "--activity-current-background-color": string;
+
+  "--output-tab-text-color": string;
+  "--output-tab-active-text-color": string;
 }

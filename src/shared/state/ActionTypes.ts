@@ -48,12 +48,11 @@ export interface ActionTypes {
   OUTPUT_SET_LEFT: null,
   OUTPUT_SET_RIGHT: null,
   OUTPUT_HIDE: null,
-  OUTPUT_SHOW_OUTPUT: null,
-  OUTPUT_SHOW_ERRORS: null,
-  OUTPUT_SHOW_CONSOLE: null,
+  OUTPUT_SHOW_PANE: null,
   OUTPUT_MAXIMIZE: null,
   OUTPUT_RESTORE: null,
   OUTPUT_SET_PANE_PROPS: null,
+  OUTPUT_SCROLL_LOCK: null,
 
   // --- Context menu actions
   CONTEXT_MENU_SHOW: null,

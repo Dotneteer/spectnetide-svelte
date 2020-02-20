@@ -19,7 +19,8 @@
   // --- Output frame chevron position
   export let chevronPosition;
 
-  // --- The name of the active tab
+  // --- Information about tabs
+  export let tabs;
   export let activeTab;
   export let activeTabState;
 
@@ -82,6 +83,8 @@
   <OutputTitlebar
     {position}
     {chevronPosition}
+    {tabs}
+    {activeTab}
     {activeTabState}
     on:change-position
     on:hide

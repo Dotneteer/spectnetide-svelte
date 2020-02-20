@@ -29,8 +29,10 @@
   let horizontalOutputSize = 240;
   let previousPosition;
   let chevronPosition = "up";
+  let tabs;
   let activeTab = "output";
   let activeTabState;
+
 
   // --- Current dimensions of the output window
   let outputWidth;
@@ -44,6 +46,7 @@
     chevronPosition = state.chevronPosition;
     activeTab = state.activeTab;
     activeTabState = state.tabsStates[activeTab];
+    tabs = Object.getOwnPropertyNames(state.tabsStates);
   });
 
   // --- Release resources
@@ -106,6 +109,7 @@
     on:moved={() => splitterMoved()}>
     {#if outputPosition === 'left'}
       <OutputFrame
+        {tabs}
         {activeTab}
         {activeTabState}
         position={outputPosition}
@@ -122,6 +126,7 @@
     {/if}
     {#if outputPosition === 'bottom' || outputPosition === 'right' || outputPosition === 'maximized'}
       <OutputFrame
+        {tabs}
         {activeTab}
         {activeTabState}
         position={outputPosition}

@@ -45,11 +45,28 @@ export const outputSetBottomAction = createAction("OUTPUT_SET_BOTTOM");
 export const outputSetLeftAction = createAction("OUTPUT_SET_LEFT");
 export const outputSetRightAction = createAction("OUTPUT_SET_RIGHT");
 export const outputMaximizeAction = createAction("OUTPUT_MAXIMIZE");
-export const outputShowOutputAction = createAction("OUTPUT_SHOW_OUTPUT");
-export const outputShowErrorsAction = createAction("OUTPUT_SHOW_ERRORS");
-export const outputShowConsoleAction = createAction("OUTPUT_SHOW_CONSOLE");
+export function outputShowPaneAction(activeTab: OutputPanes) {
+  return {
+    type: "OUTPUT_SHOW_PANE",
+    payload: { activeTab }
+  };
+}
+
 export const outputRestoreAction = createAction("OUTPUT_RESTORE");
 export const outputHideAction = createAction("OUTPUT_HIDE");
+
+export function outputScrollLockAction(
+  activeTab: OutputPanes,
+  turnedOn: boolean
+) {
+  return {
+    type: "OUTPUT_SCROLL_LOCK",
+    payload: {
+      activeTab,
+      turnedOn
+    }
+  };
+}
 
 /**
  * Displays the context meno
@@ -116,32 +133,14 @@ export function mainCanvasStateReducer(
         chevronPosition: getChevronPosition(restorePosition),
         restorePosition: restorePosition
       };
-    case "OUTPUT_SHOW_OUTPUT":
+    case "OUTPUT_SHOW_PANE":
       return {
         ...state,
         outputPosition:
           state.outputPosition === "hidden"
             ? state.restorePosition
             : state.outputPosition,
-        activeTab: "output"
-      };
-    case "OUTPUT_SHOW_ERRORS":
-      return {
-        ...state,
-        outputPosition:
-          state.outputPosition === "hidden"
-            ? state.restorePosition
-            : state.outputPosition,
-        activeTab: "errors"
-      };
-    case "OUTPUT_SHOW_CONSOLE":
-      return {
-        ...state,
-        outputPosition:
-          state.outputPosition === "hidden"
-            ? state.restorePosition
-            : state.outputPosition,
-        activeTab: "console"
+        activeTab: payload.activeTab
       };
     case "OUTPUT_RESTORE":
       return {
@@ -170,11 +169,22 @@ export function mainCanvasStateReducer(
             ? "right"
             : "down"
       };
+    case "OUTPUT_SCROLL_LOCK":
+      return {
+        ...state,
+        tabsStates: {
+          ...state.tabsStates,
+          [payload.activeTab]: {
+            ...state.tabsStates[payload.activeTab],
+            scrollLock: payload.turnedOn
+          }
+        }
+      };
     case "OUTPUT_SET_PANE_PROPS":
       return {
         ...state,
         tabsStates: { ...state.tabsStates, [payload.activeTab]: payload.props }
-      }
+      };
   }
   return state;
 }

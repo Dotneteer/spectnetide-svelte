@@ -2,7 +2,7 @@ import { BrowserWindow } from "electron";
 import { __DARWIN__ } from "../../main/utils/electron-utils";
 import { MenuItemBase } from "./ui-menu-item";
 import { mainProcessStore } from "@/main/mainProcessStore";
-import { outputShowOutputAction, outputShowConsoleAction, outputShowErrorsAction } from "../state/redux-main-canvas-state";
+import { outputShowPaneAction } from "../state/redux-main-canvas-state";
 
 export class AboutCommand extends MenuItemBase {
   constructor() {
@@ -119,7 +119,7 @@ export class ShowOutputCommand extends MenuItemBase {
   }
 
   onExecute(_window: BrowserWindow) {
-    mainProcessStore.dispatch(outputShowOutputAction());
+    mainProcessStore.dispatch(outputShowPaneAction("output"));
   }
 }
 
@@ -129,7 +129,7 @@ export class ShowErrorsCommand extends MenuItemBase {
   }
 
   onExecute(_window: BrowserWindow) {
-    mainProcessStore.dispatch(outputShowErrorsAction());
+    mainProcessStore.dispatch(outputShowPaneAction("errors"));
   }
 }
 
@@ -139,7 +139,7 @@ export class ShowConsoleCommand extends MenuItemBase {
   }
 
   onExecute(_window: BrowserWindow) {
-    mainProcessStore.dispatch(outputShowConsoleAction());
+    mainProcessStore.dispatch(outputShowPaneAction("console"));
   }
 }
 
