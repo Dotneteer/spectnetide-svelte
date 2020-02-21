@@ -37,4 +37,8 @@ export interface IThemeProperties {
 
   "--output-tab-text-color": string;
   "--output-tab-active-text-color": string;
+
+  "--slider-color": string;
+  "--slider-active-color": string;
+  "--slider-drag-color": string;
 }

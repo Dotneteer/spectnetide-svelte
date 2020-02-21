@@ -39,6 +39,9 @@ export const lightTheme: ITheme = {
     "--output-tab-text-color": "#e7e7e799",
     "--output-tab-active-text-color": "#e7e7e7",
   
+    "--slider-color": "#d4d4d440",
+    "--slider-active-color": "#d4d4d480",
+    "--slider-drag-color": "#d4d4d4a0",
 
     // "--window-frame-border-color": "transparent",
     // "--window-frame-border-width": "0px",
