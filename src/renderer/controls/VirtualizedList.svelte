@@ -3,10 +3,10 @@
   // Represents a virualized list. Only the items visible within the currently
   // displayed viewport are rendered.
 
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import { writable } from "svelte/store";
   import FloatingScrollbar from "./FloatingScrollbar.svelte";
-  import { VirtualizedListComponent } from "./VirtualizedList";
+  import { VirtualizedListManager } from "./VirtualizedList";
 
   // ==========================================================================
   // Component parameters
@@ -16,66 +16,77 @@
   // --- The heights of the child items
   export let itemHeight;
 
+  export let enableWheel = true;
+
+  export let fastWheel = 3;
+
+  // ==========================================================================
+  // Component logic
+
+  const dispatch = createEventDispatcher();
+
+  // --- The root HTML element of this component
   let hostElement;
+
+  // --- The HTML element that holds the visible part of the list
   let contentElement;
 
-  let listComponent;
-  let totalListHeight;
-  let displayedItems = [];
+  // --- The component that manages the logic
+  let listManager;
 
+  // --- The scroller component
+  let scroller;
+
+  // --- Viewport ratio, we use it for scrolling with mouse wheel
+  let viewportRatio;
+
+  // --- The store that holds the state of the virtual component
   let virtualListStore = writable({
     topPosition: 0,
     displayedItems: []
   });
 
+  // --- Set up the manager as soon as the component has been rendered
   onMount(() => {
-    listComponent = new VirtualizedListComponent(
+    setTimeout(() => scroller.scrollWithDelta(60), 0);
+    listManager = new VirtualizedListManager(
       hostElement,
       contentElement,
       virtualListStore
     );
-    listComponent.childHeight = Number(itemHeight);
+    listManager.childHeight = Number(itemHeight);
+    listManager.requestRefresh();
   });
 
-  onDestroy(() => {
-    listComponent.displayedItemsChanged.release();
-  });
-
+  // --- Allow responding to the changes of the list
   $: {
-    if (listComponent && items) {
-      listComponent.itemsSource = items;
-      totalListHeight = listComponent.totalListHeight;
+    if (listManager && items) {
+      listManager.itemsSource = items;
     }
   }
 
-  $: displayedItems = $virtualListStore.displayedItems;
+  // --- Handles when wheel is used
+  function handleWheel(ev) {
+    if (!enableWheel) return;
 
-  function handleDisplayedItemsChanged() {
-    displayedItems = listComponent.displayedItems;
+    scroller.scrollWithDelta(
+      -ev.wheelDelta * viewportRatio * (ev.ctrlKey ? fastWheel : 1)
+    );
   }
-
-  // ==========================================================================
-  // Renaming logic
-
-  let renamePanelType;
-  // [style.top.px]="renameBoxTop"
-  // [style.left.px]="renameBoxLeft"
-  // [style.width.px]="renameBoxWidth"
-  // [style.height.px]="renameBoxHeight">
-
-  let isInRenaming = false;
-  let isRenameValueInvalid = false;
-
-  function abortRenaming() {}
-
-  function validateRenaming() {}
 </script>
 
 <style>
+  .list-container {
+    display: block;
+    overflow: hidden;
+    height: 100%;
+    position: relative !important;
+  }
+
   .virtualized-list {
     display: block;
     overflow: hidden;
-    overflow-y: scroll;
+    overflow-y: hidden;
     position: relative !important;
     -webkit-overflow-scrolling: touch;
   }
@@ -92,74 +103,35 @@
     position: absolute;
     color: white;
   }
-
-  .rename-overlay {
-    position: absolute;
-    display: none;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .rename-overlay.renaming {
-    display: flex;
-    background-color: black;
-    opacity: 0.5;
-  }
-
-  .rename-panel {
-    position: absolute;
-    display: none;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
-
-  .rename-panel.renaming {
-    display: flex;
-  }
-
-  .rename-box {
-    outline: none;
-    font-size: 0.9em;
-    width: 100%;
-    height: 100%;
-    font-size: 1em;
-  }
-
-  ::-webkit-scrollbar {
-    width: 0px;
-  }
 </style>
 
-<div
-  bind:this={hostElement}
-  class="virtualized-list"
-  on:scroll={() => listComponent.refreshView()}>
-  <div class="list-placeholder" style="height:{totalListHeight}px" />
+<svelte:window
+  on:resize={() => {
+    if (listManager) listManager.refreshView();
+  }} />
+<div class="list-container" on:wheel={handleWheel}>
   <div
-    bind:this={contentElement}
-    class="list-content"
-    style="transform: translateY({$virtualListStore.topPosition}px)">
-    {#each $virtualListStore.displayedItems as item, index (item.itemIndex)}
-      <div on:click={() => console.log(item.itemIndex)}>
-        <slot {item} index={item.itemIndex} />
-      </div>
-    {/each}
+    bind:this={hostElement}
+    class="virtualized-list"
+    on:scroll={() => listManager.refreshView()}>
+    <div
+      class="list-placeholder"
+      style="height:{$virtualListStore.totalListHeight}px" />
+    <div
+      bind:this={contentElement}
+      class="list-content"
+      style="top: {$virtualListStore.topShift}px">
+      {#each $virtualListStore.displayedItems as item, index (item.itemIndex)}
+        <div on:click={() => dispatch('item-selected', item.itemIndex)}>
+          <slot item={item.data} index={item.itemIndex} />
+        </div>
+      {/each}
+    </div>
   </div>
-  <FloatingScrollbar orientation="vertical" scrollSize={totalListHeight} />
-
-  <div class="rename-overlay" class:renaming={isInRenaming} />
-  <div
-    class="rename-panel"
-    class:renaming={isInRenaming}
-    style={renamePanelType}>
-    <input
-      class:invalid={isRenameValueInvalid}
-      class="rename-box"
-      type="text"
-      on:blur={abortRenaming}
-      on:keyup={validateRenaming} />
-  </div>
+  <FloatingScrollbar
+    bind:this={scroller}
+    orientation="vertical"
+    scrollSize={$virtualListStore.totalListHeight}
+    bind:viewportRatio
+    on:slider-moved={ev => listManager.scrollTo(ev.detail)} />
 </div>

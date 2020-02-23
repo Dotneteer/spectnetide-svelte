@@ -22,6 +22,19 @@
   // --- The position of the slider
   export let sliderPosition = 100;
 
+  // --- Size of the viewport
+  export let viewportSize;
+
+  // --- Viewport ratio
+  export let viewportRatio;
+
+  // --- Allows scrolling by other components
+  export function scrollWithDelta(delta) {
+    sliderPosition += delta;
+    normalizeSliderPosition();
+    signSliderChange();
+  }
+
   // ==========================================================================
   // Component logic
   const dispatch = createEventDispatcher();
@@ -41,9 +54,6 @@
   let sliderHeight;
   let barStyle;
   let sliderStyle;
-
-  let viewPortSize;
-  let viewportRatio;
 
   // --- Initialize components and property strings
   onMount(() => {
@@ -73,18 +83,13 @@
   $: {
     if (orientation === "horizontal") {
       viewportRatio = offsetWidth / scrollSize;
-      viewPortSize = offsetWidth;
+      viewportSize = offsetWidth;
     } else {
       viewportRatio = offsetHeight / scrollSize;
-      viewPortSize = offsetHeight;
+      viewportSize = offsetHeight;
     }
-    sliderHeight = viewPortSize * viewportRatio;
-    if (sliderPosition + sliderHeight > viewPortSize) {
-      sliderPosition = viewPortSize - sliderHeight;
-    }
-    if (sliderPosition < 0) {
-      sliderPosition = 0;
-    }
+    sliderHeight = viewportSize * viewportRatio;
+    normalizeSliderPosition();
 
     sliderVisible = sliderHeight < scrollSize;
     sliderStyle =
@@ -130,19 +135,11 @@
             ? sliderStart + ev.clientY - startY
             : sliderStart;
       }
-        if (sliderPosition + sliderHeight > viewPortSize) {
-          sliderPosition = viewPortSize - sliderHeight;
-        }
-      if (sliderPosition < 0) {
-        sliderPosition = 0;
-      }
+      normalizeSliderPosition();
 
       // --- Notify parent about the move event
       if (sliderPosition != lastPosition) {
-        dispatch(
-          "slider-moved",
-          Math.floor(sliderPosition / viewportRatio)
-        );
+        signSliderChange();
       }
     } else {
       if (isMouseOverElement(ev, parentElement)) {
@@ -169,6 +166,21 @@
       // --- Hide the scrollbar
       scrollbarVisible = false;
     }
+  }
+
+  // --- Keeps slider position within limits
+  function normalizeSliderPosition() {
+    if (sliderPosition + sliderHeight > viewportSize) {
+      sliderPosition = viewportSize - sliderHeight;
+    }
+    if (sliderPosition < 0) {
+      sliderPosition = 0;
+    }
+  }
+
+  // --- Signs the changes of the scrollbar's position
+  function signSliderChange() {
+    dispatch("slider-moved", Math.floor(sliderPosition / viewportRatio));
   }
 </script>
 

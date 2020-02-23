@@ -2,7 +2,6 @@ import { IListable, IListItem } from "@/renderer/controls/VirtualizedList";
 import { LiteEvent } from "@/shared/menu/utils/LiteEvent";
 
 export interface SideBarItem {
-  index: number;
   caption: string;
 }
 
@@ -12,13 +11,29 @@ export class SideBarItemList implements IListable<SideBarItem> {
   /**
    * Creates a list of demo items
    */
-  constructor() {
-    this._items = [];
-    for (let i = 0; i < 100; i++) {
-      this._items[i] = {
-          index: i,
+  constructor(items?: SideBarItem[]) {
+    if (items) {
+      this._items = items;
+    } else {
+      this._items = [];
+      for (let i = 0; i < 100; i++) {
+        this._items[i] = {
           caption: `Item #${i}`
+        };
       }
+    }
+  }
+
+  /**
+   * Adds extra items
+   * @param count Number of items to add
+   */
+  addItems(count: number) {
+    const length = this._items.length;
+    for (let i = length; i < length + count; i++) {
+      this._items[i] = {
+        caption: `Additional item #${i}`
+      };
     }
   }
 
@@ -38,7 +53,7 @@ export class SideBarItemList implements IListable<SideBarItem> {
           itemIndex: index + start + offset,
           data: item
         };
-      });  
+      });
   }
 
   /**
@@ -58,9 +73,16 @@ export class SideBarItemList implements IListable<SideBarItem> {
   readonly itemsChanged = new LiteEvent<void>();
 
   /**
+   * Gets the items of this list
+   */
+  get items(): SideBarItem[] {
+    return this._items;
+  }
+
+  /**
    * Gets the number of items in the list
    */
   get itemsCount(): number {
-      return this._items.length;
+    return this._items.length;
   }
 }

@@ -6,6 +6,12 @@
 
   let items = new SideBarItemList();
   let indexData;
+
+  function addItems() {
+    const newItems = new SideBarItemList(items.items);
+    newItems.addItems(10);
+    items = newItems;
+  }
 </script>
 
 <style>
@@ -30,7 +36,8 @@
     {items}
     itemHeight="30"
     let:item={itemData}
-    let:index={indexData}>
-    <div class= "item">{indexData}: {itemData}</div>
+    let:index={indexData}
+    on:item-selected={() => addItems()}>
+    <div class= "item">{indexData}: {itemData.caption}</div>
   </VirtualizedList>
 </div>
