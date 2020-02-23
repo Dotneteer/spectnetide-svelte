@@ -1,6 +1,11 @@
 <script>
-  import FloatingScrollbar from "../../controls/FloatingScrollbar.svelte";
+  import VirtualizedList from "../../controls/VirtualizedList.svelte";
+  import { SideBarItemList} from "./SideBarItemList";
+
   export let initialSize = 192;
+
+  let items = new SideBarItemList();
+  let indexData;
 </script>
 
 <style>
@@ -14,10 +19,18 @@
     background-color: var(--sidebar-background-color);
     position: relative;
   }
+
+  .item {
+    height: 30px;
+  }
 </style>
 
 <div class="sidebar" data-initial-size={initialSize}>
-  <FloatingScrollbar
-    orientation="vertical"
-    on:slider-moved={ev => console.log(`Slider position: ${ev.detail}`)} />
+  <VirtualizedList
+    {items}
+    itemHeight="30"
+    let:item={itemData}
+    let:index={indexData}>
+    <div class= "item">{indexData}: {itemData}</div>
+  </VirtualizedList>
 </div>
